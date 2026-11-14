@@ -2,7 +2,7 @@
 
 Emotion-based Scripture, reflection, and prayer for the feeling you bring today.
 
-**Live site:** https://verselight.vercel.app
+**Live site:** https://verselight-app.vercel.app/
 
 ## Features
 
