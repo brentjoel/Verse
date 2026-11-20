@@ -47,6 +47,8 @@ Use Node.js 24 and npm:
 npm ci
 # Copy .env.example to .env.local and fill in values privately.
 npm run dev
+# Before opening a pull request, run everything GitHub checks:
+npm run check
 ```
 
 Open http://localhost:3000. On PowerShell, use `npm.cmd` and `npx.cmd` if script launchers are blocked. Keep `NLT_API_KEY` server-only. Set `NEXT_PUBLIC_SITE_URL` to `https://verselight-app.vercel.app` as a stable HTTPS origin, then rebuild; do not hardcode the domain in application code. Never commit `.env.local`.
