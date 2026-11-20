@@ -63,3 +63,17 @@ test('undo intent is one-use, path-bound and memory only', async () => {
   assert.equal(consumeUndo('/a'), 'x');
   assert.equal(consumeUndo('/a'), undefined);
 });
+
+test('dawn burst stars are deterministic per reference and stay in bounds', async () => {
+  const { burstStars } = await import('../lib/dawn.ts');
+  const a = burstStars('Psalm 61:2');
+  assert.equal(a.length, 16);
+  assert.deepEqual(a, burstStars('Psalm 61:2'));
+  assert.notDeepEqual(a, burstStars('John 14:27'));
+  for (const star of a) {
+    assert.ok(star.x >= 0 && star.x <= 100 && star.y >= 0 && star.y <= 100);
+    assert.ok(star.delay >= 0 && star.delay <= 600);
+    assert.ok(star.size >= 2 && star.size <= 5);
+  }
+  assert.equal(burstStars('x', 4).length, 4);
+});
