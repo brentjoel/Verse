@@ -61,9 +61,12 @@ export function DawnReveal({ path, children }: { path: string; children: ReactNo
     };
   }, [path, active]);
 
-  return <div ref={root} className="dawn-reveal">
+  // Tapping the passage while it glows finishes the reveal; controls keep their own behavior.
+  return <div ref={root} className="dawn-reveal" onClick={event => {
+    if (root.current?.dataset.animating === "true" && !(event.target instanceof Element && event.target.closest("a, button, summary, input, select, dialog"))) stop.current();
+  }}>
     <div className="dawn-controls">
-      <p className="local-help">The whole passage is ready to read. Take your time.</p>
+      <p className="sr-only">The whole passage is ready to read. Take your time.</p>
       <button type="button" className="compare-link dawn-skip" onClick={() => stop.current()}>Skip animation</button>
     </div>
     <div className="dawn-horizon" aria-hidden="true"><div className="dawn-light" /><div className="dawn-ring" /></div>
