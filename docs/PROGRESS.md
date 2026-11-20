@@ -52,7 +52,7 @@ These follow [wheel-ui-plan.md](wheel-ui-plan.md). Each needs its own branch, Ve
 
 - Real-device 60fps and measured mobile Lighthouse 90+ have not been recorded; earlier checks were source and automated only.
 - README screenshots in `docs/screenshots/` are still placeholders.
-- `PRODUCT.md` for Impeccable is not written yet (`/impeccable init`).
+- Results page: choosing a feeling silently records a journal entry; add a visible "Noted in your journal" acknowledgement (critique P2, `/impeccable harden`).
 
 ## Log
 
@@ -63,3 +63,7 @@ Patched Next.js and eslint-config-next 16.4.2 to 16.4.6, closing seven moderate 
 
 ### Agent workflow refresh (2026-11-20)
 Reorganized AGENTS.md with current status, a task-based reading table, a workflow that routes work by size through superpowers skills and an Impeccable command map for UI. Specs and plans live in docs/superpowers/. Ignored .worktrees/; DESIGN.md token path is now a working link. Slimmed this file from 290 lines and archived its history verbatim; removed stale DONE markers from ARCHITECTURE and SPEC. Privacy, licensing and code rules are unchanged.
+
+### UI refinement (2026-11-20)
+Ran /impeccable init (new PRODUCT.md) and a dual-agent critique (26/40; snapshot in .impeccable/critique). Owner chose all three P1s plus polish: verse-first results on phones, Home dial above the fold with one-tap chips and the morning star in the dial corner, Journal and My Verses as a quiet notebook (new lib/dates.ts with tests), then polish (no eyebrows, compact feeling list, Compare labels the shown translation once, Save turns into a My Verses link, daily dialog actions in a row, legible wheel labels). The P2 silent journal write acknowledgement is still open. Verified: npm run check plus manual checks at 375px and desktop in both themes.
+

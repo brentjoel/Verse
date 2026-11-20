@@ -643,3 +643,111 @@ q { quotes: "“" "”" "‘" "’"; }
 
 /* Keep the footer below the first viewport while local records hydrate. */
 .library-wrap { min-height: calc(100svh - 88px); }
+
+/* UI refinement 2026-11: verse first on phones. */
+.translation-selector select { field-sizing: content; }
+.results-heading { margin-bottom: 8px; }
+.results-wrap .results-heading h1 { display: inline-flex; align-items: center; gap: 12px; margin-top: 0; }
+.results-heading h1 .emotion-dot { width: 6px; height: 6px; flex-shrink: 0; }
+.results-heading > p:last-child { margin-top: 4px; }
+.dawn-controls { margin: 0; }
+.dawn-skip:not(:focus-visible) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.dawn-reveal[data-animating="true"] { cursor: pointer; }
+.reading-verse { padding-top: 8px; }
+.verse-pagination { margin: 16px auto 0; }
+.carousel-mode { display: flex; justify-content: center; margin-top: 8px; }
+.carousel-mode .quiet-link { display: flex; gap: 8px; font-size: 14px; }
+@media (max-width: 639px) {
+  .site-header { min-height: 64px; flex-wrap: nowrap; gap: 12px; padding-block: 8px; }
+  .header-controls { margin-left: auto; gap: 8px; }
+  .brand { font-size: 18px; gap: 8px; }
+  .site-main { padding-block: 8px 48px; }
+  .results-wrap { margin-top: 0; }
+  .results-heading h1 { font-size: 30px; line-height: 1.2; }
+  .results-heading > p:last-child { font-size: 14px; line-height: 1.6; }
+  .dawn-horizon { height: 48px; margin-bottom: 0; }
+  .dawn-ring { width: 48px; height: 48px; left: calc(50% - 24px); }
+  .dawn-ring::after { inset: 8px; }
+  .reading-verse .verse-text { margin-block: 16px; }
+}
+/* Reference and translation tag share one centered line under the divider. */
+:is(.reading-verse, .daily-verse) .verse-heading-row { flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+:is(.reading-verse, .daily-verse) .verse-heading-row::before { content: ""; flex-basis: 100%; height: 16px; margin-bottom: var(--space-3); background: center / 88px 16px no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='16' viewBox='0 0 88 16'%3E%3Cpath d='M0 8h30m28 0h30M44 2l1.5 4.5L50 8l-4.5 1.5L44 14l-1.5-4.5L38 8l4.5-1.5Z' fill='none' stroke='%23b18a45' stroke-width='1.5'/%3E%3C/svg%3E"); }
+:is(.reading-verse, .daily-verse) .verse-reference::before { content: none; }
+:is(.reading-verse, .daily-verse) .translation-tag { color: var(--muted-foreground); letter-spacing: 0.12em; }
+.dawn-reveal::before { inset: 0 -16px; background: radial-gradient(ellipse 70% 60% at 50% 30%, rgb(var(--emotion-rgb) / 9%), transparent 70%); }
+.results-heading > p:last-child, .passage-credit, .local-help, .content-notice p { text-wrap: pretty; }
+
+/* UI refinement 2026-11: Home dial above the fold, morning star in the dial's sky. */
+.wheel-stage { position: relative; width: min(100%, 560px, 56svh); margin-inline: auto; }
+.wheel-stage .wheel-dial { width: 100%; }
+.wheel-corner { position: absolute; top: 0; right: 0; z-index: 2; }
+.wheel-corner .morning-star { padding: 8px 12px; }
+.wheel-help { margin-top: 0; }
+.wheel-back { display: flex; margin: 0 auto 4px; font-size: 14px; text-decoration: none; }
+.wheel-options .wheel-chip { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 14px; border: 1px solid transparent; border-radius: 8px; font-size: 14px; color: var(--scene-text); text-decoration: none; transition: background-color var(--motion-fast), border-color var(--motion-fast); }
+.wheel-options .wheel-chip > span { display: none; }
+.wheel-options .wheel-chip:focus-visible { background-color: color-mix(in srgb, var(--primary) 9%, transparent); border-color: var(--border); }
+@media (hover: hover) and (pointer: fine) { .wheel-options .wheel-chip:hover { background-color: color-mix(in srgb, var(--primary) 9%, transparent); border-color: var(--border); } }
+.wheel-options li { position: relative; }
+.wheel-options .local-help { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); width: 240px; z-index: 2; }
+.wheel-options { margin-top: 12px; }
+.wheel-simple { display: flex; justify-content: center; margin-top: 8px; }
+@media (max-width: 639px) {
+  .home-hero { margin: 0 auto 8px; }
+  .home-hero h1 { font-size: 30px; line-height: 1.2; }
+  .home-hero > p:last-child { margin-top: 6px; }
+  .wheel-picker { padding-top: 0; }
+  .wheel-corner .morning-star { width: 44px; height: 44px; padding: 0; }
+  .wheel-corner .trigger-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
+.results-heading > p:last-child, .home-hero > p:last-child { text-wrap: balance; }
+.verse-text { text-wrap: pretty; }
+
+/* UI refinement 2026-11: Journal and My Verses read as a quiet notebook, not settings. */
+.reflection-list, .saved-list { list-style: none; padding: 0; margin: 0; }
+.reflection-item { padding: 24px 0; border-top: 1px solid var(--border); }
+.reflection-item:first-child { border-top: 0; padding-top: 8px; }
+.reflection-date { font-size: 12px; letter-spacing: 0.04em; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
+.reflection-item h3 { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; margin-top: 4px; font-family: var(--font-lora), Georgia, serif; font-size: 22px; font-weight: 400; }
+.reflection-item h3 .emotion-dot { width: 6px; height: 6px; background: rgb(var(--emotion-rgb)); }
+.reflection-parent { font-family: var(--font-geist), Arial, sans-serif; font-size: 12px; color: var(--muted-foreground); }
+.reflection-item .local-form { margin-top: 12px; }
+.calendar-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.calendar-heading .local-actions { margin: 0; gap: 4px; }
+.journal-calendar { margin-top: 4px; }
+.calendar-day { border-color: transparent; background: transparent; font-variant-numeric: tabular-nums; transition: background-color var(--motion-fast), border-color var(--motion-fast); }
+.calendar-day[data-level="1"] { background: color-mix(in srgb, var(--primary) 10%, transparent); }
+.calendar-day[data-level="2"] { background: color-mix(in srgb, var(--primary) 22%, transparent); }
+.calendar-day[data-level="3"] { background: color-mix(in srgb, var(--primary) 36%, transparent); }
+.calendar-day[data-grace] { border: 1px dashed color-mix(in srgb, var(--primary) 60%, transparent); }
+.calendar-day[aria-pressed="true"] { border: 2px solid var(--primary); }
+.calendar-mark { font-size: 12px; color: var(--muted-foreground); }
+.rhythm > p:first-of-type { font-family: var(--font-lora), Georgia, serif; font-size: 22px; }
+.rhythm .badge-list li { border-color: transparent; background: color-mix(in srgb, var(--primary) 8%, transparent); }
+.quiet-details { margin-top: 16px; }
+.quiet-details summary { width: fit-content; min-height: 44px; display: flex; align-items: center; cursor: pointer; font-size: 14px; color: var(--primary); }
+.quiet-details[open] summary { color: var(--foreground); }
+.saved-list > li.saved-card:first-child { padding-top: 8px; }
+.saved-card .verse-heading-row { justify-content: flex-start; align-items: baseline; gap: 10px; }
+.saved-card .saved-reference::before { content: none; }
+.library-section p, .backup-panel > p { max-width: 68ch; }
+.reflection-note { margin-top: 8px; font-size: 16px; line-height: 1.7; white-space: pre-wrap; overflow-wrap: anywhere; }
+.reflection-actions { display: flex; gap: 16px; margin-top: 4px; }
+.reflection-actions .quiet-link { font-size: 14px; }
+.calendar-day { box-sizing: border-box; }
+.calendar-scroll { scrollbar-width: thin; }
+.journal-calendar td:nth-child(-n+3) [data-tooltip]::after { left: 0; right: auto; transform: none; }
+.journal-calendar td:nth-child(n+5) [data-tooltip]::after { left: auto; right: 0; transform: none; }
+@media (min-width: 360px) { .calendar-scroll { overflow-x: visible; } }
+
+/* UI refinement 2026-11: polish. */
+.specific-grid { gap: 0; margin-top: 16px; }
+.specific-grid > li + li { border-top: 1px solid var(--border); }
+.detail-wrap .specific-link { min-height: 64px; padding: 16px 4px; border: 0; border-radius: 0; background: transparent; box-shadow: none; font-family: var(--font-lora), Georgia, serif; font-size: 20px; }
+.detail-wrap .specific-link > span { color: var(--primary); }
+@media (min-width: 640px) { .specific-grid { grid-template-columns: 1fr; } }
+.daily-verse .verse-actions { justify-content: flex-start; margin-top: 16px; }
+.daily-verse .share-controls { margin-top: 0; }
+.wheel-ring-labels span { padding: 2px 8px; border-radius: 99px; background: color-mix(in srgb, var(--scene-sky) 72%, transparent); }
+.compare-card h2 { margin-top: 0; }

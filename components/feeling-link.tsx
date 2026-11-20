@@ -6,14 +6,14 @@ import { useState } from "react";
 import { getPersonalStore, usePersonalStorage } from "@/lib/browser-storage";
 import { prepareDawn } from "@/lib/dawn";
 
-export function FeelingLink({ emotionId, specificId, name, dawn = false }: { emotionId: string; specificId: string; name: string; dawn?: boolean }) {
+export function FeelingLink({ emotionId, specificId, name, dawn = false, className = "emotion-link specific-link" }: { emotionId: string; specificId: string; name: string; dawn?: boolean; className?: string }) {
   const snapshot = usePersonalStorage();
   const router = useRouter();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const href = `/emotions/${emotionId}/${specificId}`;
   return <>
-    <Link href={href} className="emotion-link specific-link" aria-disabled={busy} onNavigate={event => {
+    <Link href={href} className={className} aria-disabled={busy} onNavigate={event => {
       event.preventDefault();
       if (busy) return;
       if (!snapshot.ready) { setError("Your journal is opening. Try again in a moment, or continue to the verses."); return; }

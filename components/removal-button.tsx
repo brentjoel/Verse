@@ -11,7 +11,7 @@ export function RemovalButton({ children, disabled, onRemove, className = "quiet
   const [leaving, setLeaving] = useState(false);
   useEffect(() => () => { effect.current?.cancel(); }, []);
   return <button type="button" className={className} disabled={disabled || leaving} onClick={async event => {
-    const surface = event.currentTarget.closest<HTMLElement>(".saved-card, .collection-editor, .verse-card");
+    const surface = event.currentTarget.closest<HTMLElement>(".saved-card, .collection-editor, .verse-card, .reflection-item");
     if (!surface?.animate || matchMedia("(prefers-reduced-motion: reduce)").matches) { onRemove(); return; }
     setLeaving(true);
     const style = getComputedStyle(surface);
