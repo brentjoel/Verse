@@ -282,3 +282,6 @@ Verification: strict typecheck, lint, production build/content validation (65 pa
 
 ## Production domain correction (2026-11-20)
 https://verselight.vercel.app serves an unrelated app, so following the earlier note would point canonical and share URLs away from Verselight. README and OPERATIONS now name the real origin, https://verselight-app.vercel.app, which matches the live canonical and Open Graph URLs. Docs only; no application code or environment values changed.
+
+## Automated checks (2026-11-20)
+Added `npm test` (all node:test suites), `npm run typecheck` and `npm run check` (typecheck, lint, tests, build). A GitHub Actions workflow runs the same checks on every pull request and on pushes to main, on Node 24 with no secrets. Locally: 57 tests pass; typecheck, lint and build (65 pages) pass.
