@@ -70,7 +70,7 @@ export function Journal() {
       {selected && <button className="compare-link" onClick={() => setSelected("")}>Show all reflections</button>}
       {entries.length ? <ul className="reflection-list">{entries.slice(0, limit).map(mood => <Reflection key={`${mood.id}:${mood.note ?? ""}`} mood={mood} disabled={disabled} run={run} />)}</ul> : <div className="empty-state"><Constellation /><p>No reflections here yet. Each feeling you choose will be noted here.</p><Link href="/" className="pill">Choose a feeling</Link></div>}
       {entries.length > limit && <button className="compare-link" onClick={() => setLimit(limit + 20)}>Show more reflections</button>}
-      <p className="local-help">Each feeling you choose is noted here. Add a note if you like; removing one keeps that day in your calendar.</p>
+      {entries.length > 0 && <p className="local-help">Each feeling you choose is noted here. Add a note if you like; removing one keeps that day in your calendar.</p>}
     </section>
     <section className="library-section" aria-labelledby="calendar-heading">
       <div className="section-heading calendar-heading"><h2 id="calendar-heading">{formatMonth(first)}</h2><div className="local-actions"><button className="icon-button" aria-label="Previous month" data-tooltip="Previous month" onClick={() => setMonth(shiftDate(first, -1).slice(0, 7))} disabled={first <= "0001-02-01"}><span aria-hidden="true">&#8592;</span></button><button className="icon-button" aria-label="Next month" data-tooltip="Next month" onClick={() => setMonth(next.slice(0, 7))} disabled={first >= "9999-11-01"}><span aria-hidden="true">&#8594;</span></button></div></div>

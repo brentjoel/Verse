@@ -22,7 +22,7 @@
     "test:storage": "node --test scripts/test-storage.mjs",
     "test:progress": "node --test scripts/test-progress.mjs",
     "test:daily-share": "node --test scripts/test-daily-share.mjs",
-    "e2e": "playwright test --grep-invert @visual",
+    "e2e": "playwright test --grep-invert \"@visual|@capture\"",
     "e2e:visual": "playwright test --grep @visual",
     "lighthouse": "lhci autorun"
   },

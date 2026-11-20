@@ -1,5 +1,7 @@
 # Wheel UI Plan: "Wheel within a Wheel"
 
+> **Historical.** Superseded for visuals by the [Constellation redesign spec](superpowers/specs/2026-11-20-constellation-redesign-design.md) and [DESIGN.md](DESIGN.md) (2026-11-20). Its accessibility, privacy, licensing and performance rules still apply. Steps 10 and 11 moved into Project 2.
+
 Status: Steps 1 to 8 are merged on main (Step 8 merge `5564b95`). Step 9 is implemented on `step-9-dawn-reveal`, with preview/device/Lighthouse review and merge approval pending. Steps 10 and 11 are PLANNED and unstarted.
 
 ## Concept

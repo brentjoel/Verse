@@ -23,14 +23,14 @@ Mobile-first web app on Vercel (https://verselight-app.vercel.app). Visits are s
 - Translations: NLT default via the official server-only Tyndale API with WEB as the labeled fallback; KJV, WEB, ASV, BSB static public domain; NIV disabled as Coming soon. Never invent or alter Scripture text; attribution stays visible under every quotation.
 - No NLT text in storage, images or caches. Share cards and the daily verse use WEB only.
 - Strictly noncommercial: no ads, payments, donations or paid features. No analytics or tracking. The translation cookie is the only preference sent to the server.
-- Out of scope: notifications, memorize mode, AI free text, audio.
-- Optional future steps: night sky journal (Step 10), polish and delight (Step 11); not started.
+- Out of scope: notifications, memorize mode, audio. AI is planned only as Project 3: an on-device feeling finder that suggests feelings and curated verses and never writes Scripture.
+- Project 2 (planned): night sky journal, Breathe, focus reading mode, sky share card, prayer list, time-of-day sky, saved intensity. It absorbs the old optional Steps 10 and 11.
 
 ## Brand Commitments
-- Name: Verselight. Mark: a simple star within a double wheel.
+- Name: Verselight. Mark: a four-point star inside an open ring, violet to teal, with an amber spark (Constellation redesign, 2026-11-20).
 - Voice: warm, plain, gentle copy. No em dashes in app text. Never guilt or pressure (for example about streaks or time away).
 - Imagery limited to light, stars and wheels; no faces, angels, figures or denomination-specific symbols.
-- Visual system lives in `docs/DESIGN.md`.
+- Visual system lives in `docs/DESIGN.md`: the Constellation world (void canvas, light display type, violet actions, amber spark, emotion-colored particles).
 
 ## Evidence on Hand
 Curated content in `data/emotions.json` and `data/prompts.json`; public-domain verse files in `data/verses/`. No testimonials, usage numbers or reviews exist; do not fabricate any. README screenshots are still placeholders.
