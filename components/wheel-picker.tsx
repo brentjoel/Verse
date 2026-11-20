@@ -32,7 +32,7 @@ class SceneRecovery extends Component<{ children: ReactNode; onUnavailable: () =
   render() { return this.state.failed ? null : this.props.children; }
 }
 
-export function WheelPicker({ emotions, children }: { emotions: readonly Emotion[]; children: ReactNode }) {
+export function WheelPicker({ emotions, corner, children }: { emotions: readonly Emotion[]; corner?: ReactNode; children: ReactNode }) {
   const [enabled, setEnabled] = useState(false);
   const [simple, setSimple] = useState(false);
   const [turn, setTurn] = useState(0);
@@ -72,14 +72,17 @@ export function WheelPicker({ emotions, children }: { emotions: readonly Emotion
     return () => element.removeEventListener("wheel", scroll);
   }, [enabled, simple, rotate]);
   const emotion = emotions[broad ?? wrapIndex(turn, emotions.length)];
-  if (!emotion || !enabled || simple) return <>{enabled && simple && <p className="local-help" role="status">The simple picker is ready for you.</p>}{children}</>;
+  if (!emotion || !enabled || simple) return <>{corner && <div className="morning-star-wrap">{corner}</div>}{enabled && simple && <p className="local-help" role="status">The simple picker is ready for you.</p>}{children}</>;
   const options = broad === null ? emotions : emotion.specifics;
   const selected = wrapIndex(turn, options.length);
   const choice = options[selected];
-  const lock = () => { if (broad === null) { setBroad(selected); setTurn(0); } };
+  const choose = (index: number) => { setBroad(index); setTurn(0); };
+  const lock = () => { if (broad === null) choose(selected); };
   return <div className="wheel-picker" data-emotion={emotion.id}>
-    <div className="wheel-topline"><p className="eyebrow">{broad === null ? "01 / A broad feeling" : `02 / Within ${emotion.name.toLowerCase()}`}</p><button type="button" className="quiet-link" onClick={() => setSimple(true)}>Use simple picker</button></div>
-    <p id="wheel-help" className="wheel-help">Drag across the dial, scroll, or use arrow keys. {broad === null ? "Press the center to choose." : "Choose the feeling that fits."}</p>
+    {broad !== null && <button type="button" className="quiet-link wheel-back" onClick={() => { setBroad(null); setTurn(broad); }}>&#8592; All feelings</button>}
+    <p id="wheel-help" className="wheel-help">{broad === null ? "Turn the dial and press the center, or tap a feeling below." : `What feels closest within ${emotion.name.toLowerCase()}?`}</p>
+    <div className="wheel-stage">
+    {corner && <div className="wheel-corner">{corner}</div>}
     <div ref={dial} className={`wheel-dial${broad !== null ? " wheel-inner" : ""}`} onPointerDown={event => {
       if (event.target instanceof Element && event.target.closest("button, a")) return;
       drag.current = event.clientX; event.currentTarget.dataset.dragging = "true"; event.currentTarget.setPointerCapture(event.pointerId);
@@ -103,15 +106,17 @@ export function WheelPicker({ emotions, children }: { emotions: readonly Emotion
         {broad === null ? <button type="button" className="wheel-lock" aria-describedby="wheel-help" onClick={lock}>{choice.name}<span>Press to choose</span></button> : <FeelingLink dawn emotionId={emotion.id} specificId={choice.id} name={choice.name} />}
       </div>
     </div>
-    <p className="wheel-current" role="status" aria-live="polite">{selected + 1} of {options.length}: {choice.name}</p>
-    <div className="wheel-navigation"><button type="button" className="compare-link" data-tooltip="Previous feeling" aria-label="Previous feeling" onClick={() => rotate(-1)}>←</button><span>Take your time.</span><button type="button" className="compare-link" data-tooltip="Next feeling" aria-label="Next feeling" onClick={() => rotate(1)}>→</button></div>
+    </div>
+    <p className="wheel-current sr-only" role="status" aria-live="polite">{selected + 1} of {options.length}: {choice.name}</p>
     <ul className="wheel-options" aria-label={broad === null ? "Broad emotions" : `Feelings within ${emotion.name}`}>
-      {options.map((option, index) => <li key={option.id}><button type="button" aria-pressed={selected === index} onClick={() => { rotate(index - selected); }}>{option.name}</button></li>)}
+      {broad === null
+        ? emotions.map((option, index) => <li key={option.id}><button type="button" onClick={() => choose(index)}>{option.name}</button></li>)
+        : emotion.specifics.map(option => <li key={option.id}><FeelingLink dawn className="wheel-chip" emotionId={emotion.id} specificId={option.id} name={option.name} /></li>)}
     </ul>
     {broad !== null && <>
       <fieldset className="wheel-intensity"><legend>How strong does it feel?</legend>{["low", "medium", "high"].map(value => <label key={value}><input type="radio" name="intensity" value={value} checked={intensity === value} onChange={() => setIntensity(value)} />{value}</label>)}</fieldset>
       <p className="local-help">Intensity is just for this moment and is not saved in your journal.</p>
-      <button type="button" className="compare-link" onClick={() => { setBroad(null); setTurn(broad); }}>Back to broad feelings</button>
     </>}
+    <p className="wheel-simple"><button type="button" className="quiet-link" onClick={() => setSimple(true)}>Use simple picker</button></p>
   </div>;
 }

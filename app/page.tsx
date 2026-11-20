@@ -16,15 +16,13 @@ export default function Home() {
   return (
     <SiteShell>
       <div className="home-hero">
-        <p className="eyebrow"><span className="accent-dot" /> A little space for your soul</p>
         <h1>How is your heart today?</h1>
         <p>A quiet moment. A little light. Room for all you carry.</p>
       </div>
-      <div className="morning-star-wrap"><DailyVerse verses={web} /></div>
       <section aria-labelledby="emotions-heading" aria-describedby="emotions-status">
         <h2 id="emotions-heading" className="sr-only">Find the words that fit</h2>
         <p id="emotions-status" className="sr-only">Start with a feeling. No account needed.</p>
-        <WheelPicker emotions={emotions}>
+        <WheelPicker emotions={emotions} corner={<DailyVerse verses={web} />}>
         <ul className="emotion-grid">
           {emotions.map((emotion) => (
             <li key={emotion.id}>
