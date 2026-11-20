@@ -8,8 +8,6 @@ import { hasVerseReference } from "@/lib/verses";
 import { getVersePassage } from "@/lib/verse-passage";
 import { PassageAttribution } from "@/components/passage-attribution";
 import { parseCompareTranslations, validResultsPath } from "@/lib/compare";
-import { PreferredTranslationSelector } from "@/components/preferred-translation-selector";
-import { TranslationSelector } from "@/components/translation-selector";
 import { ShareCardControls } from "@/components/share-card-controls";
 
 type Query = Record<string, string | string[] | undefined>;
@@ -17,7 +15,7 @@ type Query = Record<string, string | string[] | undefined>;
 export const metadata = { title: "Compare Scripture | Verselight", description: "Read Scripture side by side in two to four translations, with source credits and room to reflect." };
 
 export default function ComparePage({ searchParams }: { searchParams: Promise<Query> }) {
-  return <SiteShell translationControl={<Suspense fallback={<TranslationSelector />}><PreferredTranslationSelector /></Suspense>}><Suspense fallback={<ContentNotice loading>Preparing your comparison...</ContentNotice>}><Comparison searchParams={searchParams} /></Suspense></SiteShell>;
+  return <SiteShell><Suspense fallback={<ContentNotice loading>Preparing your comparison...</ContentNotice>}><Comparison searchParams={searchParams} /></Suspense></SiteShell>;
 }
 
 async function Comparison({ searchParams }: { searchParams: Promise<Query> }) {

@@ -9,9 +9,7 @@ import { getAllEmotions, getEmotionById, getPromptForReference, getSpecificEmoti
 import { getPreferredTranslation } from "@/lib/translation-preference";
 import { getVersePassage } from "@/lib/verse-passage";
 import { PassageAttribution } from "@/components/passage-attribution";
-import { PreferredTranslationSelector } from "@/components/preferred-translation-selector";
 import { SaveVerseButton } from "@/components/save-verse-button";
-import { TranslationSelector } from "@/components/translation-selector";
 import { ShareCardControls } from "@/components/share-card-controls";
 import { DawnReveal } from "@/components/dawn-reveal";
 import { passageTokens } from "@/lib/dawn";
@@ -31,7 +29,7 @@ export default async function ResultsPage({ params }: { params: Promise<{ emotio
   const emotion = getEmotionById(emotionId);
   const specific = getSpecificEmotionByIds(emotionId, sub);
   if (!emotion || !specific) notFound();
-  return <SiteShell translationControl={<Suspense fallback={<TranslationSelector />}><PreferredTranslationSelector /></Suspense>}><Suspense fallback={<ContentNotice loading>Finding your verses...</ContentNotice>}><ResultsContent emotion={emotion} specific={specific} /></Suspense></SiteShell>;
+  return <SiteShell><Suspense fallback={<ContentNotice loading>Finding your verses...</ContentNotice>}><ResultsContent emotion={emotion} specific={specific} /></Suspense></SiteShell>;
 }
 
 async function ResultsContent({ emotion, specific }: { emotion: Emotion; specific: SpecificEmotion }) {
