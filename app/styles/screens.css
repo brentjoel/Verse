@@ -328,3 +328,5 @@
 @keyframes sky-drift { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-3%, -4%, 0); } }
 @keyframes sky-twinkle { 0%, 100% { opacity: .12; } 50% { opacity: .4; } }
 @media (prefers-reduced-motion: reduce) { .ambient-sky { display: none; } }
+.license-copy section { display: grid; gap: var(--space-3); }
+.license-copy .back-link { color: var(--ink-3); text-decoration: none; }

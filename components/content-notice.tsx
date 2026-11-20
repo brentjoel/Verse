@@ -6,7 +6,7 @@ export function ContentNotice({ children, loading = false }: Readonly<{ children
     <div className={`content-notice${loading ? " skeleton" : ""}`} role={loading ? "status" : undefined}>
       {!loading && <Constellation />}
       <p>{children}</p>
-      <Link href="/" className="back-link mt-3 inline-flex">Choose another feeling</Link>
+      {!loading && <Link href="/" className="compare-link">Choose another feeling</Link>}
     </div>
   );
 }
