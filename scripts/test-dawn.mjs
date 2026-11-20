@@ -53,3 +53,13 @@ test('each verse and translation gets a fresh full run; rapid changes cancel pre
   assert.equal(translated.running, true);
   translated.cancel();
 });
+
+test('undo intent is one-use, path-bound and memory only', async () => {
+  const { prepareUndo, consumeUndo } = await import('../lib/dawn.ts');
+  prepareUndo('/a', 'x');
+  assert.equal(consumeUndo('/b'), undefined);
+  assert.equal(consumeUndo('/a'), undefined);
+  prepareUndo('/a', 'x');
+  assert.equal(consumeUndo('/a'), 'x');
+  assert.equal(consumeUndo('/a'), undefined);
+});
