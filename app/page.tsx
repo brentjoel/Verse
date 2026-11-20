@@ -12,7 +12,7 @@ export const metadata = { title: "Verselight | A moment of peace", description: 
 export default function Home() {
   const emotions = getAllEmotions();
   return (
-    <SiteShell>
+    <SiteShell ambient={false}>
       <div className="home-stage">
         <div className="home-hero">
           <h1 className="display">How is your heart today?</h1>

@@ -5,10 +5,12 @@ import { BrandMark } from "@/components/brand-mark";
 import { StorageNotice } from "@/components/storage-notice";
 import { SettingsSheet } from "@/components/settings-sheet";
 import { ThemeSync } from "@/components/theme-sync";
+import { AmbientSky } from "@/components/ambient-sky";
 
-export function SiteShell({ children }: Readonly<{ children: ReactNode }>) {
+export function SiteShell({ children, ambient = true }: Readonly<{ children: ReactNode; ambient?: boolean }>) {
   return (
     <div className="site-shell">
+      {ambient && <AmbientSky />}
       <header className="site-header">
         <Link href="/" aria-label="Verselight home" className="brand">
           <BrandMark />
