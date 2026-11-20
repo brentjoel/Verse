@@ -8,6 +8,12 @@ import { useRouter } from "next/navigation";
 import { getPersonalStore, reloadPersonalStorage, usePersonalStorage } from "@/lib/browser-storage";
 import { readBackup, type StorageResult } from "@/lib/storage";
 import { MAX_BYTES, type Backup, type Collection, type StorageEnvelope } from "@/lib/storage-schema";
+import emotions from "@/data/emotions.json";
+import { formatDay } from "@/lib/dates";
+
+function feelingName(emotionId?: string, specificId?: string) {
+  return emotions.find(emotion => emotion.id === emotionId)?.specifics.find(specific => specific.id === specificId)?.name;
+}
 
 function download(text: string, filename: string) {
   const url = URL.createObjectURL(new Blob([text], { type: "application/json" }));
@@ -80,26 +86,27 @@ export function MyVerses() {
     <div className="local-feedback" aria-live="polite"><p role="status">{busy ? "Taking care of that..." : status}</p></div>
     {error && <p className="content-notice local-error" role="alert">{error}</p>}
     {snapshot.mode === "blocked" ? <div className="content-notice"><h2>Your saved data needs care</h2><p>It has not been replaced. Use backup and recovery below to download the original file or choose a fresh start.</p></div> : <>
-      <section aria-labelledby="collections-heading" className="library-section">
-        <div className="section-heading"><h2 id="collections-heading">Your collections</h2></div>
-        <form className="local-form" onSubmit={createCollection}>
-          <label htmlFor="new-collection">New collection name</label><div className="local-input-row"><input id="new-collection" value={collectionName} onChange={event => setCollectionName(event.target.value)} maxLength={80} required placeholder="A little hope" disabled={locked} /><button className="compare-link" disabled={locked || !collectionName.trim()}>Create collection</button></div>
-        </form>
-        {collections.length === 0 ? <div className="empty-state"><Constellation /><p className="local-help">No collections yet. Gather a few references around what matters to you.</p></div> : <div className="collection-grid">{collections.map(collection => <CollectionEditor key={`${collection.id}:${collection.name}`} collection={collection} disabled={locked} run={run} />)}</div>}
-      </section>
       <section aria-labelledby="saved-heading" className="library-section">
         <div className="section-heading"><h2 id="saved-heading">Saved verses</h2></div>
+        {savedVerses.length > 0 && <p className="local-help">Saved as references; the passage loads when you open it.</p>}
         {collections.length > 0 && <div className="local-form"><label htmlFor="collection-filter">Show collection</label><select id="collection-filter" value={selectedCollection?.id ?? ""} onChange={event => setFilter(event.target.value)}><option value="">All saved verses</option>{collections.map(collection => <option key={collection.id} value={collection.id}>{collection.name}</option>)}</select></div>}
-        {visibleVerses.length === 0 ? <div className="content-notice"><Constellation /><p>{savedVerses.length === 0 ? "Your first saved verse is waiting to find you. Choose a feeling, then use Save beside a passage." : "This collection has room for a little light. Choose All saved verses to add references here."}</p><Link href="/" className="back-link">Choose a feeling</Link></div> : <ul className="verse-list saved-list">{visibleVerses.map(verse => {
+        {visibleVerses.length === 0 ? <div className="content-notice"><Constellation /><p>{savedVerses.length === 0 ? "Your first saved verse is waiting to find you. Choose a feeling, then tap Save under a passage." : "This collection has room for a little light. Choose All saved verses to add references here."}</p><Link href="/" className="back-link">Choose a feeling</Link></div> : <ul className="verse-list saved-list">{visibleVerses.map(verse => {
           const other = verse.translationId === "web" ? "bsb" : "web";
           const query = new URLSearchParams({ ref: verse.reference }); query.append("translations", verse.translationId); query.append("translations", other);
           return <li key={verse.id} className="verse-card saved-card"><div className="verse-heading-row"><h3 className="saved-reference">{verse.reference}</h3><span className="translation-tag">{verse.translationId.toUpperCase()}</span></div>
-            <p className="local-help">Saved as a reference. Scripture is loaded only when you open the reading view.</p>
-            <Link href={`/compare?${query}`} prefetch={false} className="back-link">Read and compare <span aria-hidden="true">&#8599;</span></Link>
+            {(() => { const feeling = feelingName(verse.emotionId, verse.specificEmotionId); return <p className="local-help">{feeling ? `${feeling} · ` : ""}Saved <time dateTime={verse.createdAt}>{formatDay(verse.createdAt)}</time></p>; })()}
             {collections.length > 0 && <fieldset className="membership"><legend>Add to collections</legend>{collections.map(collection => <label key={collection.id}><input type="checkbox" checked={collection.savedVerseIds.includes(verse.id)} disabled={locked} onChange={event => { const checked = event.target.checked; void run(() => getPersonalStore().setMembership(collection.id, verse.id, checked), checked ? "Added to collection." : "Removed from collection."); }} />{collection.name}</label>)}</fieldset>}
-            <RemovalButton disabled={locked} onRemove={() => void run(() => getPersonalStore().removeSave(verse.id), "Saved verse removed, including its collection memberships.")}>Remove saved verse</RemovalButton>
+            <div className="reflection-actions"><Link href={`/compare?${query}`} prefetch={false} className="quiet-link">Read and compare <span aria-hidden="true">&#8599;</span></Link>
+            <RemovalButton disabled={locked} onRemove={() => void run(() => getPersonalStore().removeSave(verse.id), "Saved verse removed, including its collection memberships.")}>Remove</RemovalButton></div>
           </li>;
         })}</ul>}
+      </section>
+      <section aria-labelledby="collections-heading" className="library-section">
+        <div className="section-heading"><h2 id="collections-heading">Your collections</h2></div>
+        <form className="local-form" onSubmit={createCollection}>
+          <label htmlFor="new-collection">New collection name</label><div className="local-input-row"><input id="new-collection" value={collectionName} onChange={event => setCollectionName(event.target.value)} maxLength={80} required placeholder="For example, Hope" disabled={locked} /><button className="compare-link" disabled={locked || !collectionName.trim()}>Create collection</button></div>
+        </form>
+        {collections.length === 0 ? <div className="empty-state"><Constellation /><p className="local-help">No collections yet. Gather a few references around what matters to you.</p></div> : <div className="collection-grid">{collections.map(collection => <CollectionEditor key={`${collection.id}:${collection.name}`} collection={collection} disabled={locked} run={run} />)}</div>}
       </section>
     </>}
     <section id="backups" aria-labelledby="backups-heading" className="library-section backup-panel">

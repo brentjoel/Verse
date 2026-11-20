@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { ArrowUpRight } from "lucide-react";
-import { VerseCarousel } from "@/components/verse-carousel";
+import { VerseCarousel, VersePager } from "@/components/verse-carousel";
 import { SiteShell } from "@/components/site-shell";
 import { ContentNotice } from "@/components/content-notice";
 import { getAllEmotions, getEmotionById, getPromptForReference, getSpecificEmotionByIds, type Emotion, type SpecificEmotion } from "@/lib/emotions";
@@ -44,11 +44,10 @@ async function ResultsContent({ emotion, specific }: { emotion: Emotion; specifi
       <Link href={`/emotions/${emotion.id}`} className="back-link">← {emotion.name} feelings</Link>
       <div data-emotion={emotion.id} className="results-wrap">
         <div className="results-heading">
-          <p className="eyebrow"><span className="emotion-dot" /> A moment to reflect and pray</p>
-          <h1>{specific.name}</h1>
-          <p>Take your time with these references. Let a question or a prayer be a place to begin.</p>
+          <h1><span className="emotion-dot" aria-hidden="true" />{specific.name}</h1>
+          <p>Take your time. Let a question or a prayer be a place to begin.</p>
         </div>
-        <section aria-label={`Verse references for ${specific.name.toLowerCase()}`} className="mt-10">
+        <section aria-label={`Verse references for ${specific.name.toLowerCase()}`}>
             <VerseCarousel key={returnTo}>
               {specific.references.map((reference, index) => {
                 const prompt = getPromptForReference(reference);
@@ -58,6 +57,7 @@ async function ResultsContent({ emotion, specific }: { emotion: Emotion; specifi
                     <div className="verse-heading-row"><h2 className="verse-reference">{reference}</h2><span className="translation-tag">{passage.translationId.toUpperCase()}</span></div>
                     <p className="verse-text">{passageTokens(passage.text).map((token, tokenIndex) => /^\s+$/u.test(token) ? token : <span key={tokenIndex} data-dawn-word="">{token}</span>)}</p>
                     <PassageAttribution passage={passage} />
+                    <VersePager />
                     <div className="verse-actions">
                       <SaveVerseButton reference={reference} translationId={passage.translationId} emotionId={emotion.id} specificEmotionId={specific.id} />
                       <Link className="compare-link" data-tooltip="Compare translations" href={`/compare?${new URLSearchParams({ ref: reference, from: returnTo })}`} aria-label={`Compare translations of ${reference}`}><ArrowUpRight size={17} aria-hidden="true" />Compare</Link>

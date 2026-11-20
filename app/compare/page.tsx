@@ -29,7 +29,7 @@ async function Comparison({ searchParams }: { searchParams: Promise<Query> }) {
   const passages = reference && !error ? await Promise.all(ids.map(id => getVersePassage(reference, id))) : [];
   return <div className="compare-wrap">
     <Link className="back-link" href={from ?? "/"}>← {from ? "Back to your verses" : "Choose a feeling"}</Link>
-    <div className="results-heading"><p className="eyebrow">Read side by side</p><h1 className={reference ? "compare-reference" : undefined}>{reference ?? "Compare Scripture"}</h1><p>Take a little time with the words. Notice what speaks to you.</p></div>
+    <div className="results-heading"><h1 className={reference ? "compare-reference" : undefined}>{reference ?? "Compare Scripture"}</h1><p>Take a little time with the words. Notice what speaks to you.</p></div>
     {!reference ? <ContentNotice>This reference is not in our collection yet. Choose a feeling to find a verse to compare.</ContentNotice> : <>
       {query.from !== undefined && !from && <p className="comparison-notice" role="status">We could not find the results page in this link. You can choose a feeling to begin again.</p>}
       <form key={`${reference}:${ids.join(",")}`} action="/compare" method="get" className="compare-form">
@@ -47,11 +47,11 @@ async function Comparison({ searchParams }: { searchParams: Promise<Query> }) {
       </form>
       <ShareCardControls reference={reference} />
       {error ? <ContentNotice>{error} <Link href={`/compare?${new URLSearchParams({ ref: reference, ...(from ? { from } : {}) })}`}>Reset comparison</Link></ContentNotice> : <section className="compare-grid" aria-label={`Translations of ${reference}`}>
-        {ids.map((id, index) => {
-          const translation = translations.find(item => item.id === id)!;
-          const passage = passages[index];
-          return <article key={id} className="verse-card compare-card">
-            <p className="translation-tag">{passage.translationId.toUpperCase()}</p><h2>{translation.fullName}</h2>
+        {passages.filter((passage, index) => passages.findIndex(other => other.translationId === passage.translationId) === index).map(passage => {
+          // A fallback can show the same public-domain text twice; label what is actually shown, once.
+          const translation = translations.find(item => item.id === passage.translationId)!;
+          return <article key={passage.translationId} className="verse-card compare-card">
+            <h2>{translation.fullName}</h2>
             <p className="translation-description">{translation.description}</p>
             <p className="verse-text">{passage.text}</p>
             <PassageAttribution passage={passage} />
