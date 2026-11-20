@@ -196,3 +196,5 @@
 .daily-verse { display: grid; gap: var(--space-3); }
 .daily-verse .verse-actions { margin-left: calc(var(--space-3) * -1); }
 .share-preview { width: 100%; height: auto; border-radius: 16px; border: 1px solid var(--hairline); background: #000; }
+.wheel-options .chip > span { display: none; }
+.wheel-options .chip { text-decoration: none; }

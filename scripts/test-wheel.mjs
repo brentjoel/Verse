@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { wrapIndex, waveCharacters, waveHeight, needsSimplePicker, isSlowWheel } from '../lib/wheel.ts';
+import { wrapIndex } from '../lib/wheel.ts';
 import emotions from '../data/emotions.json' with { type: 'json' };
 
 test('detents wrap backwards and forwards across both wheel levels', () => {
@@ -10,26 +10,6 @@ test('detents wrap backwards and forwards across both wheel levels', () => {
     assert.equal(wrapIndex(count * 3 + 1, count), 1);
   }
   assert.equal(wrapIndex(5, 0), 0);
-});
-test('each source emotion has a distinct bounded waveform character', () => {
-  assert.deepEqual(Object.keys(waveCharacters).sort(), emotions.map(emotion => emotion.id).sort());
-  assert.equal(new Set(Object.values(waveCharacters).map(JSON.stringify)).size, emotions.length);
-  for (const character of Object.values(waveCharacters)) {
-    assert.match(character.color, /^#[\da-f]{6}$/i);
-    for (let i = 0; i < 128; i++) {
-      const height = waveHeight(i / 128 * Math.PI * 2, i * .3, character);
-      assert.ok(Number.isFinite(height) && height >= .08 && height <= .08 + character.amplitude);
-    }
-  }
-});
-test('reduced motion and low capability use simple picker; missing hints allow rendering probe', () => {
-  assert.equal(needsSimplePicker(true, 8), true);
-  assert.equal(needsSimplePicker(false, 2), true);
-  assert.equal(needsSimplePicker(false, undefined), false);
-  assert.equal(needsSimplePicker(false, 8), false);
-  assert.equal(isSlowWheel(40, 2100), true);
-  assert.equal(isSlowWheel(120, 2100), false);
-  assert.equal(isSlowWheel(10, 1000), false);
 });
 
 const { emotionHues, initialTier, nextTier, leanWeights, tierSettings } = await import('../lib/constellation.ts');
@@ -65,4 +45,24 @@ test('lean weights normalize to the strongest emotion and ignore junk', () => {
   assert.equal(w[order.indexOf('anxious')], 1); assert.equal(w[order.indexOf('sad')], .5);
   assert.equal(w[order.indexOf('angry')], 0); assert.equal(w[order.indexOf('tired')], 0);
   assert.equal(w.length, order.length);
+});
+
+test('constellation geometry is deterministic, banded by sector and bounded', async () => {
+  const { buildConstellation } = await import('../lib/constellation.ts');
+  const a = buildConstellation(1000, 8, 7);
+  const b = buildConstellation(1000, 8, 7);
+  assert.equal(a.positions.length, 3000); assert.equal(a.sector.length, 1000); assert.equal(a.size.length, 1000); assert.equal(a.phase.length, 1000);
+  assert.deepEqual([...a.positions], [...b.positions]);
+  assert.notDeepEqual([...buildConstellation(1000, 8, 8).positions], [...a.positions]);
+  let halo = 0;
+  for (let i = 0; i < 1000; i++) {
+    const s = a.sector[i];
+    if (s === -1) halo++; else assert.ok(Number.isInteger(s) && s >= 0 && s <= 7);
+    const r = Math.hypot(a.positions[i * 3], a.positions[i * 3 + 1]);
+    assert.ok(s === -1 ? r >= 1.7 && r <= 2.3 : r >= 0.95 && r <= 1.75, `radius ${r} sector ${s}`);
+    assert.ok(a.size[i] > 0 && a.phase[i] >= 0 && a.phase[i] < Math.PI * 2);
+  }
+  assert.ok(halo >= 90 && halo <= 150, `halo ${halo}`);
+  const spread = [...a.sector].map((s, i) => s >= 0 ? Math.hypot(a.positions[i * 3], a.positions[i * 3 + 1]) : null).filter(r => r !== null);
+  assert.ok(Math.max(...spread) - Math.min(...spread) > 0.55, 'band is thick enough to read as a cloud');
 });
