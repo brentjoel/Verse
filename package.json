@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "test": "node --test scripts/test-*.mjs",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm run lint && npm test && npm run build",
     "test:theme": "node --test scripts/test-theme.mjs",
     "test:dawn": "node --test scripts/test-dawn.mjs",
     "test:wheel": "node --test scripts/test-wheel.mjs",
