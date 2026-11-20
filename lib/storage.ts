@@ -131,10 +131,11 @@ export class PersonalStore {
       if (!clockIsBehind(data.streakState, clock)) recordActivity(data.activityDays, "save", clock);
     });
   }
-  recordMood(emotionId: string, specificEmotionId: string) {
+  // The caller may supply the id so it can offer a one-tap undo for exactly this entry.
+  recordMood(emotionId: string, specificEmotionId: string, id: string = crypto.randomUUID()) {
     return this.change((data, clock) => {
       requireValid(!clockIsBehind(data.streakState, clock), "Your device clock moved back. Your history is safe. New reflections can be recorded when time catches up.");
-      data.moodEntries.push({ id: crypto.randomUUID(), emotionId, specificEmotionId, localDate: clock.localDate, createdAt: clock.instant });
+      data.moodEntries.push({ id, emotionId, specificEmotionId, localDate: clock.localDate, createdAt: clock.instant });
       recordActivity(data.activityDays, "emotion", clock);
     });
   }

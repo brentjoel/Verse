@@ -12,6 +12,7 @@ import { PassageAttribution } from "@/components/passage-attribution";
 import { SaveVerseButton } from "@/components/save-verse-button";
 import { ShareCardControls } from "@/components/share-card-controls";
 import { DawnReveal } from "@/components/dawn-reveal";
+import { UndoToast } from "@/components/undo-toast";
 import { passageTokens } from "@/lib/dawn";
 
 export async function generateMetadata({ params }: { params: Promise<{ emotion: string; sub: string }> }) {
@@ -39,6 +40,7 @@ async function ResultsContent({ emotion, specific }: { emotion: Emotion; specifi
 
   return (
     <>
+      <UndoToast path={returnTo} />
       <Link href={`/emotions/${emotion.id}`} className="back-link">← {emotion.name} feelings</Link>
       <div data-emotion={emotion.id} className="results-wrap">
         <div className="results-heading">

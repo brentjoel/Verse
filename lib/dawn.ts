@@ -34,3 +34,12 @@ export function consumeDawn(path: string): boolean {
   pendingPath = undefined;
   return matches;
 }
+
+// One undo intent for the journal entry a feeling choice just created. Memory only.
+let pendingUndo: { path: string; id: string } | undefined;
+export function prepareUndo(path: string, moodId: string): void { pendingUndo = { path, id: moodId }; }
+export function consumeUndo(path: string): string | undefined {
+  const id = pendingUndo?.path === path ? pendingUndo.id : undefined;
+  pendingUndo = undefined;
+  return id;
+}
