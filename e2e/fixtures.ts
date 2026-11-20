@@ -4,9 +4,9 @@ import { join } from "node:path";
 
 // Every test reads public-domain WEB only, so no NLT text can reach screenshots or the repo.
 export const test = base.extend({
-  context: async ({ context, baseURL }, use) => {
+  context: async ({ context, baseURL }, provide) => {
     await context.addCookies([{ name: "translation", value: "web", url: baseURL! }]);
-    await use(context);
+    await provide(context);
   },
 });
 export { expect };
