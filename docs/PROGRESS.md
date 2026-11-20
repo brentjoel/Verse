@@ -279,3 +279,6 @@ Verification: npx.cmd tsc --noEmit, npm.cmd run lint, npm.cmd run build (65 gene
 ## Production domain documentation (2026-10-17)
 Owner supplied https://verselight.vercel.app. Replaced the README and OPERATIONS placeholders with that stable origin on the existing readme-polish branch. NEXT_PUBLIC_SITE_URL remains the documented build-time setting; application code and environment values are unchanged.
 Verification: strict typecheck, lint, production build/content validation (65 pages), and git diff --check passed. Review the live link and NEXT_PUBLIC_SITE_URL instructions in README and OPERATIONS.
+
+## Production domain correction (2026-11-20)
+https://verselight.vercel.app serves an unrelated app, so following the earlier note would point canonical and share URLs away from Verselight. README and OPERATIONS now name the real origin, https://verselight-app.vercel.app, which matches the live canonical and Open Graph URLs. Docs only; no application code or environment values changed.
