@@ -34,3 +34,48 @@ jobs:
         run: npm test
       - name: Build
         run: npm run build
+
+  e2e:
+    name: End-to-end flows
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      - run: npm run e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-traces
+          path: test-results/
+          retention-days: 7
+
+  visual:
+    name: Visual regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      # Missing baselines are created (and uploaded below) instead of failing; existing ones are compared.
+      - run: npm run e2e:visual -- --update-snapshots=missing
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: visual-baselines-and-diffs
+          path: |
+            e2e/__screenshots__/
+            test-results/
+          retention-days: 7

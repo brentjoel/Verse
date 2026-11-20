@@ -115,8 +115,8 @@
 .dawn-controls { position: absolute; }
 .dawn-skip:not(:focus-visible) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .dawn-burst { position: relative; height: 56px; margin-bottom: var(--space-1); pointer-events: none; }
-.dawn-burst i { position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); width: var(--s, 3px); height: var(--s, 3px); border-radius: 50%; background: var(--emotion); box-shadow: 0 0 8px var(--emotion); opacity: .7; }
-.dawn-reveal::before { content: ""; position: absolute; inset: -40px -10vw auto; height: 360px; z-index: -1; pointer-events: none; background: radial-gradient(ellipse 50% 45% at 50% 18%, color-mix(in srgb, var(--emotion) 10%, transparent), transparent 70%); }
+.dawn-burst i { position: absolute; left: calc(2% + var(--x) * 0.94%); top: calc(var(--y) * 1%); width: var(--s, 3px); height: var(--s, 3px); border-radius: 50%; background: var(--emotion); box-shadow: 0 0 8px var(--emotion); opacity: .7; }
+.dawn-reveal::before { content: ""; position: absolute; inset: -40px 0 auto; height: 360px; z-index: -1; pointer-events: none; background: radial-gradient(ellipse 50% 45% at 50% 18%, color-mix(in srgb, var(--emotion) 10%, transparent), transparent 70%); }
 
 /* ---------- Compare ---------- */
 .compare-wrap .results-heading { margin: var(--space-4) 0 var(--space-5); }

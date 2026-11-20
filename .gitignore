@@ -43,3 +43,8 @@ next-env.d.ts
 
 # agent worktrees
 .worktrees/
+
+# playwright
+test-results/
+playwright-report/
+blob-report/

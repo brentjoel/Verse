@@ -1,14 +1,18 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import { consumeUndo } from "@/lib/dawn";
 import { getPersonalStore, usePersonalStorage } from "@/lib/browser-storage";
+
+const noop = () => () => {};
 
 type State = { kind: "noted"; id: string } | { kind: "removed" } | { kind: "error"; message: string } | null;
 
 // "Noted in your journal · Undo" after a feeling choice. Visible 6 seconds, paused while hovered or focused.
 export function UndoToast({ path }: { path: string }) {
   const storage = usePersonalStorage();
+  const mounted = useSyncExternalStore(noop, () => true, () => false);
   const [state, setState] = useState<State>(null);
   const [busy, setBusy] = useState(false);
   const [paused, setPaused] = useState(false);
@@ -35,12 +39,14 @@ export function UndoToast({ path }: { path: string }) {
   }
 
   const conflict = storage.mode === "conflict";
-  return <div className="toast-region" role="status" aria-live="polite" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}>
+  // Portaled to body: the animated main column would otherwise trap the fixed toast under the tab bar.
+  if (!mounted) return null;
+  return createPortal(<div className="toast-region" role="status" aria-live="polite" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}>
     {state?.kind === "noted" && <div className="toast">
       <span>{conflict ? "Your journal is open in another tab" : "Noted in your journal"}</span>
       <button type="button" className="compare-link" disabled={busy || conflict} onClick={() => void undo(state.id)}>Undo</button>
     </div>}
     {state?.kind === "removed" && <div className="toast"><span>Removed from your journal</span></div>}
     {state?.kind === "error" && <div className="toast"><span>{state.message}</span></div>}
-  </div>;
+  </div>, document.body);
 }
