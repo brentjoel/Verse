@@ -1,6 +1,6 @@
 # Progress
 
-Steps 1 to 9, motion polish and the security audit are DONE, merged on main and verified on the live site per owner confirmation on 2026-10-17. Steps 8 and 9 are checked below. Steps 10 and 11 are optional and not started; previously delivered presentation details do not start either optional step. Historical verification and handoff notes below record the state at the time and are superseded by this status. This documentation-only branch is `readme-polish`; no main merge or production deployment is authorized.
+Steps 1 to 9, motion polish and the security audit are DONE, merged on main and verified on the live site per owner confirmation on 2026-10-17. Steps 8 and 9 are checked below. Steps 10 and 11 are optional and not started; previously delivered presentation details do not start either optional step. Historical verification and handoff notes below record the state at the time and are superseded by this status.
 
 ## Checklist
 
@@ -286,5 +286,5 @@ https://verselight.vercel.app serves an unrelated app, so following the earlier 
 ## Automated checks (2026-11-20)
 Added `npm test` (all node:test suites), `npm run typecheck` and `npm run check` (typecheck, lint, tests, build). A GitHub Actions workflow runs the same checks on every pull request and on pushes to main, on Node 24 with no secrets. Locally: 57 tests pass; typecheck, lint and build (65 pages) pass.
 
-## Dependency and CI health (2026-11-20)
-Patched Next.js and eslint-config-next 16.4.2 to 16.4.6, closing seven moderate Next.js advisories (production npm audit now 0). Applied in-range minor updates, moved @types/node to 24 and pinned Node 24 with engines and .nvmrc. CI reads .nvmrc and fails on moderate production advisories; Dependabot opens grouped weekly npm and monthly Actions PRs, majors excluded. Verified: npm run check (57 tests, 65 pages) and a production-server smoke of Home, a feeling list and a results page.
+## Agent workflow refresh (2026-11-20)
+Reorganized AGENTS.md: current status, task-based reading table, numbered workflow using `npm run check` and PRs, short PROGRESS entries, and a rule that this file outranks skill workflows. Privacy, licensing and code rules are unchanged. Dropped a stale branch note from the PROGRESS status. Docs only.
