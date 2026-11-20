@@ -647,7 +647,7 @@ q { quotes: "“" "”" "‘" "’"; }
 /* UI refinement 2026-11: verse first on phones. */
 .translation-selector select { field-sizing: content; }
 .results-heading { margin-bottom: 8px; }
-.results-heading h1 { display: inline-flex; align-items: center; gap: 12px; margin-top: 0; }
+.results-wrap .results-heading h1 { display: inline-flex; align-items: center; gap: 12px; margin-top: 0; }
 .results-heading h1 .emotion-dot { width: 6px; height: 6px; flex-shrink: 0; }
 .results-heading > p:last-child { margin-top: 4px; }
 .dawn-controls { margin: 0; }
@@ -740,3 +740,14 @@ q { quotes: "“" "”" "‘" "’"; }
 .journal-calendar td:nth-child(-n+3) [data-tooltip]::after { left: 0; right: auto; transform: none; }
 .journal-calendar td:nth-child(n+5) [data-tooltip]::after { left: auto; right: 0; transform: none; }
 @media (min-width: 360px) { .calendar-scroll { overflow-x: visible; } }
+
+/* UI refinement 2026-11: polish. */
+.specific-grid { gap: 0; margin-top: 16px; }
+.specific-grid > li + li { border-top: 1px solid var(--border); }
+.detail-wrap .specific-link { min-height: 64px; padding: 16px 4px; border: 0; border-radius: 0; background: transparent; box-shadow: none; font-family: var(--font-lora), Georgia, serif; font-size: 20px; }
+.detail-wrap .specific-link > span { color: var(--primary); }
+@media (min-width: 640px) { .specific-grid { grid-template-columns: 1fr; } }
+.daily-verse .verse-actions { justify-content: flex-start; margin-top: 16px; }
+.daily-verse .share-controls { margin-top: 0; }
+.wheel-ring-labels span { padding: 2px 8px; border-radius: 99px; background: color-mix(in srgb, var(--scene-sky) 72%, transparent); }
+.compare-card h2 { margin-top: 0; }

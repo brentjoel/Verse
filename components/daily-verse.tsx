@@ -30,7 +30,6 @@ export function DailyVerse({ verses }: { verses: Readonly<Record<string, string>
     <div className="verse-heading-row"><h3 className="verse-reference">{reference}</h3><span className="translation-tag">WEB</span></div>
     <p className="verse-text">{verses[reference]}</p>
     <p className="local-help">World English Bible, public domain. A new passage each local day. <Link href={`/compare?${new URLSearchParams({ ref: reference })}`} className="quiet-link" prefetch={false}>Read in other translations</Link></p>
-    <SaveVerseButton reference={reference} translationId="web" />
-    <ShareCardControls reference={reference} />
+    <div className="verse-actions"><SaveVerseButton reference={reference} translationId="web" /><ShareCardControls reference={reference} /></div>
   </div></QuietDialog>;
 }

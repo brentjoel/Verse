@@ -28,7 +28,6 @@ export default async function EmotionPage({ params }: { params: Promise<{ emotio
       <div data-emotion={emotion.id} className="detail-wrap">
         <div className="detail-heading">
           <span aria-hidden="true" className="emotion-icon"><EmotionIcon emotionId={emotion.id} /></span>
-          <p className="eyebrow">A little closer to how you feel</p>
           <h1>{emotion.name}</h1>
           <p>{emotion.description}.</p>
         </div>
