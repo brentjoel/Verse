@@ -58,8 +58,8 @@ These follow [wheel-ui-plan.md](wheel-ui-plan.md). Each needs its own branch, Ve
 
 Newest last. Keep each entry to 5 lines or fewer.
 
-## Dependency and CI health (2026-11-20)
+### Dependency and CI health (2026-11-20)
 Patched Next.js and eslint-config-next 16.4.2 to 16.4.6, closing seven moderate Next.js advisories (production npm audit now 0). Applied in-range minor updates, moved @types/node to 24 and pinned Node 24 with engines and .nvmrc. CI reads .nvmrc and fails on moderate production advisories; Dependabot opens grouped weekly npm and monthly Actions PRs, majors excluded. Verified: npm run check (57 tests, 65 pages) and a production-server smoke of Home, a feeling list and a results page.
 
-## Agent workflow refresh (2026-11-20)
+### Agent workflow refresh (2026-11-20)
 Reorganized AGENTS.md with current status, a task-based reading table, a workflow that routes work by size through superpowers skills and an Impeccable command map for UI. Specs and plans live in docs/superpowers/. Ignored .worktrees/; DESIGN.md token path is now a working link. Slimmed this file from 290 lines and archived its history verbatim; removed stale DONE markers from ARCHITECTURE and SPEC. Privacy, licensing and code rules are unchanged.
