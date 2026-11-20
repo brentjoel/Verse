@@ -11,7 +11,7 @@ Always read `docs/SPEC.md` and `docs/PROGRESS.md` (short: status, checklist, act
 | Task touches | Read |
 | --- | --- |
 | Any UI or copy | `docs/DESIGN.md` (design authority; follow its checklist) |
-| Wheel picker or dawn reveal | `docs/wheel-ui-plan.md` |
+| Wheel, particles or dawn reveal | `docs/DESIGN.md` and `components/constellation-scene.tsx` (`docs/wheel-ui-plan.md` is historical) |
 | Structure, routes, data flow, storage | `docs/ARCHITECTURE.md` |
 | Translations, verse display, caching, sharing | `docs/TRANSLATION-LICENSES.md` |
 | Headers, API routes, secrets, dependencies | `docs/SECURITY.md` |
@@ -34,7 +34,7 @@ Always:
 2. If unclear, ask one short question. Otherwise choose the simplest option and log it in the PROGRESS decisions log.
 3. Touch only files the task needs. No new dependency without a one-line reason in the PR.
 4. Tests are `node:test` suites in `scripts/test-*.mjs` (`node --test scripts/test-<name>.mjs` for one). Keep pure logic in `lib/` so it stays testable.
-5. `superpowers:verification-before-completion`: run `npm run check` (typecheck, lint, tests, build) and quote the result before claiming done. In PowerShell use `npm.cmd` and `npx.cmd` if script launchers are blocked.
+5. `superpowers:verification-before-completion`: run `npm run check` (typecheck, lint, tests, build) and quote the result before claiming done. For UI changes also run `npm run e2e` (Playwright flows; CI also runs visual snapshots and Lighthouse budgets). In PowerShell use `npm.cmd` and `npx.cmd` if script launchers are blocked.
 6. Add a dated `docs/PROGRESS.md` entry of at most 5 lines: what changed, why, how it was verified. Do not rewrite past entries.
 7. `superpowers:finishing-a-development-branch`: always choose push and open a PR to `main`; never merge locally. CI runs the same checks and Vercel builds a preview. The owner approves every merge. Never deploy production independently. Handle PR feedback with `superpowers:receiving-code-review`.
 8. Reply in under 10 lines: what changed, check results, how to try it. Then stop.
@@ -58,7 +58,7 @@ Specs go in `docs/superpowers/specs/` and plans in `docs/superpowers/plans/`, co
 ## Privacy
 - Never send user data to any server. The translation preference cookie is the sole documented preference exception; never put personal records in cookies, URLs, requests, or logs.
 - Never add analytics or tracking without asking.
-- Out of scope: notifications or PWA reminders, memorize mode, AI free-text, and audio.
+- Out of scope: notifications or PWA reminders, memorize mode and audio. AI belongs only to Project 3 (on-device feeling finder, owner decision 2026-11-20); it may suggest feelings and curated verses but never generate Scripture, and NLT text is never used for training.
 
 ## Translation licensing
 - Strictly noncommercial: no ads, payments, subscriptions, donations, or paid features. Do not introduce any of these without re-checking translation licenses.

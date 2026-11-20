@@ -1,6 +1,6 @@
 # Progress
 
-Steps 1 to 9, motion polish, the security audit and automated checks are done and live. Steps 10 and 11 are optional and start only on an owner request. Detailed records for all finished work are in [archive/progress-history.md](archive/progress-history.md).
+Steps 1 to 9, motion polish, the security audit and automated checks are done and live. The Constellation redesign (Project 1) is on `feat/constellation-redesign` awaiting owner review. Project 2 (journal and experience, absorbing Steps 10 and 11) and Project 3 (on-device AI feeling finder) follow, each with its own spec, plan and PR. Detailed records for all finished work are in [archive/progress-history.md](archive/progress-history.md).
 
 ## Checklist
 
@@ -13,10 +13,11 @@ Steps 1 to 9, motion polish, the security audit and automated checks are done an
 - [x] 7. Launch checks: privacy note and About page with translation credits, rate limit and quota handling for the NLT route, error monitoring basics, README
 - [x] 8. Wheel picker
 - [x] 9. Dawn reveal
-- [ ] 10. Night sky journal (optional, not started)
-- [ ] 11. Polish and delight (optional, not started)
+- [x] Project 1: Constellation redesign ([spec](superpowers/specs/2026-11-20-constellation-redesign-design.md), [plan](superpowers/plans/2026-11-20-constellation-redesign.md))
+- [ ] Project 2: journal and experience (absorbs Steps 10 and 11; not started)
+- [ ] Project 3: on-device AI feeling finder (not started)
 
-## Optional steps
+## Historical optional steps (now part of Project 2)
 
 These follow [wheel-ui-plan.md](wheel-ui-plan.md). Each needs its own branch, Vercel preview and owner approval before merge.
 
@@ -47,12 +48,14 @@ These follow [wheel-ui-plan.md](wheel-ui-plan.md). Each needs its own branch, Ve
 - Monitoring logs only fixed operational warning codes, with no payloads and no remote reporting.
 - Wheel intensity is not persisted. Personal data stays on storage schema 1; any stored-shape change needs a schema bump, migration, validation and backup tests.
 - On this Windows machine use `npm.cmd` and `npx.cmd` when PowerShell blocks script launchers.
+- Constellation is the visual world (2026-11-20): gold and the old mark are retired; violet is the only action color; emotion hues live only in particles. Apple fonts come from the system stack and are never self-hosted.
+- AI is allowed only as Project 3: on-device, suggests feelings and curated verses, never writes Scripture, never trains on NLT text.
+- Tests, screenshots, README media and Lighthouse runs use WEB (`translation=web`), so no NLT text reaches images or the repo.
 
 ## Open items
 
-- Real-device 60fps and measured mobile Lighthouse 90+ have not been recorded; earlier checks were source and automated only.
-- README screenshots in `docs/screenshots/` are still placeholders.
-- Results page: choosing a feeling silently records a journal entry; add a visible "Noted in your journal" acknowledgement (critique P2, `/impeccable harden`).
+- Real-device 60fps on a mid-range Android and an iPhone has not been measured (needs the owner's devices). Lighthouse mobile emulation now scores 93 to 100 on Home, Results, Journal and My Verses and is enforced in CI.
+- Without JavaScript, Results and Compare show only their loading line: their cookie-dependent passages stream inside Suspense. Home and feeling pages work without JavaScript. Fixing this needs a data-flow change (pre-existing, not caused by the redesign).
 
 ## Log
 
@@ -67,3 +70,6 @@ Reorganized AGENTS.md with current status, a task-based reading table, a workflo
 ### UI refinement (2026-11-20)
 Ran /impeccable init (new PRODUCT.md) and a dual-agent critique (26/40; snapshot in .impeccable/critique). Owner chose all three P1s plus polish: verse-first results on phones, Home dial above the fold with one-tap chips and the morning star in the dial corner, Journal and My Verses as a quiet notebook (new lib/dates.ts with tests), then polish (no eyebrows, compact feeling list, Compare labels the shown translation once, Save turns into a My Verses link, daily dialog actions in a row, legible wheel labels). The P2 silent journal write acknowledgement is still open. Verified: npm run check plus manual checks at 375px and desktop in both themes.
 
+### Constellation redesign (2026-11-20)
+Project 1 on `feat/constellation-redesign`: new tokens and stylesheet, settings sheet, particle constellation wheel with quality tiers, split Home with Wheel/List, ambient sky, undo toast, particle dawn and ending block on Results, live Compare, redesigned share cards and social images, Playwright flows plus visual and Lighthouse CI jobs, and refreshed README. Fixed along the way: toast under the tab bar, first-load LCP (3.0s to 0.9s) and Journal CLS (0.23 to 0).
+Verified: `npm run check` (66 unit tests), `npm run e2e` (22 flows), Lighthouse mobile 93 to 100 locally. Not verified: real devices and screen readers.

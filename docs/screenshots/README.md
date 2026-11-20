@@ -1,11 +1,10 @@
-# Screenshot placeholders
+# Screenshots
 
-Add these PNG files directly to this directory:
+Captured by `e2e/capture.spec.ts` against a production build, with the WEB translation only:
 
-- `wheel-dark.png`: emotion wheel in dark theme.
-- `dawn.png`: dawn verse reveal.
-- `journal.png`: mood journal using disposable records.
-- `light.png`: light theme.
-- `mobile.png`: mobile layout.
+```sh
+npm run build
+npx playwright test e2e/capture.spec.ts --project=desktop --grep @capture
+```
 
-Use public WEB passages. Exclude NLT text and personal records. The root README links to these filenames; images have not been supplied yet.
+The same run writes the demo video to `docs/media/demo.webm`.

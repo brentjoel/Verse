@@ -1,75 +1,73 @@
-# Verselight design
+# Verselight design: Constellation
 
-Motion polish on merged Step 9, 2026-10-15. This replaces the earlier lavender/card-heavy rules. Calm, minimal, premium: a quiet sky with a single warm light. One primary task per screen. Existing data, routes, storage, providers and features remain intact.
+Redesign of 2026-11-20 (spec: [Constellation redesign](superpowers/specs/2026-11-20-constellation-redesign-design.md)). It replaces the night-and-gold world. Light on a void: pure black, huge light type, one violet action color, an amber spark, and eight emotion colors that live only in particles. One primary task per screen. Data, routes, storage, providers and features are unchanged.
 
 ## Tokens
 
-| Role | Night (default) | Morning (`data-theme="light"`) |
-| --- | --- | --- |
-| Background | `#0A0C10` | `#FAF6EE` |
-| Soft surface | `#11151C` with translucent overlays | `#FFFCF6` with translucent overlays |
-| Text | `#F2EFE8` | `#28251F` |
-| Supporting text | `#B6B3AC` | `#696052` |
-| Gold / interactive ink | `#E0B96A` | `#79551F` |
-| Decorative gold light | `#E0B96A` | `#E0B96A` |
-| Text on accent | `#17140E` | `#FFFCF6` |
-| Secondary surface | `#1B2029` | `#F0E9DC` |
-| Hairline border | white 9% | ink 12% |
-| Active border | gold 35% | dark gold 35% |
+All tokens live in [app/styles/tokens.css](../app/styles/tokens.css). Night is the default; Daylight is `[data-theme="light"]` and declares `color-scheme: only light`.
 
-All page and scene tokens live in the two root theme blocks in [app/globals.css](../app/globals.css). Transparent WebGL reads these same tokens and updates its existing material on theme changes. Dawn animation never retains captured ink after a switch. Saved preferences win, otherwise the system theme applies and live system changes update immediately. Light mode declares `color-scheme: only light` so mobile browser automatic darkening cannot recolor the cream palette into brown. Do not add theme persistence or alter preference logic.
+| Token | Night | Daylight | Role |
+| --- | --- | --- | --- |
+| `--canvas` | `#000000` | `#f6f4f1` | The only surface |
+| `--ink` | `#ffffff` | `#0b0b0f` | Headlines, Scripture, primary text |
+| `--ink-2` | `#bdbdbd` | `#3d3d45` | Body copy |
+| `--ink-3` | `#9a9a9a` | `#5c5c66` | Labels, inactive nav, captions |
+| `--action` | `#8052ff` | `#6a3cf0` | Filled pill, current dot, active nav dot, focus ring |
+| `--spark` | `#ffb829` | `#9a5b00` | Links, reference lines, small highlights |
+| `--hairline` | white 10% | ink 12% | The only divider |
+| `--veil` | white 6% | ink 5% | Hover, pressed and field fills |
 
-Emotion hues stay in the existing wheel configuration and CSS `data-emotion` tokens. Use them only on the wheel and as a faint glow behind verses. Simple picker, Journal, controls and surfaces use neutral/gold styling.
+Emotion hues (`--emotion` under `[data-emotion]`, and `emotionHues` in `lib/constellation.ts`): anxious `#2dd4bf`/`#0f8f80`, sad `#4f8cff`/`#2457c5`, angry `#ff5a5f`/`#c62f35`, tired `#a78bfa`/`#6d4fd6`, guilty `#22d3ee`/`#0e7f93`, grateful `#facc15`/`#9a7a00`, hopeful `#ffb829`/`#a35f00`, doubtful `#f472b6`/`#b8357a`. They color particles, dots and glows only, never body text. Contrast for every token pair is enforced in `scripts/test-theme.mjs`.
 
-## Typography and space
+No cards, no shadows, no gradients on components. Gradients appear only in the logo and particles.
 
-Lora/Georgia serif for major headings and Scripture; Geist/Arial sans-serif for UI. Verse text is 26px mobile, 34px desktop, line-height 1.65. Comparison verses may use 24px for narrow columns. UI text is at least 14px. Attribution, metadata and fine print are at least 12px with AA contrast. Preserve exact Scripture wording and whitespace. Required translation name and copyright attribution always sit below each quotation.
+## Typography
 
-Use an 8px spacing rhythm, generous open space, maximum 1040px shell and 760px reading column. Surfaces use 16px radii, low-opacity hairlines and soft light; remove nested cards, heavy outlines and decorative boxes. Large reading panels have no enclosing border or shadow. Form fields retain visible boundaries. Minimum interactive targets are 44px.
+- UI and display: `-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text"`, then Geist (`next/font`). Apple devices render SF Pro; others render Geist. Apple fonts are never self-hosted.
+- Scripture: `"New York", ui-serif`, then Lora, weight 400. 26px phone, 32px desktop, 24px in Compare columns, multiplied by the Text size setting (1, 1.15, 1.3).
+- Scale (phone / desktop): display 52 / 104, heading-lg 40 / 72, heading 32 / 48, heading-sm 26 / 32, body 17 / 18 at weight 300, caption 13. Headlines weight 400 with -0.04em tracking at 40px and up. Hierarchy comes from scale, never weight.
+- No eyebrow or kicker labels above headings. Dates and counts use tabular numbers.
+
+## Space and shape
+
+6px base: 6, 12, 18, 24, 30, 36, 60, 96, 120. Pills and chips are fully round; panels, sheets and dialogs 24px; fields 14px. Shell 1280px, reading column 720px. Targets at least 44px.
+
+## Components
+
+- **Pill:** the one filled violet button per view (Back to the wheel, Share card, Try again, empty-state actions).
+- **Ghost (`.compare-link`):** text button with a veil on hover; Save, Compare, Share, Try another feeling.
+- **Link (`.quiet-link`):** amber, underlined.
+- **Chip:** outlined pill; pressed is an inverted fill. Used for wheel options, intensity, translation and settings choices.
+- **Settings sheet:** gear in the header. Translation, Theme (Night, Daylight, System) and Text size. Bottom sheet on phones, side panel on desktop.
+- **Toast:** inverted pill at the bottom, portaled to `body`. "Noted in your journal · Undo".
+- **Navigation:** phone bottom tab bar with a blurred canvas; desktop links float in the header. Active item in `--ink` with a 4px violet dot.
+- **Logo:** four-point star inside an open ring, violet to teal, with a small amber spark.
 
 ## Screens
 
-- Home: a heading and one short line, then the centered unboxed wheel; on a 375px phone the dial center sits in the first viewport. The morning star lives in the dial's top corner (icon only on phones) and opens the daily WEB verse dialog. Chips under the dial choose in one tap: emotion chips open the inner wheel, feeling chips go straight to the verses. "All feelings" sits above the inner wheel; "Use simple picker" sits below the chips and is the no-WebGL and reduced-motion fallback. Keep wheel keyboard support, the screen-reader list and live status, detents, intensity and recovery behavior.
-- Results: verse first. A back link and the feeling name (no eyebrow), then the dawn horizon and the reference with its translation tag on one centered line. On a 375px phone the reference, verse and attribution fit the first viewport. One verse at a time with swipe, keyboard arrows, and arrows plus dots directly under the attribution; "Verse 2 of 4" is announced politely but not shown. Tapping the glowing passage finishes the dawn; a focus-visible Skip button remains for keyboards. Save becomes "Saved" and then opens My Verses, so the action row never reflows. Keep View all verses and full server-rendered text without JavaScript. Reflect stays a native disclosure.
-- Share: native modal dialog with existing WEB download/open options and an explicit public-domain text only note. Never render NLT into imagery or alter the share route.
-- Navigation: mobile fixed bottom tabs Feel, Verses, Journal, minimum 44px targets, active gold underline plus `aria-current`. Desktop uses simple top navigation. Footer links retain About/privacy and licenses.
-- Compare, My Verses, Journal, About, Licenses, 404 and simple picker share the same type, spacing, surfaces and both palettes. Preserve loading, empty, error, backup, calendar and form behavior. No eyebrow or kicker labels above headings anywhere. Journal reads as a notebook: reflections first with readable dates and notes behind "Add a note", then the month calendar (borderless cells, warmer means more reflections, dashed ring for a grace day), then a gentle "Your rhythm" summary with the rules in a disclosure. My Verses lists saved verses before collections, each with its feeling and saved date. Feeling lists are compact serif rows with hairline separators.
-
-## Interaction
-
-All hover rules must be inside `@media (hover: hover) and (pointer: fine)` and mirrored with `:focus-visible` (or `:focus-within` for grouped surfaces). Transitions are 200ms ease-out (range 180 to 240ms). Never change layout on hover. Cards lift 2px with a brighter hairline and soft gold glow; buttons softly fill/glow, icons lift 1px; pressed buttons sink 1px. Links animate an underline; navigation gold underline slides in. Icon controls have hover/focus tooltips as well as accessible names or visible labels.
-
-Wheel uses grab/grabbing cursors, gently brightens bars near the pointer and gives the focused/hovered label a soft glow. Center control pulses with light, without movement. Morning star slowly twinkles and brightens on hover/focus. Verse arrows and progress dots scale slightly. Page arrival fades with an 8px rise over 220ms. Reduced motion removes transforms and pulses, retains color/opacity feedback, uses the original simple picker, and displays Scripture immediately.
-
-## Accessibility and verification checklist
-
-- [ ] Both themes update page, wheel and dawn instantly through toggle and system preference.
-- [ ] WCAG AA text and controls across theme surfaces and every dawn text stage; decorative light never overlays text.
-- [ ] Mobile/desktop, no overflow, comfortable targets, visible focus, labels and semantic headings.
-- [ ] Keyboard wheel, carousel arrows, dialogs with Escape/focus return, Reflect disclosure and list alternative.
-- [ ] Full selectable Scripture, exact wording, actual translation, visible attribution and labeled fallback.
-- [ ] Loading, empty and error states with useful next actions; local features preserved.
-- [ ] Hover gated for fine pointers, matching focus feedback, reduced motion without movement or pulses.
-- [ ] No data/provider/storage/route changes, new dependencies, analytics or production deployment.
-
-Warm, plain copy. No em dashes in app-authored text. Rendered/device/screen-reader and Lighthouse review must be reported honestly separately from source and automated checks.
+- **Home:** split hero on desktop (huge left-aligned headline, light line, Morning star; constellation wheel on the right), stacked on phones. The wheel is thousands of particles in eight emotion clouds; drag, scroll, arrows or a chip turn it, the center chooses, and the inner ring blooms in that emotion's hue with intensity chips. A Wheel / List switch; List is also the server, no-JavaScript, no-WebGL, reduced-motion and slow-device picker.
+- **Feeling list:** emotion name beside a still star cluster, then four large rows with hairlines.
+- **Results:** verse first. Back link, feeling name, a small particle burst in the emotion hue, the amber reference line, the verse, attribution directly under it, pager, Save / Compare / Share, Reflect, and an ending block (Try another feeling, Back to the wheel). Tapping the glowing passage finishes the dawn; Skip remains for keyboards.
+- **Compare:** reference in the Scripture face, live translation chips (a GET form remains for no-JavaScript), stacked or columned passages with attribution.
+- **My Verses, Journal:** notebooks, not settings. Saved verses with feeling and date; reflections first with readable dates and notes behind Add a note; a borderless calendar whose days glow in the latest reflection's emotion; a gentle "Your rhythm" summary with the rules in a disclosure.
+- **About, Licenses:** reading pages with display headings and a 720px measure.
+- **404, error, empty states:** a still constellation, one heading, one sentence, one pill.
+- **Share:** a cookie-less preview of the WEB card, then Share card (native share sheet with the PNG when supported), Download and Open. Cards and social images use the void canvas, an emotion-hued constellation ring, and public-domain text only.
+- **Ambient sky:** faint drifting stars behind secondary pages, masked away from the reading column, paused when hidden, absent for reduced motion.
 
 ## Motion
 
-Shared CSS tokens: `--motion-fast: 150ms`, `--motion-base: 220ms`, `--motion-slow: 400ms`, `--motion-scene: 700ms`; `--ease-enter: ease-out`, `--ease-move: ease-in-out`, `--ease-press: cubic-bezier(.2,.8,.25,1.15)`. Theme colors cross-fade in 300ms. Animate transform and opacity, with cheap color, border and shadow feedback. No animated layout, filters or background geometry. Use CSS and the existing Web Animations API, without new dependencies. Full dawn cadence is separate and never shortened.
+Tokens: fast 150ms, base 220ms, slow 420ms, scene 900ms; ease-out `cubic-bezier(.16, 1, .3, 1)`, moves `cubic-bezier(.65, 0, .35, 1)`. One authored moment per screen: the wheel on Home, the dawn on Results. Route changes animate through View Transitions; the first page load does not fade, so the headline counts for LCP. Reduced motion shows the List view, removes drift and parallax, and shows Scripture instantly.
 
-Fine-pointer hover lives inside `(hover: hover) and (pointer: fine)` and is mirrored on focus-visible/focus-within. Wheel uses grab/grabbing, pointer/focus bar highlights, soft label glow, a breathing light and an active-dot ring. Surfaces lift 2px with gold borders/shadows. Buttons softly fill/glow and lift icons 1px; presses sink 1px and scale .98. Links draw a left-origin underline; nav underlines move between active tabs. Arrows/dots scale; the active dot stretches by transform into a pill. Calendar cells glow/scale with the same date/activity description on hover, focus and touch selection. Tooltips appear after a short delay, with visible labels or accessible names on touch. Focus uses a smoothly appearing gold outline.
+## Accessibility and verification checklist
 
-Route arrivals fade and rise 8px. Use native View Transitions as progressive enhancement with CSS arrival fallback. Verse travel follows next/previous direction with outgoing drift and incoming opposite drift, then the full dawn emphasis. Rapid input cancels previous decorative effects immediately. Wheel orbit contracts/expands by transform. Native Reflect disclosure keeps its semantics and animates its content by opacity/transform with a rotating chevron, avoiding animated height/layout. Dialogs fade/scale and their backdrops fade with static soft blur. Theme cross-fades include the scene. Saved bookmark fills/pops with a tiny gold sparkle and polite transient Saved feedback; existing removal remains in My Verses. Compare columns and library/journal lists arrive with a bounded short stagger; deleted items fade/drift before removal. Loading uses subtle skeleton shimmer; empty states fade in. Home greeting, wheel and morning star enter with a short stagger; the star slowly twinkles.
+- [ ] Night and Daylight pass the token contrast tests; emotion hues reach 3:1 as dots.
+- [ ] Wheel: keyboard arrows and Enter, live "N of 8" status, chip equivalents, List view always reachable.
+- [ ] Results: reference, first verse lines and pager fit 375 by 812 at Default text size; attribution under every quotation.
+- [ ] No horizontal scroll at 320px with Larger text (enforced by `npm run e2e`).
+- [ ] Dialogs and the settings sheet trap focus, close with Escape and return focus.
+- [ ] Loading, empty, error, conflict and no-WebGL states designed and reachable.
+- [ ] Lighthouse 90+ in all four categories on Home and Results (enforced in CI).
+- [ ] No new runtime dependencies, analytics, NLT text in images, or production deploy without approval.
 
-Reduced motion removes translation, scaling, parallax, pulses and shimmer, keeps short opacity/color feedback and instant Scripture. Never block interaction or text, announce words, retain stale effects/timers, or add hover-only information. Keep AA contrast, 44px targets, keyboard focus, native dialog/disclosure behavior and screen-reader announcements. Mid-range phone 60fps and mobile Lighthouse >=90 in all four categories require measured review.
-
-## Finishing details
-
-Use a low-cost layered night sky in dark mode: soft vignette, near-invisible CSS grain and only five opacity-twinkling stars, all behind content. Light mode uses a warm morning haze with dark readable ink. Emotion tints stay faint behind the wheel and verse; keep personal content out of artwork. Pause decorative motion when hidden and remove it for reduced motion. No heavy raster backgrounds.
-
-Headings and verse text use balanced wrapping, optical serif sizing and comfortable reading measures. Preserve source Scripture punctuation exactly; use curly quotes only in authored UI copy. Dates/counts use tabular numbers. Each verse reference has a small decorative star-and-line divider. The brand is a simple inline SVG star within a double wheel; use this geometry for favicon sizes, Apple touch and manifest icons. UI icons use Lucide at a consistent 1.5 stroke with accessible names. Decorative artwork is hidden from assistive technology.
-
-Open Graph and Twitter cards use Next.js ImageResponse: Verselight, a short plain tagline and a warm wheel glow, never Scripture. Metadata uses the existing validated NEXT_PUBLIC_SITE_URL through metadataBase; give every page a title and description. Share cards retain exact WEB text, translation/source credit, current public input validation and public WEB-only caching described in SECURITY.md, restyled with night/gold, serif type and the same wheel mark. Do not expand supported translations or request behavior.
-
-Empty states and 404 use a small SVG constellation, warm copy and an existing clear route home. Gold selection, subtle scrollbars, 4/8-based spacing and radius tokens, dual theme-color metadata and consistent visible gold focus finish the shell. Check both themes at 360, 768, 1024, 1440 and 1920px, including long comparison text, populated local lists, native dialogs, selected calendar cells and the simple picker. Keep AA text contrast and mobile Lighthouse Performance, Accessibility, Best Practices and SEO >=90; report measured results and any unavailable checks honestly.
+Warm, plain copy. No em dashes in app text.
