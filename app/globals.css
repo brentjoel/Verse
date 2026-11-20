@@ -677,3 +677,29 @@ q { quotes: "“" "”" "‘" "’"; }
 :is(.reading-verse, .daily-verse) .translation-tag { color: var(--muted-foreground); letter-spacing: 0.12em; }
 .dawn-reveal::before { inset: 0 -16px; background: radial-gradient(ellipse 70% 60% at 50% 30%, rgb(var(--emotion-rgb) / 9%), transparent 70%); }
 .results-heading > p:last-child, .passage-credit, .local-help, .content-notice p { text-wrap: pretty; }
+
+/* UI refinement 2026-11: Home dial above the fold, morning star in the dial's sky. */
+.wheel-stage { position: relative; width: min(100%, 560px, 56svh); margin-inline: auto; }
+.wheel-stage .wheel-dial { width: 100%; }
+.wheel-corner { position: absolute; top: 0; right: 0; z-index: 2; }
+.wheel-corner .morning-star { padding: 8px 12px; }
+.wheel-help { margin-top: 0; }
+.wheel-back { display: flex; margin: 0 auto 4px; font-size: 14px; text-decoration: none; }
+.wheel-options .wheel-chip { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 14px; border: 1px solid transparent; border-radius: 8px; font-size: 14px; color: var(--scene-text); text-decoration: none; transition: background-color var(--motion-fast), border-color var(--motion-fast); }
+.wheel-options .wheel-chip > span { display: none; }
+.wheel-options .wheel-chip:focus-visible { background-color: color-mix(in srgb, var(--primary) 9%, transparent); border-color: var(--border); }
+@media (hover: hover) and (pointer: fine) { .wheel-options .wheel-chip:hover { background-color: color-mix(in srgb, var(--primary) 9%, transparent); border-color: var(--border); } }
+.wheel-options li { position: relative; }
+.wheel-options .local-help { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); width: 240px; z-index: 2; }
+.wheel-options { margin-top: 12px; }
+.wheel-simple { display: flex; justify-content: center; margin-top: 8px; }
+@media (max-width: 639px) {
+  .home-hero { margin: 0 auto 8px; }
+  .home-hero h1 { font-size: 30px; line-height: 1.2; }
+  .home-hero > p:last-child { margin-top: 6px; }
+  .wheel-picker { padding-top: 0; }
+  .wheel-corner .morning-star { width: 44px; height: 44px; padding: 0; }
+  .wheel-corner .trigger-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
+.results-heading > p:last-child, .home-hero > p:last-child { text-wrap: balance; }
+.verse-text { text-wrap: pretty; }

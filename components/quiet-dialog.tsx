@@ -9,7 +9,7 @@ export function QuietDialog({ label, title, icon, className = "compare-link", ch
   const dialog = useRef<HTMLDialogElement>(null);
   const heading = useId();
   return <>
-    <button type="button" className={className} data-tooltip={label} aria-haspopup="dialog" onClick={() => dialog.current?.showModal()}>{icon}{label}</button>
+    <button type="button" className={className} data-tooltip={label} aria-haspopup="dialog" onClick={() => dialog.current?.showModal()}>{icon}<span className="trigger-label">{label}</span></button>
     <dialog ref={dialog} className="quiet-dialog" aria-labelledby={heading} onClick={event => {
       if (event.target === event.currentTarget) {
         const bounds = event.currentTarget.getBoundingClientRect();
