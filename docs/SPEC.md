@@ -4,16 +4,16 @@
 
 Everyone is a guest. Choose a broad emotion, then a specific feeling, and read four curated passages in a preferred translation, each with a reflection question and prayer starter. This flow, translation selection, comparison and credits are DONE. All eventual features work for every visitor. Personal records stay in the visitor's browser with local JSON Export and Import backups, with no server persistence.
 
-DONE: Save a verse by reference, organize collections on My Verses, Export/Import local JSON backups, record moods with optional notes, view a calendar heatmap, grow streaks with a weekly grace day, and earn badges. Step 6 adds public WEB image cards and a device-local daily WEB passage and is merged into main. Remaining manual review is tracked in Step 7 launch checks. No personal data leaves the device. The existing non-sensitive translation preference cookie is the narrow exception used for server passage rendering.
+Save a verse by reference, organize collections on My Verses, Export/Import local JSON backups, record moods with optional notes, view a calendar heatmap, grow streaks with a weekly grace day, and earn badges. Step 6 adds public WEB image cards and a device-local daily WEB passage and is merged into main. Remaining manual review is tracked in Step 7 launch checks. No personal data leaves the device. The existing non-sensitive translation preference cookie is the narrow exception used for server passage rendering.
 
 ## Features and status
 
-- DONE: Two-step emotion picker, four passages per feeling, reflection and prayer prompts.
-- DONE: NLT default, KJV, WEB, ASV, BSB, and side-by-side comparison of two to four translations. Existing NIV stays disabled as Coming soon pending licensed access. Keep the provider list extensible.
-- DONE: Validated translation cookie and remembered theme. Dark default with working light mode and mobile-first UI.
-- DONE Step 4: Typed browser storage, saved verses, collections, My Verses, and validated JSON Export and Import.
-- DONE Step 5: Mood journal with calendar heatmap, local-date streaks with one grace day per week, and badges. Preview visual/keyboard review remains pending.
-- DONE Step 6: WEB cards using Next.js ImageResponse, daily WEB passage by local day of year, responsive header polish and accessibility source review. Merged into main as confirmed by the owner; remaining manual review is tracked in launch checks.
+- Two-step emotion picker, four passages per feeling, reflection and prayer prompts.
+- NLT default, KJV, WEB, ASV, BSB, and side-by-side comparison of two to four translations. Existing NIV stays disabled as Coming soon pending licensed access. Keep the provider list extensible.
+- Validated translation cookie and remembered theme. Dark default with working light mode and mobile-first UI.
+- Step 4: Typed browser storage, saved verses, collections, My Verses, and validated JSON Export and Import.
+- Step 5: Mood journal with calendar heatmap, local-date streaks with one grace day per week, and badges. Preview visual/keyboard review remains pending.
+- Step 6: WEB cards using Next.js ImageResponse, daily WEB passage by local day of year, responsive header polish and accessibility source review. Merged into main as confirmed by the owner; remaining manual review is tracked in launch checks.
 - IMPLEMENTED Step 7 code: About/privacy with complete translation credits, best-effort per-instance NLT burst/quota/cooldown handling, fixed operational warning codes, configurable site origin and README launch checks. Owner explicitly declined a shared quota store and accepted the serverless limitation. Hosting and preview/accessibility verification remain pending.
 
 ## Emotions
@@ -51,9 +51,9 @@ Envelope, preferences, saves, collections, mood/activity/badge fields and streak
 | Badge | unique supported `key`, `earnedAt` |
 | PersonalData | `preferences`, `savedVerses`, `collections`, `moodEntries`, `activityDays`, `streakState`, `badges` |
 
-DONE: Stable browser-generated ids, validated canonical references/translation ids, local YYYY-MM-DD dates and ISO instants. Save uniqueness is reference plus translation. Collection membership points to saved ids. Deleting a save removes its memberships; deleting a collection keeps its verses. Backups have a format marker, schema version, export timestamp and validated personal data; import previews counts and requires confirmation before full replacement. Validate size, fields, relationships and migrations before writes; invalid files leave data intact. Existing theme storage and translation cookie remain working with preference adoption. Schema 1 is the initial local format; unknown versions or missing migrations are rejected without altering the original.
+Stable browser-generated ids, validated canonical references/translation ids, local YYYY-MM-DD dates and ISO instants. Save uniqueness is reference plus translation. Collection membership points to saved ids. Deleting a save removes its memberships; deleting a collection keeps its verses. Backups have a format marker, schema version, export timestamp and validated personal data; import previews counts and requires confirmation before full replacement. Validate size, fields, relationships and migrations before writes; invalid files leave data intact. Existing theme storage and translation cookie remain working with preference adoption. Schema 1 is the initial local format; unknown versions or missing migrations are rejected without altering the original.
 
-## Streaks and badges (DONE Step 5)
+## Streaks and badges
 
 Step 5 uses pure `lib/` functions. Selecting a specific feeling or saving a verse counts once per device local calendar date, regardless of repeated actions. Local dates use device year/month/day, not a fixed timezone or UTC day. Preserve historical dates across timezone changes. Backward clock/date changes freeze new accrual and show a notice until time catches up; forward changes use the real gap without inventing activity. Local-only clock checks cannot establish trusted time.
 

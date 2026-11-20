@@ -6,7 +6,7 @@ Emotion-based Scripture, reflection, and prayer. Stack: Next.js App Router, stri
 Steps 1 to 9 are shipped. Steps 10 and 11 are optional and start only when the owner asks. Most work is now an owner-requested task (fix, polish, docs, audit, feature). Do exactly the requested task; never start another step or add unrequested features.
 
 ## Read first
-Always read `docs/SPEC.md` and the status, checklist and newest entries of `docs/PROGRESS.md`. Skip older logs unless they relate to the task. Then read what the task touches:
+Always read `docs/SPEC.md` and `docs/PROGRESS.md` (short: status, checklist, active decisions, open items, log). Then read what the task touches:
 
 | Task touches | Read |
 | --- | --- |
@@ -17,6 +17,7 @@ Always read `docs/SPEC.md` and the status, checklist and newest entries of `docs
 | Headers, API routes, secrets, dependencies | `docs/SECURITY.md` |
 | Env vars, domains, deploys | `docs/OPERATIONS.md` |
 | Any Next.js API | The matching guide in `node_modules/next/dist/docs/` |
+| Why something was built a certain way | `docs/archive/progress-history.md` (search it, do not read it whole) |
 
 ## Workflow
 Match process to size. This file outranks skill defaults where they differ.
