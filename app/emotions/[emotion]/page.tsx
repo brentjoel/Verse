@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { EmotionIcon } from "@/components/emotion-icon";
 import { notFound } from "next/navigation";
 import { SiteShell } from "@/components/site-shell";
 import { ContentNotice } from "@/components/content-notice";
@@ -7,6 +6,9 @@ import { FeelingLink } from "@/components/feeling-link";
 import { getAllEmotions, getEmotionById } from "@/lib/emotions";
 
 export const ensureStatic = "navigation";
+
+// A still, hand-placed cluster of stars beside each emotion name.
+const cluster: [number, number, number][] = [[10, 30, 4], [34, 12, 3], [52, 44, 5], [78, 22, 3], [66, 74, 4], [24, 70, 3], [88, 58, 2]];
 
 export async function generateMetadata({ params }: { params: Promise<{ emotion: string }> }) {
   const emotion = getEmotionById((await params).emotion);
@@ -24,16 +26,14 @@ export default async function EmotionPage({ params }: { params: Promise<{ emotio
 
   return (
     <SiteShell>
-      <Link href="/" className="back-link">← All feelings</Link>
       <div data-emotion={emotion.id} className="detail-wrap">
+        <Link href="/" className="back-link">&#8592; All feelings</Link>
         <div className="detail-heading">
-          <span aria-hidden="true" className="emotion-icon"><EmotionIcon emotionId={emotion.id} /></span>
-          <h1>{emotion.name}</h1>
-          <p>{emotion.description}.</p>
+          <h1><span className="cluster" aria-hidden="true">{cluster.map(([x, y, size], index) => <i key={index} style={{ left: `${x}%`, top: `${y}%`, width: size, height: size }} />)}</span>{emotion.name}</h1>
+          <p className="lede">{emotion.description}.</p>
         </div>
         <section aria-labelledby="specifics-heading">
-          <h2 id="specifics-heading" className="text-lg font-medium">What feels closest?</h2>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">There is no perfect label. Choose what speaks to you today.</p>
+          <h2 id="specifics-heading" className="caption">What feels closest? There is no perfect label.</h2>
           <ul className="specific-grid">
             {emotion.specifics.map((specific) => (
               <li key={specific.id}>
