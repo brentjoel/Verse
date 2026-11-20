@@ -8,23 +8,27 @@ import emotions from "@/data/emotions.json";
 import { BADGES } from "@/lib/badges";
 import { getPersonalStore, usePersonalStorage } from "@/lib/browser-storage";
 import { localClock, shiftDate } from "@/lib/streaks";
+import { formatDay, formatMonth } from "@/lib/dates";
 import { MAX_NOTE_LENGTH, type MoodEntry } from "@/lib/storage-schema";
 import type { StorageResult } from "@/lib/storage";
 
 function Reflection({ mood, disabled, run }: { mood: MoodEntry; disabled: boolean; run: (work: () => Promise<StorageResult>) => Promise<void> }) {
   const [note, setNote] = useState(mood.note ?? "");
   const [confirm, setConfirm] = useState(false);
+  const [editing, setEditing] = useState(false);
   const emotion = emotions.find(emotion => emotion.id === mood.emotionId)!;
-  return <li className="verse-card" data-emotion={emotion.id}>
-    <h3>{emotion.name}: {emotion.specifics.find(s => s.id === mood.specificEmotionId)?.name}</h3>
-    <p className="local-help"><time dateTime={mood.localDate}>{mood.localDate}</time></p>
-    <form className="local-form" onSubmit={event => { event.preventDefault(); void run(() => getPersonalStore().editMood(mood.id, note)); }}>
+  return <li className="reflection-item" data-emotion={emotion.id}>
+    <p className="reflection-date"><time dateTime={mood.localDate}>{formatDay(mood.localDate)}</time></p>
+    <h3><span className="emotion-dot" aria-hidden="true" />{emotion.specifics.find(s => s.id === mood.specificEmotionId)?.name} <span className="reflection-parent">{emotion.name}</span></h3>
+    {mood.note && !editing && <p className="reflection-note">{mood.note}</p>}
+    {!editing && !confirm && <div className="reflection-actions"><button className="quiet-link" disabled={disabled} onClick={() => setEditing(true)}>{mood.note ? "Edit note" : "Add a note"}</button><button className="quiet-link" disabled={disabled} onClick={() => setConfirm(true)}>Remove</button></div>}
+    {editing && <form className="local-form" onSubmit={event => { event.preventDefault(); void run(() => getPersonalStore().editMood(mood.id, note)).then(() => setEditing(false)); }}>
       <label htmlFor={`note-${mood.id}`}>A note for yourself (optional)</label>
-      <textarea id={`note-${mood.id}`} rows={3} maxLength={MAX_NOTE_LENGTH} value={note} onChange={event => setNote(event.target.value)} disabled={disabled} aria-describedby={`limit-${mood.id}`} />
-      <p id={`limit-${mood.id}`} className="local-help">{note.length} of {MAX_NOTE_LENGTH} characters. Included in local backups.</p>
-      <button className="compare-link" disabled={disabled || note === (mood.note ?? "")}>Save note</button>
-    </form>
-    {confirm ? <div className="inline-confirm"><p>Remove this reflection and its note? Your activity day and earned milestones will stay.</p><RemovalButton className="compare-link" disabled={disabled} onRemove={() => void run(() => getPersonalStore().removeMood(mood.id))}>Remove reflection</RemovalButton><button className="compare-link" onClick={() => setConfirm(false)}>Keep reflection</button></div> : <button className="quiet-link" disabled={disabled} onClick={() => setConfirm(true)}>Remove reflection</button>}
+      <textarea id={`note-${mood.id}`} rows={3} autoFocus maxLength={MAX_NOTE_LENGTH} value={note} onChange={event => setNote(event.target.value)} disabled={disabled} aria-describedby={`limit-${mood.id}`} />
+      <p id={`limit-${mood.id}`} className="local-help">{note.length} of {MAX_NOTE_LENGTH} characters.</p>
+      <div className="local-actions"><button className="compare-link" disabled={disabled || note === (mood.note ?? "")}>Save note</button><button type="button" className="quiet-link" onClick={() => { setNote(mood.note ?? ""); setEditing(false); }}>Cancel</button></div>
+    </form>}
+    {confirm && <div className="inline-confirm"><p>Remove this reflection and its note? The day stays in your calendar and your milestones stay too.</p><RemovalButton className="compare-link" disabled={disabled} onRemove={() => void run(() => getPersonalStore().removeMood(mood.id))}>Remove reflection</RemovalButton><button className="compare-link" onClick={() => setConfirm(false)}>Keep reflection</button></div>}
   </li>;
 }
 
@@ -54,36 +58,41 @@ export function Journal() {
   for (let date = first; date <= last; date = shiftDate(date, 1)) cells.push(date);
   while (cells.length % 7) cells.push(null);
   const entries = [...moodEntries].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).filter(mood => !selected || mood.localDate === selected);
+  const label = (date: string) => {
+    const count = moodEntries.filter(mood => mood.localDate === date).length;
+    const state = activityDays.some(day => day.localDate === date) ? "you visited" : streakState.graceDates.includes(date) ? "a grace day kept your streak" : "no visit";
+    return `${formatDay(date, undefined, true)}: ${count === 0 ? "no reflections" : count === 1 ? "1 reflection" : `${count} reflections`}, ${state}`;
+  };
   return <>
-    <p role="status" aria-live="polite">{busy ? "Saving..." : status}</p>
+    <p role="status" aria-live="polite" className="sr-only">{busy ? "Saving..." : status}</p>
     {error && <p className="content-notice" role="alert">{error}</p>}
-    <section className="library-section" aria-labelledby="progress-heading">
-      <div className="section-heading"><h2 id="progress-heading">Small moments add up</h2></div>
-      <p>{streakState.currentStreak} active {streakState.currentStreak === 1 ? "day" : "days"} in your current streak. Longest: {streakState.longestStreak}.</p>
-      <p className="local-help">Choosing a feeling or saving a verse counts once each local day. One missed day per Monday to Sunday week can preserve continuity when you return. Grace never adds an active day. Device time cannot establish trusted time; travel may pause accrual until your local date catches up.</p>
-      <h3 className="mt-6">Your milestones</h3>
-      {badges.length ? <ul className="badge-list">{badges.map(badge => <li key={badge.key}>{BADGES[badge.key]} <span className="local-help">earned <time dateTime={badge.earnedAt}>{badge.earnedAt.slice(0, 10)}</time></span></li>)}</ul> : <p className="local-help">Your first reflection, saved verse or collection begins a milestone. Take your time.</p>}
+    <section className="library-section" aria-labelledby="reflections-heading"><div className="section-heading"><h2 id="reflections-heading">{selected ? `Reflections on ${formatDay(selected)}` : "Your reflections"}</h2></div>
+      {selected && <button className="compare-link" onClick={() => setSelected("")}>Show all reflections</button>}
+      {entries.length ? <ul className="reflection-list">{entries.slice(0, limit).map(mood => <Reflection key={`${mood.id}:${mood.note ?? ""}`} mood={mood} disabled={disabled} run={run} />)}</ul> : <div className="content-notice"><Constellation /><p>No reflections here yet. <Link href="/">Choose a feeling</Link> when you are ready, and it will be noted here.</p></div>}
+      {entries.length > limit && <button className="compare-link" onClick={() => setLimit(limit + 20)}>Show more reflections</button>}
+      <p className="local-help">Each feeling you choose is noted here. Add a note if you like; removing one keeps that day in your calendar.</p>
     </section>
     <section className="library-section" aria-labelledby="calendar-heading">
-      <div className="section-heading"><h2 id="calendar-heading">Your calendar</h2></div>
-      <div className="local-actions"><button className="compare-link" onClick={() => setMonth(shiftDate(first, -1).slice(0, 7))} disabled={first <= "0001-02-01"}>Previous month</button><button className="compare-link" onClick={() => setMonth(next.slice(0, 7))} disabled={first >= "9999-11-01"}>Next month</button></div>
-      <p id="calendar-key" className="local-help">Empty: no activity. A dot marks activity without a reflection; r shows the reflection count. Deeper color means more reflections. G marks a used grace day. Choose a date to read its reflections.</p>
-      <div className="calendar-scroll"><table className="journal-calendar" aria-describedby="calendar-key"><caption>{first.slice(0, 7)}</caption><thead><tr>{["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(day => <th scope="col" key={day}>{day}</th>)}</tr></thead><tbody>{Array.from({ length: cells.length / 7 }, (_, week) => <tr key={week}>{cells.slice(week * 7, week * 7 + 7).map((date, index) => {
+      <div className="section-heading calendar-heading"><h2 id="calendar-heading">{formatMonth(first)}</h2><div className="local-actions"><button className="icon-button" aria-label="Previous month" data-tooltip="Previous month" onClick={() => setMonth(shiftDate(first, -1).slice(0, 7))} disabled={first <= "0001-02-01"}><span aria-hidden="true">&#8592;</span></button><button className="icon-button" aria-label="Next month" data-tooltip="Next month" onClick={() => setMonth(next.slice(0, 7))} disabled={first >= "9999-11-01"}><span aria-hidden="true">&#8594;</span></button></div></div>
+      <div className="calendar-scroll"><table className="journal-calendar" aria-describedby="calendar-key"><caption className="sr-only">{formatMonth(first)}</caption><thead><tr>{["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(day => <th scope="col" key={day}>{day}</th>)}</tr></thead><tbody>{Array.from({ length: cells.length / 7 }, (_, week) => <tr key={week}>{cells.slice(week * 7, week * 7 + 7).map((date, index) => {
         if (!date) return <td key={`blank-${index}`} />;
         const count = moodEntries.filter(mood => mood.localDate === date).length;
         const active = activityDays.some(day => day.localDate === date);
         const grace = streakState.graceDates.includes(date);
-        const description = `${date}: ${count} reflections, ${active ? "active day" : grace ? "grace day" : "no activity"}`;
-        return <td key={date}><button className="calendar-day" data-tooltip={description} data-level={count > 1 ? 3 : count ? 2 : active ? 1 : 0} aria-pressed={selected === date} aria-label={description} onClick={() => { setSelected(date); setLimit(20); }}>{Number(date.slice(8))}<span className="calendar-mark" aria-hidden="true">{count ? `${count}r` : active ? "•" : grace ? "G" : "\u00a0"}</span></button></td>;
+        const description = label(date);
+        return <td key={date}><button className="calendar-day" data-tooltip={description} data-level={count > 1 ? 3 : count ? 2 : active ? 1 : 0} data-grace={grace || undefined} aria-pressed={selected === date} aria-label={description} onClick={() => { setSelected(date); setLimit(20); }}>{Number(date.slice(8))}<span className="calendar-mark" aria-hidden="true">{count > 1 ? count : " "}</span></button></td>;
       })}</tr>)}</tbody></table></div>
-      {selected && <p className="local-help" role="status">{selected}: {moodEntries.filter(mood => mood.localDate === selected).length} reflections, {activityDays.some(day => day.localDate === selected) ? "active day" : streakState.graceDates.includes(selected) ? "grace day" : "no activity"}.</p>}
+      <p id="calendar-key" className="local-help">Warmer days hold more reflections. A ring marks a grace day. Choose a date to read its reflections.</p>
+      {selected && <p className="sr-only" role="status">{label(selected)}.</p>}
     </section>
-    <section className="library-section" aria-labelledby="reflections-heading"><div className="section-heading"><h2 id="reflections-heading">{selected ? `Reflections on ${selected}` : "Your reflections"}</h2></div>
-      {selected && <button className="compare-link" onClick={() => setSelected("")}>Show all reflections</button>}
-      <p className="local-help">Choose a specific feeling to add a reflection. Notes are optional. Removing a reflection keeps its historical activity day.</p>
-      {entries.length ? <ul className="verse-list">{entries.slice(0, limit).map(mood => <Reflection key={`${mood.id}:${mood.note ?? ""}`} mood={mood} disabled={disabled} run={run} />)}</ul> : <div className="content-notice"><Constellation /><p>No reflections here yet. <Link href="/">Choose a feeling</Link> when you are ready.</p></div>}
-      {entries.length > limit && <button className="compare-link" onClick={() => setLimit(limit + 20)}>Show more reflections</button>}
-      <p className="local-help"><Link href="/my-verses#backups">Export or import your journal with a local backup.</Link> Backups include notes and are unencrypted.</p>
+    <section className="library-section rhythm" aria-labelledby="progress-heading">
+      <div className="section-heading"><h2 id="progress-heading">Your rhythm</h2></div>
+      <p>{streakState.currentStreak === 0 ? "Whenever you are ready, a new rhythm can begin." : `${streakState.currentStreak} ${streakState.currentStreak === 1 ? "day" : "days"} in a row`}{streakState.longestStreak > 1 && <span className="local-help"> · Longest {streakState.longestStreak} days</span>}</p>
+      {badges.length > 0 && <ul className="badge-list" aria-label="Your milestones">{badges.map(badge => <li key={badge.key}>{BADGES[badge.key]} <span className="local-help"><time dateTime={badge.earnedAt}>{formatDay(badge.earnedAt)}</time></span></li>)}</ul>}
+      <details className="quiet-details"><summary>How your rhythm works</summary>
+        <p className="local-help">A day counts when you choose a feeling or save a verse. If you miss one day in a week, your rhythm waits for you. Changing your device clock or time zone can pause counting until your date catches up. There is no pressure here; come back whenever you like.</p>
+      </details>
+      <p className="local-help"><Link href="/my-verses#backups">Keep a backup of your journal</Link>. Backups include your notes and are not encrypted.</p>
     </section>
   </>;
 }
