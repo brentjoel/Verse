@@ -1,11 +1,12 @@
 import { Suspense, ViewTransition, type ReactNode } from "react";
 import Link from "next/link";
-import { Settings2 } from "lucide-react";
 import { SiteNav } from "@/components/site-nav";
 import { BrandMark } from "@/components/brand-mark";
 import { StorageNotice } from "@/components/storage-notice";
+import { SettingsSheet } from "@/components/settings-sheet";
+import { ThemeSync } from "@/components/theme-sync";
 
-export function SiteShell({ children, settings }: Readonly<{ children: ReactNode; settings?: ReactNode }>) {
+export function SiteShell({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <div className="site-shell">
       <header className="site-header">
@@ -14,9 +15,10 @@ export function SiteShell({ children, settings }: Readonly<{ children: ReactNode
           <span>Verselight</span>
         </Link>
         <div className="header-controls">
-          {settings ?? <button type="button" className="icon-button" aria-label="Settings" disabled><Settings2 size={20} strokeWidth={1.5} aria-hidden="true" /></button>}
+          <SettingsSheet />
         </div>
       </header>
+      <ThemeSync />
       <Suspense><SiteNav /></Suspense>
       <StorageNotice />
       <ViewTransition default="none" enter="page-arrival" exit="page-arrival"><main id="main-content" className="site-main">{children}</main></ViewTransition>
