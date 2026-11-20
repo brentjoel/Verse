@@ -54,8 +54,8 @@
   text-wrap: pretty;
 }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-.js-hidden { display: none; }
-:root:not([data-js="true"]) .js-hidden { display: revert; }
+/* The pre-paint script marks JavaScript; no-JS fallbacks hide themselves once it runs. */
+:root[data-js="true"] .js-hidden { display: none; }
 :root:not([data-js="true"]) .js-only { display: none; }
 
 @keyframes arrive { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
