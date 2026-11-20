@@ -43,3 +43,19 @@ export function consumeUndo(path: string): string | undefined {
   pendingUndo = undefined;
   return id;
 }
+
+// A small, stable star burst behind each reference: same reference, same sky.
+export function burstStars(reference: string, count = 16): { x: number; y: number; delay: number; size: number }[] {
+  let hash = 2166136261;
+  for (const char of reference) hash = Math.imul(hash ^ char.charCodeAt(0), 16777619);
+  const next = () => { hash = Math.imul(hash ^ (hash >>> 13), 0x5bd1e995); hash ^= hash >>> 15; return (hash >>> 0) / 4294967296; };
+  return Array.from({ length: count }, () => {
+    const angle = next() * Math.PI * 2, spread = Math.sqrt(next());
+    return {
+      x: Math.round((50 + Math.cos(angle) * spread * 46) * 10) / 10,
+      y: Math.round((50 + Math.sin(angle) * spread * 44) * 10) / 10,
+      delay: Math.round(next() * 600),
+      size: Math.round((2 + next() * 3) * 10) / 10,
+    };
+  });
+}
