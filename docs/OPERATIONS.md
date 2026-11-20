@@ -74,4 +74,4 @@ Launch verification is complete per owner confirmation. Keep this checklist for 
 
 ## Delivery workflow
 
-Read [AGENTS.md](../AGENTS.md), [spec](SPEC.md), and [progress](PROGRESS.md). Read architecture before data flow changes and design before UI work. Steps 1 to 9 and the follow-up motion polish and security audit are complete. Optional Steps 10 and 11 require a separate owner request. Push each authorized branch for a Vercel Git preview, then wait for approval before merging. No independent production deployment.
+Follow [AGENTS.md](../AGENTS.md): it lists what to read per task and which superpowers and Impeccable skills to use. Steps 1 to 9 and the follow-up motion polish and security audit are complete. Optional Steps 10 and 11 require a separate owner request. Push each authorized branch for a Vercel Git preview, then wait for approval before merging. No independent production deployment.
