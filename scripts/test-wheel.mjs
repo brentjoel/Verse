@@ -31,3 +31,38 @@ test('reduced motion and low capability use simple picker; missing hints allow r
   assert.equal(isSlowWheel(120, 2100), false);
   assert.equal(isSlowWheel(10, 1000), false);
 });
+
+const { emotionHues, initialTier, nextTier, leanWeights, tierSettings } = await import('../lib/constellation.ts');
+
+test('every source emotion has a distinct hue pair', () => {
+  assert.deepEqual(Object.keys(emotionHues).sort(), emotions.map(e => e.id).sort());
+  for (const { night, day } of Object.values(emotionHues)) { assert.match(night, /^#[\da-f]{6}$/i); assert.match(day, /^#[\da-f]{6}$/i); }
+  assert.equal(new Set(Object.values(emotionHues).map(h => h.night)).size, 8);
+  assert.deepEqual(tierSettings, { high: { particles: 9000, maxDpr: 2 }, medium: { particles: 5000, maxDpr: 1.5 }, low: { particles: 2500, maxDpr: 1 } });
+});
+test('initial tier respects motion and capability hints', () => {
+  assert.equal(initialTier({ reducedMotion: true, cores: 8, width: 1440 }), 'list');
+  assert.equal(initialTier({ reducedMotion: false, cores: 2, width: 1440 }), 'list');
+  assert.equal(initialTier({ reducedMotion: false, cores: 8, memory: 8, width: 1440 }), 'high');
+  assert.equal(initialTier({ reducedMotion: false, cores: 8, memory: 8, width: 390 }), 'medium');
+  assert.equal(initialTier({ reducedMotion: false, cores: 4, width: 390 }), 'low');
+  assert.equal(initialTier({ reducedMotion: false, memory: 2, width: 1440 }), 'low');
+  assert.equal(initialTier({ reducedMotion: false, width: 1440 }), 'high');
+});
+test('measured fps steps down one tier and falls back only from low', () => {
+  assert.equal(nextTier('high', 58), 'high');
+  assert.equal(nextTier('high', 40), 'medium');
+  assert.equal(nextTier('medium', 40), 'low');
+  assert.equal(nextTier('low', 40), 'low');
+  assert.equal(nextTier('low', 20), 'list');
+  assert.equal(nextTier('high', 20), 'medium');
+  assert.equal(nextTier('list', 60), 'list');
+});
+test('lean weights normalize to the strongest emotion and ignore junk', () => {
+  const order = emotions.map(e => e.id);
+  assert.deepEqual(leanWeights({}, order), order.map(() => 0));
+  const w = leanWeights({ anxious: 2, sad: 1, angry: -3, tired: Number.NaN, unknown: 9 }, order);
+  assert.equal(w[order.indexOf('anxious')], 1); assert.equal(w[order.indexOf('sad')], .5);
+  assert.equal(w[order.indexOf('angry')], 0); assert.equal(w[order.indexOf('tired')], 0);
+  assert.equal(w.length, order.length);
+});
