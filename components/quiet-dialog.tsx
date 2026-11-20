@@ -3,13 +3,13 @@
 import { useId, useRef, type ReactNode } from "react";
 import { X } from "lucide-react";
 
-export function QuietDialog({ label, title, icon, className = "compare-link", children }: {
-  label: string; title: string; icon?: ReactNode; className?: string; children: ReactNode;
+export function QuietDialog({ label, title, icon, className = "compare-link", onOpen, children }: {
+  label: string; title: string; icon?: ReactNode; className?: string; onOpen?: () => void; children: ReactNode;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const heading = useId();
   return <>
-    <button type="button" className={className} data-tooltip={label} aria-haspopup="dialog" onClick={() => dialog.current?.showModal()}>{icon}<span className="trigger-label">{label}</span></button>
+    <button type="button" className={className} data-tooltip={label} aria-haspopup="dialog" onClick={() => { dialog.current?.showModal(); onOpen?.(); }}>{icon}<span className="trigger-label">{label}</span></button>
     <dialog ref={dialog} className="quiet-dialog" aria-labelledby={heading} onClick={event => {
       if (event.target === event.currentTarget) {
         const bounds = event.currentTarget.getBoundingClientRect();
