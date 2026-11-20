@@ -285,3 +285,6 @@ https://verselight.vercel.app serves an unrelated app, so following the earlier 
 
 ## Automated checks (2026-11-20)
 Added `npm test` (all node:test suites), `npm run typecheck` and `npm run check` (typecheck, lint, tests, build). A GitHub Actions workflow runs the same checks on every pull request and on pushes to main, on Node 24 with no secrets. Locally: 57 tests pass; typecheck, lint and build (65 pages) pass.
+
+## Dependency and CI health (2026-11-20)
+Patched Next.js and eslint-config-next 16.4.2 to 16.4.6, closing seven moderate Next.js advisories (production npm audit now 0). Applied in-range minor updates, moved @types/node to 24 and pinned Node 24 with engines and .nvmrc. CI reads .nvmrc and fails on moderate production advisories; Dependabot opens grouped weekly npm and monthly Actions PRs, majors excluded. Verified: npm run check (57 tests, 65 pages) and a production-server smoke of Home, a feeling list and a results page.
