@@ -44,3 +44,51 @@ export function leanWeights(scores: Readonly<Record<string, number>>, order: rea
   const max = Math.max(0, ...raw);
   return raw.map(value => (max > 0 ? value / max : 0));
 }
+
+function seeded(seed: number) {
+  let state = seed >>> 0 || 1;
+  return () => {
+    state = (state + 0x6d2b79f5) >>> 0;
+    let t = state;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/**
+ * Particle layout for the wheel. Sector s is centered at angle s / sectors * 2π,
+ * measured clockwise from the top (x = sin, y = cos), matching the DOM labels.
+ * About 12% of particles form a sparse halo (sector -1).
+ */
+export function buildConstellation(count: number, sectors: number, seed = 1) {
+  const random = seeded(seed);
+  const positions = new Float32Array(count * 3);
+  const sector = new Float32Array(count);
+  const size = new Float32Array(count);
+  const phase = new Float32Array(count);
+  const span = (Math.PI * 2) / sectors;
+  const gauss = () => (random() + random() + random() - 1.5) / 1.5;
+  for (let i = 0; i < count; i++) {
+    const halo = random() < 0.12;
+    let angle: number, radius: number;
+    if (halo) {
+      angle = random() * Math.PI * 2;
+      radius = 1.72 + random() * 0.55;
+      sector[i] = -1;
+    } else {
+      const s = Math.floor(random() * sectors);
+      // Leave a soft gap between sectors so each emotion reads as its own cloud.
+      angle = s * span + (random() - 0.5) * span * 0.86;
+      radius = Math.min(1.72, Math.max(0.98, 1.36 + gauss() * 0.34 + Math.sin(angle * 3 + seed) * 0.05));
+      sector[i] = s;
+    }
+    positions[i * 3] = Math.sin(angle) * radius;
+    positions[i * 3 + 1] = Math.cos(angle) * radius;
+    positions[i * 3 + 2] = (random() - 0.5) * 0.3;
+    const roll = random();
+    size[i] = roll > 0.97 ? 2.2 + random() * 1.2 : 0.55 + random() * 1.05;
+    phase[i] = random() * Math.PI * 2 * 0.999999;
+  }
+  return { positions, sector, size, phase };
+}
