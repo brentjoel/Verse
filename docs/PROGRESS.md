@@ -102,3 +102,6 @@ Each feeling now has 8 curated references (128 added, 211 unique), with drafted 
 
 ### Crisis resources (2026-11-21)
 Results for Sad, Anxious, Doubtful and Tired gain a quiet "If you are struggling" disclosure: local emergency services first, then the findahelpline.com directory (no tracking). Hidden in Focus mode. Pure `lib/help.ts` with tests; new e2e flow.
+
+### Return check-in (2026-11-21)
+Home greets a returning visitor whose latest reflection is from an earlier local day: "Last time you felt X. How is your heart now?" with Lighter, About the same and Heavier, each pointing onward; Not now hides it for the day in its own localStorage key (schema stays 1). Pure `lib/check-in.ts` with tests. The answer is not saved: a candidate for the saved intensity migration.
