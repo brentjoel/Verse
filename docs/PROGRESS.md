@@ -38,6 +38,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 - [x] Offline reading: a service worker caching the app shell and public-domain data only, never NLT, no notifications
 
 **Phase D: storage (one schema migration, version 2)**
+- [x] Schema 2: anchor, letters, path and marks folded into the envelope and backups
 - [ ] Saved intensity and the check-in answer
 - [ ] Prayer list with answered dates
 - [ ] Optional journal passcode (Web Crypto, on-device; warn that a forgotten passcode means the data is lost)
@@ -56,7 +57,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 - Daily verse, share cards, tests, screenshots, README media and Lighthouse use WEB only.
 - NLT quota guards are per instance; the owner rejected a shared store (2026-10-15).
 - Monitoring logs only fixed warning codes.
-- Wheel intensity is not persisted; storage stays on schema 1 until Project 2.
+- Storage is on schema 2 (Phase D). Later Phase D fields are optional additions to version 2, so no further bump.
 - Constellation is the visual world (2026-11-20): violet is the only action color, emotion hues live only in particles, Apple fonts come from the system stack.
 - AI only as Project 3, on-device.
 - Lighthouse 90+ CI gate stays on; fix only what is needed to pass it.
@@ -65,7 +66,6 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 
 - Real-device 60fps on mid-range Android and iPhone not measured (needs the owner's devices).
 - Screen-reader pass not done.
-- Phase D to fold into JSON Export/Import: personal keys outside schema 1 (`verselight-anchor`, `verselight-letters`, `verselight-path`, `verselight-spoke`).
 - Results and Compare need JavaScript to show passages.
 
 ## Gotchas
@@ -172,3 +172,6 @@ Home links to `/not-sure`: three questions (where, what about, what would help) 
 
 ### Phase C audit (2026-11-21)
 Audit of Home, /not-sure, /path, /offline, Journal and Results additions: detector clean, no horizontal overflow, axe extended to the new pages with their stored states. Fixed: light-theme contrast on the anchor card, path day labels and Unpin; locked path days no longer fade (dashed instead); Unpin target 44px wide. Not run: screen-reader pass, offline behavior on a real phone.
+
+### Schema 2 (2026-11-21)
+Storage moves to version 2: anchor, letters, path and marks join the main record, so Export and Import carry them; version 1 data and backups migrate on read. Old keys fold in on load and are removed only after the merged record saves. Pure `migrate1to2` and `foldLegacy` with tests for round trip, corrupted input and failed writes.
