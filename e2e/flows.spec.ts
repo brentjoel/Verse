@@ -137,7 +137,19 @@ test.describe("narrow phone with the largest text", () => {
 test.describe("without JavaScript", () => {
   test.use({ javaScriptEnabled: false });
 
-  // Results and Compare stream cookie-dependent passages and need JavaScript to reveal them (known limitation, see PROGRESS).
+  test("Results and Compare show passages in the first HTML", async ({ page }) => {
+    await page.goto("/emotions/anxious/overwhelmed");
+    await expect(page.locator(".verse-text").first()).toBeVisible();
+    await expect(page.locator(".verse-text")).toHaveCount(4);
+    await expect(page.getByText("Finding your verses")).toHaveCount(0);
+    // Controls that need the device stay out of the way; links and Reflect still work.
+    await expect(page.getByRole("button", { name: /Pin|Share|This spoke to me|Focus|Save|Opening/ })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: /Compare translations/ }).first()).toBeVisible();
+    await page.goto("/compare?ref=Psalm%2061%3A2");
+    await expect(page.locator(".compare-card .verse-text").first()).toBeVisible();
+    await expect(page.getByRole("button", { name: "Update comparison" })).toBeVisible();
+  });
+
   test("Home and feeling pages still let you find your way", async ({ page }) => {
     await page.goto("/");
     await expect(page.locator(".emotion-link")).toHaveCount(8);

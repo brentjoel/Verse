@@ -4,13 +4,11 @@ Live: Steps 1 to 9 (picker, translations, Compare, storage, journal, share cards
 
 ## Now
 
-- Project 2: night sky journal (PR #10), focus reading (PR #11) and Breathe (PR #12) merged. More verses with daily rotation on `feat/more-verses`.
+- The roadmap (Phases A to E) is complete and merged. What is left is for the owner: real-device fps on their phones, a screen-reader pass, a custom domain if wanted, and publishing the write-up.
 
 ## Roadmap (owner decision 2026-11-21: ship all, one session per phase, auto-merge on green CI)
 
 Each phase runs in its own session, as small PRs merged when every CI check passes. It ends with `/impeccable audit` on the phase's UI, and the material fixes go in a final PR. Check items off here as they merge.
-
-**In flight:** return check-in ("How is your heart now?"), branch `feat/return-check-in`.
 
 **Phase A: quick wins**
 - [x] Crisis resources: a quiet help link on Sad, Anxious, Doubtful and Tired results (international directory, local emergency number first)
@@ -46,7 +44,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 
 **Phase E**
 - [x] Project 3: on-device AI feeling finder (suggests feelings, never generates Scripture, never trains on NLT; rules out NIV's no-AI license)
-- [ ] Performance pass: skip the first ~500 ms of the fps probe, reserve space for the List-to-wheel swap, no-JS Results and Compare, real-device fps
+- [x] Performance pass (real-device fps stays an open item): skip the first ~500 ms of the fps probe, reserve space for the List-to-wheel swap, no-JS Results and Compare, real-device fps
 
 **Owner actions:** buy a custom domain if wanted; publish the write-up (drafted in `docs/writeup.md` during Phase B).
 
@@ -66,7 +64,6 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 
 - Real-device 60fps on mid-range Android and iPhone not measured (needs the owner's devices).
 - Screen-reader pass not done.
-- Results and Compare need JavaScript to show passages.
 
 ## Gotchas
 
@@ -193,3 +190,9 @@ Audit of Journal (prayers, passcode, lock screen, reflection line), Home check-i
 
 ### On-device feeling finder (2026-11-21)
 `/not-sure` gains "In your own words": a few typed words are scored on the device by pure `lib/feeling-words.ts` (a plain-phrase lexicon with stemming and negation, no Bible text, no model download) into one to three feelings with their closest specific. Loads only on use; nothing sent or stored; the three questions stay as the fallback. Tests reach every feeling and specific; ADR 0005 updated.
+
+### Performance pass (2026-11-21)
+The fps probe skips its first 500 ms (pure `stepProbe`). The pre-paint script marks how Home's picker opens (`data-wheel`), so CSS holds the wheel's footprint and the phone peek from first paint; Home CLS is now 0 at phone and desktop. Results and Compare render passages in the first HTML (`instant = false`, no Suspense), so they read without JavaScript.
+
+### Phase E audit (2026-11-21)
+Audit of /not-sure (both result states), Home first paint and no-JS Results and Compare: axe clean in dark and light at default and larger text, no overflow at 320px, Home CLS 0. Fixed: without JavaScript, Save, mark, Pin, Share and Focus no longer show as dead buttons; the word finder drops a live region that doubled the focused heading. Not run: the detector (browser would not launch here), a screen-reader pass.
