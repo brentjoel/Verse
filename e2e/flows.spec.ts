@@ -202,5 +202,31 @@ test.describe("help note", () => {
     await page.goto("/emotions/grateful/blessed");
     await expect(page.getByRole("heading", { level: 1, name: "Blessed" })).toBeVisible();
     await expect(page.locator(".help-note")).toHaveCount(0);
+
+test.describe("return check-in", () => {
+  test.use({ reducedMotion: "reduce" });
+
+  test("a returning visitor is asked how their heart is now, and can dismiss it for the day", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByRole("heading", { name: /Last time you felt/ })).toHaveCount(0);
+    await page.goto("/emotions/sad");
+    await page.getByRole("link", { name: "Lonely" }).click();
+    await expect(page.getByText("Noted in your journal")).toBeVisible();
+    await page.goto("/");
+    await expect(page.getByRole("heading", { name: /Last time you felt/ })).toHaveCount(0);
+
+    await page.clock.setFixedTime(new Date(Date.now() + 2 * 86_400_000));
+    await page.goto("/");
+    await expect(page.getByRole("heading", { name: "Last time you felt Lonely. How is your heart now?" })).toBeVisible();
+    await page.getByRole("button", { name: "About the same" }).click();
+    await expect(page.getByRole("button", { name: "About the same" })).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByRole("link", { name: "Return to Lonely" })).toHaveAttribute("href", "/emotions/sad/lonely");
+    await noHorizontalOverflow(page);
+
+    await page.getByRole("button", { name: "Not now" }).click();
+    await expect(page.getByRole("heading", { name: /Last time you felt/ })).toHaveCount(0);
+    await page.reload();
+    await expect(page.locator(".emotion-link").first()).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Last time you felt/ })).toHaveCount(0);
   });
 });

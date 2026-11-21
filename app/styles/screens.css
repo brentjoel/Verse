@@ -4,6 +4,11 @@
 .home-stage { display: grid; gap: var(--space-4); align-items: center; }
 .home-hero { display: grid; gap: var(--space-3); }
 .home-hero h1 { max-width: 9.5ch; }
+.check-in { display: grid; justify-items: start; gap: var(--space-2); max-width: 460px; padding: var(--space-3); border: 1px solid var(--hairline); border-radius: var(--radius-panel); background: var(--veil); }
+.check-in-title { font-size: 17px; font-weight: 500; line-height: 1.4; color: var(--ink); }
+.check-in-reply { color: var(--ink-2); font-size: 15px; }
+.check-in-reply:empty { display: none; }
+.check-in-links { display: flex; flex-wrap: wrap; gap: var(--space-1); }
 .home-tools { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); margin-top: var(--space-2); }
 @media (min-width: 900px) {
   .home-stage { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--space-6); min-height: calc(100svh - 88px - 140px); }
