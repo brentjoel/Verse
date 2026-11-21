@@ -14,6 +14,8 @@ import { PassageAttribution } from "@/components/passage-attribution";
 import { SaveVerseButton } from "@/components/save-verse-button";
 import { ShareCardControls } from "@/components/share-card-controls";
 import { DawnReveal } from "@/components/dawn-reveal";
+import { HelpNote } from "@/components/help-note";
+import { showsHelpNote } from "@/lib/help";
 import { UndoToast } from "@/components/undo-toast";
 import { passageTokens } from "@/lib/dawn";
 import { dayNumber, serverToday, todaysReferences } from "@/lib/rotation";
@@ -84,6 +86,7 @@ async function ResultsContent({ emotion, specific, searchParams }: { emotion: Em
             </VerseCarousel>
           {references.length === 0 && <ContentNotice>References for this feeling are being prepared with care. Please visit again soon.</ContentNotice>}
         </section>
+        {showsHelpNote(emotion.id) && <HelpNote />}
         <nav className="results-ending" aria-label="What next">
           <p>Stay as long as you like. When you are ready:</p>
           {references.length > 0 && <Link href={more ? returnTo : `${returnTo}?more`} className="compare-link">{more ? "Back to today's verses" : "Read 4 more verses"}</Link>}
