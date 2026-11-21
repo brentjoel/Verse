@@ -1,3 +1,4 @@
+import { ServiceWorker } from "@/components/service-worker";
 import type { Metadata, Viewport } from "next";
 import { Geist, Lora } from "next/font/google";
 import "./globals.css";
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className="min-h-full">
         <a href="#main-content" className="sr-only rounded-md bg-background p-3 text-foreground focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50">Skip to content</a>
         {children}
+        <ServiceWorker />
       </body>
     </html>
   );
