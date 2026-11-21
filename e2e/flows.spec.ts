@@ -181,3 +181,13 @@ test("breathe guides a round and stops", async ({ page }) => {
   await page.getByRole("button", { name: "Steady" }).click();
   await expect(page.getByRole("button", { name: "Steady" })).toHaveAttribute("aria-pressed", "true");
 });
+
+test("Read 4 more verses shows the rest of the feeling's passages and comes back", async ({ page }) => {
+  await page.goto("/emotions/anxious/overwhelmed");
+  await expect(page.locator(".verse-reference").first()).toHaveText("Psalm 61:2");
+  await page.getByRole("link", { name: "Read 4 more verses" }).click();
+  await expect(page).toHaveURL(/\/emotions\/anxious\/overwhelmed\?more$/);
+  await expect(page.locator(".verse-reference").first()).toHaveText("Psalm 55:22");
+  await page.getByRole("link", { name: "Back to today's verses" }).click();
+  await expect(page.locator(".verse-reference").first()).toHaveText("Psalm 61:2");
+});
