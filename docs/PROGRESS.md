@@ -187,3 +187,6 @@ Optional passcode on Journal: PBKDF2 plus AES-GCM via Web Crypto seals notes, le
 
 ### Year in light (2026-11-21)
 New `/year`, linked from Journal: days you came, feelings named, longest run, verses saved, a twelve-star month row, the three feelings carried most, and answered prayers and letters (hidden while the journal is locked). Built on the device by pure `lib/year-recap.ts` with tests; nothing stored or sent; added to the offline shell and axe routes.
+
+### Phase D audit (2026-11-21)
+Audit of Journal (prayers, passcode, lock screen, reflection line), Home check-in, import preview and /year: 44px targets, AA contrast in both themes, no overflow at phone width. Fixed: focus now lands on the lock heading after Lock now and on the journal after unlock; axe covers populated Phase D states and the passcode screens. Not run: the detector (browser would not launch here), a screen-reader pass.
