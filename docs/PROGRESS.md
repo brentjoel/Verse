@@ -40,7 +40,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 **Phase D: storage (one schema migration, version 2)**
 - [ ] Saved intensity and the check-in answer
 - [ ] Prayer list with answered dates
-- [ ] Optional journal passcode (Web Crypto, on-device; warn that a forgotten passcode means the data is lost)
+- [x] Optional journal passcode (Web Crypto, on-device; warn that a forgotten passcode means the data is lost)
 - [ ] Year in light recap
 
 **Phase E**
@@ -138,3 +138,8 @@ Each feeling page now has its own Open Graph and Twitter image in its hue (name,
 
 ### Sky share card (2026-11-21)
 Journal's Sky view gains "Save this sky as a card": the month's stars and links (from `lib/night-sky.ts`, laid out by pure `lib/sky-card.ts`) plus the WEB grace verse, drawn to a PNG on a canvas in the browser and shared or downloaded. WEB only, no notes, nothing uploaded; unit tests and an e2e download check.
+
+x
+
+### Write-up draft (2026-11-21)
+`docs/writeup.md` is a portfolio post draft built from real numbers in the repo, ready for the owner to edit. Not published anywhere; publishing stays an owner action.
