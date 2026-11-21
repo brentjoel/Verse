@@ -25,7 +25,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 - [x] Per-feeling Open Graph and Twitter images in the emotion hue (brand copy only, no Scripture)
 - [x] Live engineering overlay `?debug` (fps, tier, particles, draw calls)
 - [x] Accessibility checks in CI with `@axe-core/playwright`, plus an Accessibility page
-- [ ] Sky share card: month constellation plus a WEB verse as a client-side PNG
+- [x] Sky share card: month constellation plus a WEB verse as a client-side PNG
 
 **Phase C: companion**
 - [ ] Anchor verse pinned on Home
@@ -135,3 +135,6 @@ Each feeling page now has its own Open Graph and Twitter image in its hue (name,
 
 ### Accessibility (2026-11-21)
 `e2e/a11y.spec.ts` runs `@axe-core/playwright` (WCAG 2.1 A and AA) over ten pages in dark and light on phone and desktop, inside the normal e2e job. New `/accessibility` page states supported features, the checks and the known gaps, linked from the footer. Dependency added so CI can catch regressions automatically.
+
+### Sky share card (2026-11-21)
+Journal's Sky view gains "Save this sky as a card": the month's stars and links (from `lib/night-sky.ts`, laid out by pure `lib/sky-card.ts`) plus the WEB grace verse, drawn to a PNG on a canvas in the browser and shared or downloaded. WEB only, no notes, nothing uploaded; unit tests and an e2e download check.
