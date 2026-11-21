@@ -396,6 +396,6 @@
 
 /* Quiet help note on heavier feelings */
 .help-note { margin-top: var(--space-5); font-size: 15px; font-weight: 300; color: var(--ink-3); }
-.help-note summary { cursor: pointer; width: fit-content; padding-block: var(--space-1); }
+.help-note summary { display: flex; align-items: center; cursor: pointer; width: fit-content; min-height: 44px; }
 .help-note p { max-width: 62ch; margin-top: var(--space-2); line-height: 1.7; }
 .help-note a { color: var(--ink-2); text-decoration: underline; text-underline-offset: 3px; }
