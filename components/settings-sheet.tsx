@@ -4,12 +4,12 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Settings2, X } from "lucide-react";
 import { getPersonalStore, usePersonalStorage } from "@/lib/browser-storage";
-import { applyThemeChoice, resolveTextSize, type TextSize, type ThemeChoice } from "@/lib/theme";
+import { applyThemeChoice, resolveTextSize, resolveTheme, storedBaseTheme, type TextSize, type ThemeChoice } from "@/lib/theme";
 import { writeTextSize, writeTheme } from "@/lib/root-preferences";
 import { readTranslationCookie, setTranslationCookie } from "@/lib/translation-client";
 import { translations, type TranslationId } from "@/lib/translations";
 
-const themes: { id: ThemeChoice; label: string }[] = [{ id: "dark", label: "Night" }, { id: "light", label: "Daylight" }, { id: "system", label: "System" }];
+const themes: { id: ThemeChoice; label: string }[] = [{ id: "dark", label: "Night" }, { id: "light", label: "Daylight" }, { id: "bedtime", label: "Bedtime" }, { id: "system", label: "System" }];
 const sizes: { id: TextSize; label: string }[] = [{ id: "default", label: "Default" }, { id: "large", label: "Large" }, { id: "larger", label: "Larger" }];
 
 export function SettingsSheet() {
@@ -23,7 +23,7 @@ export function SettingsSheet() {
   function open() {
     const root = document.documentElement;
     setTranslation(readTranslationCookie());
-    setTheme(root.dataset.themeSource === "stored" ? (root.dataset.theme === "light" ? "light" : "dark") : "system");
+    setTheme(root.dataset.themeSource === "stored" ? resolveTheme(root.dataset.theme, false) : "system");
     setSize(resolveTextSize(root.dataset.textSize));
     dialog.current?.showModal();
   }
@@ -37,7 +37,7 @@ export function SettingsSheet() {
     const next = applyThemeChoice(choice, matchMedia("(prefers-color-scheme: light)").matches);
     setTheme(choice);
     writeTheme(next.theme, next.source);
-    if (storage.ready) void getPersonalStore().setPreferences({ theme: next.theme });
+    if (storage.ready) void getPersonalStore().setPreferences({ theme: storedBaseTheme(next.theme) });
   }
   function chooseSize(next: TextSize) {
     setSize(next);
@@ -61,6 +61,7 @@ export function SettingsSheet() {
         <div className="segmented" role="group" aria-labelledby="settings-theme">
           {themes.map(item => <button key={item.id} type="button" className="chip" aria-pressed={theme === item.id} onClick={() => chooseTheme(item.id)}>{item.label}</button>)}
         </div>
+        <p className="caption" style={{ marginTop: 10 }}>Bedtime is dimmer and warmer, with less blue light, for reading in a dark room.</p>
       </section>
       <section className="sheet-group" aria-labelledby="settings-size">
         <h3 id="settings-size">Text size</h3>

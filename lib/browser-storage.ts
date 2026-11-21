@@ -5,7 +5,7 @@ import { PersonalStore, serverStorageSnapshot } from "./storage";
 import { STORAGE_KEY, type Preferences } from "./storage-schema";
 import { resolveTranslation } from "./translations";
 import { setTranslationCookie } from "./translation-client";
-import { THEME_KEY } from "./theme";
+import { THEME_KEY, storedBaseTheme } from "./theme";
 
 let store: PersonalStore | undefined;
 let connected = false;
@@ -15,15 +15,16 @@ export function readBrowserPreferences(): Partial<Preferences> {
     const cookie = document.cookie.split("; ").find(value => value.startsWith("translation="))?.slice(12);
     preferences.preferredTranslation = resolveTranslation(cookie);
   } catch { /* Preferences still work in memory when cookies are unavailable. */ }
-  preferences.theme = document.documentElement.dataset.theme === "light" ? "light" : "dark";
+  preferences.theme = storedBaseTheme(document.documentElement.dataset.theme);
   return preferences;
 }
 export function applyBrowserPreferences(preferences: Preferences) {
   const previous = readBrowserPreferences();
   if (previous.theme !== preferences.theme) document.documentElement.dataset.themeSource = "stored";
-  document.documentElement.dataset.theme = preferences.theme;
+  // Bedtime is stored as dark; do not let the stored value undo it.
+  if (!(document.documentElement.dataset.theme === "bedtime" && preferences.theme === "dark")) document.documentElement.dataset.theme = preferences.theme;
   try {
-    if (document.documentElement.dataset.themeSource !== "system") localStorage.setItem(THEME_KEY, preferences.theme);
+    if (document.documentElement.dataset.themeSource !== "system") localStorage.setItem(THEME_KEY, document.documentElement.dataset.theme === "bedtime" ? "bedtime" : preferences.theme);
   } catch { /* The in-memory theme still works. */ }
   if (previous.preferredTranslation !== preferences.preferredTranslation) setTranslationCookie(preferences.preferredTranslation);
 }
