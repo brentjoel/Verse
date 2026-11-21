@@ -27,9 +27,13 @@ Sources: [API terms](https://api.nlt.to/), [API docs](https://api.nlt.to/Documen
 - Dawn reveal and the carousel only style real DOM text; wording, whitespace and attribution are unchanged and readable at once. Verse text is never drawn into WebGL.
 - Any new translation in images needs its own terms review.
 
+## Feeling finder
+
+The on-device feeling finder (`lib/feeling-words.ts`) scores a visitor's words against a lexicon of plain phrases written for this app. It contains no Bible text from any translation, was not trained or tuned on NLT or NIV, and only returns existing feelings, which link to the curated references. It never generates or paraphrases Scripture. See [ADR 0005](decisions/0005-on-device-ai.md).
+
 ## NIV
 
-[Biblica permissions](https://www.biblica.com/permissions/) offer a noncommercial license through [API.Bible](https://api.bible/) or [YouVersion Platform](https://platform.youversion.com/) for apps **without AI/ML features**. Project 3 (on-device AI feeling finder) may conflict with that condition; re-check before pursuing NIV. NIV stays disabled as Coming soon. Never scrape or copy NIV text.
+[Biblica permissions](https://www.biblica.com/permissions/) offer a noncommercial license through [API.Bible](https://api.bible/) or [YouVersion Platform](https://platform.youversion.com/) for apps **without AI/ML features**. Project 3 (the on-device feeling finder on `/not-sure`, built in Phase E) is an AI-style feature, so this condition rules NIV out while it exists; re-check before pursuing NIV. NIV stays disabled as Coming soon. Never scrape or copy NIV text.
 
 ## Setup
 

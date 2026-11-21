@@ -209,6 +209,27 @@ test.describe("not sure what I feel", () => {
     await expect(page).toHaveURL(/\/emotions\/grateful$/);
   });
 
+  test("a few words suggest a feeling on the device", async ({ page }) => {
+    const sent: string[] = [];
+    page.on("request", request => sent.push(`${request.url()} ${request.postData() ?? ""}`));
+    await page.goto("/not-sure");
+    await page.getByLabel("A few words about how you feel").fill("It is late and I can't sleep, my mind keeps racing");
+    await page.getByRole("button", { name: "Find a feeling" }).click();
+    await expect(page.getByRole("heading", { name: "This sounds like Anxious" })).toBeFocused();
+    // "racing" appears only in the typed words; the suggested link itself names cant-sleep.
+    expect(sent.some(entry => /racing/i.test(entry))).toBe(false);
+    await page.getByRole("link", { name: "Find verses for Can't sleep" }).click();
+    await expect(page).toHaveURL(/\/emotions\/anxious\/cant-sleep$/);
+  });
+
+  test("words with no feeling in them point onward", async ({ page }) => {
+    await page.goto("/not-sure");
+    await page.getByLabel("A few words about how you feel").fill("the quick brown fox");
+    await page.getByLabel("A few words about how you feel").press("Enter");
+    await expect(page.getByRole("heading", { name: "I could not find a feeling in those words" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Choose a feeling" })).toBeVisible();
+  });
+
   test("Back changes an answer", async ({ page }) => {
     await page.goto("/not-sure");
     await page.getByRole("button", { name: "In my chest, a heaviness" }).click();
