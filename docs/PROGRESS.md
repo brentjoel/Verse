@@ -22,7 +22,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 **Phase B: showcase**
 - [x] "How it's built" case study page `/craft` with real numbers and a small architecture diagram
 - [x] Decision records in `docs/decisions/` (accounts, NLT and fallback, local-first storage, WebGL tiers, on-device AI)
-- [ ] Per-feeling Open Graph and Twitter images in the emotion hue (brand copy only, no Scripture)
+- [x] Per-feeling Open Graph and Twitter images in the emotion hue (brand copy only, no Scripture)
 - [ ] Live engineering overlay `?debug` (fps, tier, particles, draw calls)
 - [ ] Accessibility checks in CI with `@axe-core/playwright`, plus an Accessibility page
 - [ ] Sky share card: month constellation plus a WEB verse as a client-side PNG
@@ -126,3 +126,6 @@ New `/craft` case study with the real numbers (LCP 3.0s to 0.9s, Journal CLS 0.2
 
 ### Decision records (2026-11-21)
 Five short ADRs in `docs/decisions/` (guest-only, NLT with WEB fallback, local-first storage, WebGL tiers, on-device AI) with an index. Docs only.
+
+### Per-feeling social images (2026-11-21)
+Each feeling page now has its own Open Graph and Twitter image in its hue (name, short description, Verselight; no Scripture), prebuilt for the 8 feelings via `lib/social-image.tsx`. The proxy matcher now skips the image routes, which it had been treating as unknown Results paths.

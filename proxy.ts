@@ -13,4 +13,5 @@ export function proxy(request: NextRequest) {
   return NextResponse.next();
 }
 
-export const config = { matcher: "/emotions/:emotion/:sub" };
+// Social image routes (opengraph-image, twitter-image) share this shape and are not Results pages.
+export const config = { matcher: "/emotions/:emotion/((?!opengraph-image|twitter-image$)[^/]+)" };
