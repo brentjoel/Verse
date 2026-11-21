@@ -37,6 +37,7 @@ No cards, no shadows, no gradients on components. Gradients appear only in the l
 - **Pill:** the one filled violet button per view (Back to the wheel, Share card, Try again, empty-state actions).
 - **Ghost (`.compare-link`):** text button with a veil on hover; Save, Compare, Share, Try another feeling.
 - **Link (`.quiet-link`):** amber, underlined.
+- **Remove (`.remove-link`):** quiet `--ink-3` text with a veil on hover, for remove and delete triggers. Confirm steps stay ghost buttons.
 - **Chip:** outlined pill; pressed is an inverted fill. Used for wheel options, intensity, translation and settings choices.
 - **Settings sheet:** gear in the header. Translation, Theme (Night, Daylight, System) and Text size. Bottom sheet on phones, side panel on desktop.
 - **Toast:** inverted pill at the bottom, portaled to `body`. "Noted in your journal · Undo".
@@ -45,7 +46,7 @@ No cards, no shadows, no gradients on components. Gradients appear only in the l
 
 ## Screens
 
-- **Home:** split hero on desktop (huge left-aligned headline, light line, Morning star; constellation wheel on the right), stacked on phones. The wheel is thousands of particles in eight emotion clouds; drag, scroll, arrows or a chip turn it, the center chooses, and the inner ring blooms in that emotion's hue with intensity chips. A Wheel / List switch; List is also the server, no-JavaScript, no-WebGL, reduced-motion and slow-device picker.
+- **Home:** split hero on desktop (huge left-aligned headline, light line, Morning star; constellation wheel on the right), stacked on phones. The wheel is thousands of particles in eight emotion clouds; drag, scroll, arrows or a chip turn it, the center chooses, and the inner ring blooms in that emotion's hue with intensity chips. Phones start in List with a small rotating ring of eight emotion dots above it ("Turn the constellation") that opens the wheel; desktop starts in the wheel. The current emotion chip has an inset ink ring. A Wheel / List switch; List is also the server, no-JavaScript, no-WebGL, reduced-motion and slow-device picker.
 - **Feeling list:** emotion name beside a still star cluster, then four large rows with hairlines.
 - **Results:** verse first. Back link, feeling name, a small particle burst in the emotion hue, the amber reference line, the verse, attribution directly under it, pager, Save / Compare / Share, Reflect, and an ending block (Try another feeling, Back to the wheel). Tapping the glowing passage finishes the dawn; Skip remains for keyboards.
 - **Compare:** reference in the Scripture face, live translation chips (a GET form remains for no-JavaScript), stacked or columned passages with attribution.

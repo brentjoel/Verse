@@ -21,7 +21,7 @@ function Reflection({ mood, disabled, run }: { mood: MoodEntry; disabled: boolea
     <p className="reflection-date"><time dateTime={mood.localDate}>{formatDay(mood.localDate)}</time></p>
     <h3><span className="emotion-dot" aria-hidden="true" />{emotion.specifics.find(s => s.id === mood.specificEmotionId)?.name} <span className="reflection-parent">{emotion.name}</span></h3>
     {mood.note && !editing && <p className="reflection-note">{mood.note}</p>}
-    {!editing && !confirm && <div className="reflection-actions"><button className="quiet-link" disabled={disabled} onClick={() => setEditing(true)}>{mood.note ? "Edit note" : "Add a note"}</button><button className="quiet-link" disabled={disabled} onClick={() => setConfirm(true)}>Remove</button></div>}
+    {!editing && !confirm && <div className="reflection-actions"><button className="quiet-link" disabled={disabled} onClick={() => setEditing(true)}>{mood.note ? "Edit note" : "Add a note"}</button><button className="remove-link" disabled={disabled} onClick={() => setConfirm(true)}>Remove</button></div>}
     {editing && <form className="local-form" onSubmit={event => { event.preventDefault(); void run(() => getPersonalStore().editMood(mood.id, note)).then(() => setEditing(false)); }}>
       <label htmlFor={`note-${mood.id}`}>A note for yourself (optional)</label>
       <textarea id={`note-${mood.id}`} rows={3} autoFocus maxLength={MAX_NOTE_LENGTH} value={note} onChange={event => setNote(event.target.value)} disabled={disabled} aria-describedby={`limit-${mood.id}`} />
