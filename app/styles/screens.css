@@ -430,3 +430,12 @@
 .path-day > h2 { font-size: 17px; font-weight: 500; color: var(--ink); }
 .path-status { color: var(--ink-2); }
 .path-intro { display: grid; justify-items: start; gap: var(--space-1); margin-top: var(--space-3); }
+
+/* ---------- Not sure what I feel ---------- */
+.finder { display: grid; justify-items: start; gap: var(--space-2); max-width: 520px; }
+.finder h2 { font-size: 22px; font-weight: 500; color: var(--ink); }
+.finder h2:focus { outline: none; }
+.finder-options { display: grid; gap: var(--space-1); width: 100%; list-style: none; padding: 0; margin: 0; }
+.finder-option { width: 100%; min-height: 48px; padding: 10px var(--space-3); text-align: left; color: var(--ink); background: var(--veil); border: 1px solid var(--hairline); border-radius: var(--radius-panel); font-size: 16px; transition: border-color var(--motion-fast), background-color var(--motion-fast); }
+.finder-option:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) { .finder-option:hover { border-color: var(--action); } }
