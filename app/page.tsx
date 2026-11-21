@@ -21,6 +21,7 @@ export default function Home() {
           <h1 className="display">How is your heart today?</h1>
           <p className="lede">A quiet moment. A little light. Room for all you carry.</p>
           <ReturnCheckIn />
+          <p><Link className="quiet-link" href="/not-sure">Not sure what I feel?</Link></p>
           <div className="home-tools"><DailyVerse verses={web} /></div>
         </div>
         <section id="choose-a-feeling" aria-label="Choose a feeling">
