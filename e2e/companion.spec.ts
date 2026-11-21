@@ -103,3 +103,13 @@ test.describe("this spoke to me", () => {
     await expect(page.locator(".marked-note")).toHaveCount(1);
   });
 });
+
+test.describe("time-of-day sky", () => {
+  for (const [time, phase] of [["06:30", "dawn"], ["12:00", "day"], ["18:30", "dusk"], ["23:00", "night"]] as const) {
+    test(`Home at ${time} is ${phase}`, async ({ page }) => {
+      await page.clock.setFixedTime(new Date(`2026-11-21T${time}:00`));
+      await page.goto("/");
+      await expect(page.locator(".time-sky")).toHaveAttribute("data-phase", phase);
+    });
+  }
+});
