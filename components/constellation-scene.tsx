@@ -165,7 +165,9 @@ export default function ConstellationScene(props: Props) {
       material.blending = daylight ? THREE.NormalBlending : THREE.AdditiveBlending;
       uniforms.uDaylight.value = daylight ? 1 : 0;
       material.needsUpdate = true;
-      if (process.env.NODE_ENV !== "production") (window as unknown as { __constellation?: object }).__constellation = { daylight, tier };
+      // Observable state for tests and debugging; no personal data.
+      element.dataset.daylight = String(daylight);
+      element.dataset.tier = tier;
     };
     syncTheme();
     const theme = new MutationObserver(syncTheme);

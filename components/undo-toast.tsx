@@ -34,14 +34,20 @@ export function UndoToast({ path }: { path: string }) {
     setBusy(true);
     const result = await getPersonalStore().removeMood(id);
     setBusy(false);
-    if (result.ok) { done.current = true; setState({ kind: "removed" }); }
+    if (result.ok) {
+      done.current = true;
+      setPaused(false);
+      setState({ kind: "removed" });
+      // The Undo button is gone; keep keyboard focus inside the page.
+      document.getElementById("main-content")?.focus({ preventScroll: true });
+    }
     else setState({ kind: "error", message: result.error });
   }
 
   const conflict = storage.mode === "conflict";
   // Portaled to body: the animated main column would otherwise trap the fixed toast under the tab bar.
   if (!mounted) return null;
-  return createPortal(<div className="toast-region" role="status" aria-live="polite" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}>
+  return createPortal(<div className="toast-region" role="status" aria-live="polite" onPointerEnter={event => { if (event.pointerType === "mouse") setPaused(true); }} onPointerLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}>
     {state?.kind === "noted" && <div className="toast">
       <span>{conflict ? "Your journal is open in another tab" : "Noted in your journal"}</span>
       <button type="button" className="compare-link" disabled={busy || conflict} onClick={() => void undo(state.id)}>Undo</button>

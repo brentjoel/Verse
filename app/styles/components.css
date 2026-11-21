@@ -112,7 +112,7 @@ input[type="checkbox"], input[type="radio"] { width: 18px; height: 18px; accent-
 
 /* Notices, loading and empty states. */
 .content-notice, .state-panel, .empty-state { display: grid; justify-items: start; gap: var(--space-2); max-width: 46ch; color: var(--ink-2); font-weight: 300; }
-.content-notice a, .state-panel a { color: var(--spark); text-decoration: underline; text-underline-offset: 4px; }
+.content-notice a:not(.pill, .compare-link), .state-panel a:not(.pill, .compare-link), .empty-state a:not(.pill, .compare-link) { color: var(--spark); text-decoration: underline; text-underline-offset: 4px; }
 .skeleton::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 10px; border-radius: 50%; background: var(--ink); vertical-align: middle; animation: shimmer 1.6s var(--ease-move) infinite; box-shadow: 14px 0 0 var(--ink), 28px 0 0 var(--ink); }
 .skeleton { padding-left: 0; }
 .local-error, .storage-notice { color: var(--ink); }

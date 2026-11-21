@@ -7,7 +7,10 @@ import { translations, type TranslationId } from "@/lib/translations";
 // Live translation chips. Builds the same query the no-JS GET form submits.
 export function CompareToggles({ reference, from, selected }: { reference: string; from?: string; selected: readonly TranslationId[] }) {
   const router = useRouter();
-  const [chosen, setChosen] = useState<TranslationId[]>([...selected]);
+  // The server's selection is the truth; a pending choice shows only until the new page arrives.
+  const [pendingChoice, setPendingChoice] = useState<{ from: string; ids: TranslationId[] } | null>(null);
+  const current = selected.join(",");
+  const chosen = pendingChoice && pendingChoice.from === current ? pendingChoice.ids : [...selected];
   const [message, setMessage] = useState("");
   const [pending, startTransition] = useTransition();
 
@@ -16,7 +19,7 @@ export function CompareToggles({ reference, from, selected }: { reference: strin
     if (next.length < 2) { setMessage("Keep at least two translations to compare."); return; }
     if (next.length > 4) { setMessage("Compare up to four translations at a time."); return; }
     setMessage("");
-    setChosen(next);
+    setPendingChoice({ from: current, ids: next });
     const query = new URLSearchParams({ submitted: "1", ref: reference });
     if (from) query.set("from", from);
     next.forEach(item => query.append("translations", item));

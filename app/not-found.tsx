@@ -9,7 +9,6 @@ export default function NotFound() {
     <SiteShell>
       <div className="state-panel">
         <Constellation />
-        <p className="label" style={{ color: "var(--spark)" }}>404</p>
         <h1>Let us find your way back.</h1>
         <p className="lede">We could not find this page or feeling. There is still room for whatever you are carrying today.</p>
         <Link href="/" className="pill">Return to all feelings</Link>

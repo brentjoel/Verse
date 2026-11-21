@@ -31,8 +31,8 @@ async function Comparison({ searchParams }: { searchParams: Promise<Query> }) {
     <div className="results-heading"><h1 className={reference ? "compare-reference" : undefined}>{reference ?? "Compare Scripture"}</h1><p>Take a little time with the words. Notice what speaks to you.</p></div>
     {!reference ? <ContentNotice>This reference is not in our collection yet. Choose a feeling to find a verse to compare.</ContentNotice> : <>
       {query.from !== undefined && !from && <p className="comparison-notice" role="status">We could not find the results page in this link. You can choose a feeling to begin again.</p>}
-      {!error && <CompareToggles key={`${reference}:${ids.join(",")}`} reference={reference} from={from} selected={ids} />}
-      <form key={`${reference}:${ids.join(",")}`} action="/compare" method="get" className="compare-form js-hidden">
+      {!error && <CompareToggles reference={reference} from={from} selected={ids} />}
+      <form key={`form:${reference}:${ids.join(",")}`} action="/compare" method="get" className="compare-form js-hidden">
         <input type="hidden" name="submitted" value="1" />
         <input type="hidden" name="ref" value={reference} />
         {from && <input type="hidden" name="from" value={from} />}
