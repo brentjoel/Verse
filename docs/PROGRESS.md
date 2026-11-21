@@ -30,7 +30,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 **Phase C: companion**
 - [x] Anchor verse pinned on Home
 - [x] Letter to your future self, shown in Journal on a chosen date
-- [ ] Seven-day gentle path for a feeling, built from its curated verses
+- [x] Seven-day gentle path for a feeling, built from its curated verses
 - [ ] Readable journal export to print or save as PDF
 - [ ] "This spoke to me" marks that favor a verse in the rotation
 - [ ] Time-of-day sky on Home
@@ -65,7 +65,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 
 - Real-device 60fps on mid-range Android and iPhone not measured (needs the owner's devices).
 - Screen-reader pass not done.
-- Phase D to fold into JSON Export/Import: personal keys outside schema 1 (`verselight-anchor`, `verselight-letters`).
+- Phase D to fold into JSON Export/Import: personal keys outside schema 1 (`verselight-anchor`, `verselight-letters`, `verselight-path`).
 - Results and Compare need JavaScript to show passages.
 
 ## Gotchas
@@ -153,3 +153,6 @@ Pin a verse from Results or the Morning star; Home shows it in WEB under the gre
 
 ### Letter to your future self (2026-11-21)
 Journal gains "Letters to your future self": write a letter, pick a day after today, and it stays sealed (only the date shows) until that local day, then opens in the list. Own key `verselight-letters`, validated and capped by pure `lib/letters.ts` with tests; plain text, not encrypted, not in Export yet (Phase D).
+
+### Seven-day gentle path (2026-11-21)
+Results gains "Walk a seven-day path": `/path/[emotion]/[sub]` (16 prebuilt pages) shows one curated verse a day in WEB with its question and prayer; later days stay closed until their local date. Start date lives in `verselight-path` (one active path), validated by pure `lib/gentle-path.ts` with tests; without JavaScript all days show.
