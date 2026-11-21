@@ -5,6 +5,7 @@ import { BrandMark } from "@/components/brand-mark";
 import { StorageNotice } from "@/components/storage-notice";
 import { SettingsSheet } from "@/components/settings-sheet";
 import { ThemeSync } from "@/components/theme-sync";
+import { ShortcutsDialog } from "@/components/shortcuts-dialog";
 import { AmbientSky } from "@/components/ambient-sky";
 
 export function SiteShell({ children, ambient = true }: Readonly<{ children: ReactNode; ambient?: boolean }>) {
@@ -26,7 +27,7 @@ export function SiteShell({ children, ambient = true }: Readonly<{ children: Rea
       <ViewTransition default="none" enter="page-arrival" exit="page-arrival"><main id="main-content" className="site-main" tabIndex={-1}>{children}</main></ViewTransition>
       <footer className="site-footer">
         <span>Come as you are. Take your time.</span>
-        <nav aria-label="About and sources"><Link href="/about">About and privacy</Link><Link href="/licenses">Sources and copyright notices</Link></nav>
+        <nav aria-label="About and sources"><Link href="/about">About and privacy</Link><Link href="/licenses">Sources and copyright notices</Link><ShortcutsDialog /></nav>
       </footer>
     </div>
   );
