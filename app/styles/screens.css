@@ -401,7 +401,7 @@
 .help-note a { color: var(--ink-2); text-decoration: underline; text-underline-offset: 3px; }
 
 /* How it's built: figures and headline numbers. */
-.craft-numbers { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-3); margin: 0; }
+.craft-numbers { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr)); gap: var(--space-3); margin: 0; }
 .craft-numbers div { padding: var(--space-4); border: 1px solid var(--hairline); border-radius: var(--radius-panel); }
 .craft-numbers dt { font-size: var(--text-heading-sm); letter-spacing: -0.02em; color: var(--ink); }
 .craft-numbers dd { margin: var(--space-1) 0 0; font-size: 14px; }

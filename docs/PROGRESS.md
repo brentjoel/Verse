@@ -143,3 +143,6 @@ x
 
 ### Write-up draft (2026-11-21)
 `docs/writeup.md` is a portfolio post draft built from real numbers in the repo, ready for the owner to edit. Not published anywhere; publishing stays an owner action.
+
+### Phase B audit (2026-11-21)
+Audit of /craft, /accessibility, footer links, the ?debug overlay and the sky card button: detector clean, footer targets 44px, no horizontal overflow at phone width, axe clean. One material fix: the /craft headline numbers sat 3+1 on desktop, now a balanced 2x2. Not run: a screen-reader pass, and the wheel's draw-call readout on a real GPU (headless uses List view).
