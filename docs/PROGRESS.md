@@ -35,7 +35,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 - [x] "This spoke to me" marks that favor a verse in the rotation
 - [x] Time-of-day sky on Home
 - [x] "Not sure what I feel?" three-question path
-- [ ] Offline reading: a service worker caching the app shell and public-domain data only, never NLT, no notifications
+- [x] Offline reading: a service worker caching the app shell and public-domain data only, never NLT, no notifications
 
 **Phase D: storage (one schema migration, version 2)**
 - [ ] Saved intensity and the check-in answer
@@ -168,3 +168,6 @@ Home gets a faint sky wash that follows the device's local hour (dawn 5-8, day 8
 
 ### Not sure what I feel (2026-11-21)
 Home links to `/not-sure`: three questions (where, what about, what would help) scored by fixed rules in pure `lib/feeling-finder.ts` point to one or two feelings. Tests prove every option names a real feeling and every feeling is reachable. Nothing stored; a hook point for the later on-device finder.
+
+### Offline reading (2026-11-21)
+`public/sw.js` caches the app shell, feeling indexes, seven-day paths and build assets, never Results, Compare or Share (so never NLT); no push or notifications. Offline Results requests open `/offline`, which reads the bundled WEB verses. Allowlist unit-tested; Playwright covers offline navigation and that no Results URL is stored.

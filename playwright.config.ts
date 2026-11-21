@@ -11,7 +11,7 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? [["github"], ["list"]] : "list",
   snapshotPathTemplate: "{testDir}/__screenshots__/{projectName}/{arg}{ext}",
-  use: { baseURL: `http://localhost:${port}`, trace: "retain-on-failure" },
+  use: { baseURL: `http://localhost:${port}`, trace: "retain-on-failure", serviceWorkers: "block" },
   // Pins the daily verse rotation so screenshots and flows see the same passages every day.
   webServer: { command: `npm run start -- -p ${port}`, env: { VERSELIGHT_TODAY: "2026-11-19" }, port, reuseExistingServer: !process.env.CI, timeout: 120_000 },
   projects: [
