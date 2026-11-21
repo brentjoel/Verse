@@ -321,3 +321,9 @@ test("the engineering overlay appears only with ?debug and stores nothing", asyn
   await expect(overlay.locator("div").first().locator("dd")).not.toHaveText("-");
   expect(await page.evaluate(() => JSON.stringify(localStorage).includes("debug"))).toBe(false);
 });
+
+test("the Accessibility page is reachable from the footer", async ({ page }) => {
+  await page.goto("/about");
+  await page.getByRole("navigation", { name: "About and sources" }).getByRole("link", { name: "Accessibility" }).click();
+  await expect(page.getByRole("heading", { name: "Accessibility", level: 1 })).toBeVisible();
+});
