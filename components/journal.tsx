@@ -4,6 +4,7 @@ import Link from "next/link";
 import { RemovalButton } from "@/components/removal-button";
 import { Constellation } from "@/components/constellation";
 import { NightSky, type GraceVerse } from "@/components/night-sky";
+import { SkyCardButton } from "@/components/sky-card-button";
 import { buildNightSky } from "@/lib/night-sky";
 import { useState } from "react";
 import emotions from "@/data/emotions.json";
@@ -71,7 +72,7 @@ export function Journal({ graceVerse }: { graceVerse: GraceVerse }) {
     {error && <p className="content-notice" role="alert">{error}</p>}
     <section className="library-section" aria-labelledby="calendar-heading">
       <div className="section-heading calendar-heading"><h2 id="calendar-heading">{formatMonth(first)}</h2><div className="local-actions"><div className="segmented" role="group" aria-label="Show this month as"><button type="button" className="chip" aria-pressed={view === "sky"} onClick={() => setView("sky")}>Sky</button><button type="button" className="chip" aria-pressed={view === "calendar"} onClick={() => setView("calendar")}>Calendar</button></div><button className="icon-button" aria-label="Previous month" data-tooltip="Previous month" onClick={() => setMonth(shiftDate(first, -1).slice(0, 7))} disabled={first <= "0001-02-01"}><span aria-hidden="true">&#8592;</span></button><button className="icon-button" aria-label="Next month" data-tooltip="Next month" onClick={() => setMonth(next.slice(0, 7))} disabled={first >= "9999-11-01"}><span aria-hidden="true">&#8594;</span></button></div></div>
-      {view === "sky" ? <NightSky sky={buildNightSky(first, last, activityDays, moodEntries, streakState.graceDates)} selected={selected} onSelect={date => { setSelected(date); setLimit(20); }} label={label} graceVerse={graceVerse} /> : <>
+      {view === "sky" ? (() => { const sky = buildNightSky(first, last, activityDays, moodEntries, streakState.graceDates); return <><NightSky sky={sky} selected={selected} onSelect={date => { setSelected(date); setLimit(20); }} label={label} graceVerse={graceVerse} />{sky.stars.length > 0 && <SkyCardButton sky={sky} month={formatMonth(first)} verse={graceVerse} />}</>; })() : <>
       <div className="calendar-scroll"><table className="journal-calendar" aria-describedby="calendar-key"><caption className="sr-only">{formatMonth(first)}</caption><thead><tr>{["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(day => <th scope="col" key={day}>{day}</th>)}</tr></thead><tbody>{Array.from({ length: cells.length / 7 }, (_, week) => <tr key={week}>{cells.slice(week * 7, week * 7 + 7).map((date, index) => {
         if (!date) return <td key={`blank-${index}`} />;
         const count = moodEntries.filter(mood => mood.localDate === date).length;
