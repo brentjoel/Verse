@@ -13,7 +13,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 **In flight:** return check-in ("How is your heart now?"), branch `feat/return-check-in`.
 
 **Phase A: quick wins**
-- [ ] Crisis resources: a quiet help link on Sad, Anxious and Doubtful results (international directory, local emergency number first)
+- [x] Crisis resources: a quiet help link on Sad, Anxious, Doubtful and Tired results (international directory, local emergency number first)
 - [ ] README that sells: autoplay demo GIF at the top, CI and Lighthouse badges, Built with
 - [ ] Bedtime mode: extra dim, warm, low-violet theme option in Settings
 - [ ] Remember the last verse you were reading per feeling (session only, no storage schema change)
@@ -99,6 +99,9 @@ New `/breathe` page and nav tab: a paced guide with Calm (4-4-6) and Steady (4-4
 
 ### More verses with daily rotation (2026-11-21)
 Each feeling now has 8 curated references (128 added, 211 unique), with drafted reflection and prayer prompts for owner review. Results show 4 a day on a rolling window by UTC day, with Read 4 more verses. Public-domain text fetched by `fetch:verses`; pure `lib/rotation.ts` with tests; Playwright pins the day.
+
+### Crisis resources (2026-11-21)
+Results for Sad, Anxious, Doubtful and Tired gain a quiet "If you are struggling" disclosure: local emergency services first, then the findahelpline.com directory (no tracking). Hidden in Focus mode. Pure `lib/help.ts` with tests; new e2e flow.
 
 ### Return check-in (2026-11-21)
 Home greets a returning visitor whose latest reflection is from an earlier local day: "Last time you felt X. How is your heart now?" with Lighter, About the same and Heavier, each pointing onward; Not now hides it for the day in its own localStorage key (schema stays 1). Pure `lib/check-in.ts` with tests. The answer is not saved: a candidate for the saved intensity migration.

@@ -378,7 +378,7 @@
 /* Focus reading: only the passage, its attribution and the pager remain. */
 .focus-toggle { margin-bottom: var(--space-2); }
 [data-focus] .focus-toggle { position: fixed; z-index: 30; top: calc(var(--space-2) + env(safe-area-inset-top)); right: var(--space-3); margin: 0; background: var(--canvas); }
-[data-focus] :is(.site-header, .site-nav, .site-footer, .ambient-sky, .back-link, .results-heading, .verse-actions, .reflect-section, .results-ending, .dawn-burst, .toast-region) { display: none !important; }
+[data-focus] :is(.site-header, .site-nav, .site-footer, .ambient-sky, .back-link, .results-heading, .verse-actions, .reflect-section, .results-ending, .help-note, .dawn-burst, .toast-region) { display: none !important; }
 [data-focus] .results-wrap { min-height: 100svh; display: grid; align-content: center; padding-block: var(--space-6, 60px); }
 [data-focus] .verse-text { font-size: calc(30px * var(--scripture-scale)); line-height: 1.55; }
 @media (min-width: 900px) { [data-focus] .verse-text { font-size: calc(38px * var(--scripture-scale)); } }
@@ -393,3 +393,9 @@
 .breathe-count { font-size: 40px; line-height: 1; color: var(--ink-2); font-variant-numeric: tabular-nums; min-height: 40px; }
 .breathe-round { min-height: 20px; }
 @media (prefers-reduced-motion: reduce) { .breathe-orb { transition: none; } }
+
+/* Quiet help note on heavier feelings */
+.help-note { margin-top: var(--space-5); font-size: 15px; font-weight: 300; color: var(--ink-3); }
+.help-note summary { cursor: pointer; width: fit-content; padding-block: var(--space-1); }
+.help-note p { max-width: 62ch; margin-top: var(--space-2); line-height: 1.7; }
+.help-note a { color: var(--ink-2); text-decoration: underline; text-underline-offset: 3px; }
