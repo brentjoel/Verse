@@ -53,7 +53,8 @@ export function FeelingWords({ emotions }: { emotions: readonly Feeling[] }) {
       <p id="feeling-words-help" className="local-help">This runs on your device. Nothing you type is sent anywhere or saved.</p>
       <div className="local-actions"><button type="button" className="compare-link" disabled={!text.trim() || state.kind === "busy"} onClick={() => void find()}>Find a feeling</button></div>
     </div>
-    <div aria-live="polite">
+    {/* No live region: the result heading takes focus, and a load failure is its own alert. */}
+    <div>
       {state.kind === "failed" && <p className="local-error" role="alert">The word finder could not load here. The three questions below work the same way.</p>}
       {state.kind === "found" && <div className="finder-words-result">
         <h3 ref={heading} tabIndex={-1}>{found.length ? `This sounds like ${found[0].feeling.name}` : "I could not find a feeling in those words"}</h3>
