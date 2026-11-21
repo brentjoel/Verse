@@ -1,222 +1,111 @@
 # Verselight architecture
 
-Updated 2026-10-17. **DONE** means built. Steps 1 to 9, motion polish and the security audit are DONE, merged on main and verified on the live site per owner confirmation. **PLANNED** applies only to optional Steps 10 and 11, which are not started. See [SPEC](SPEC.md), [progress](PROGRESS.md), and [design](DESIGN.md).
+Current-state map. History lives in git; this file says how things work now.
 
-| Status | Scope |
-| --- | --- |
-| DONE | Steps 1 to 7: setup, curated reading, translations/Compare, local saves/collections/backups, journal/streaks/badges, daily WEB/share cards and launch verification |
-| DONE | Step 8: wheel picker with accessible fallback and transient intensity |
-| DONE | Step 9: dawn reveal, theme palettes and results carousel |
-| DONE | Motion polish: reveal lifecycle, transitions, visual design, branding/metadata and mobile light-theme correction |
-| DONE | Security audit: input hardening, security headers, public WEB image caching and dependency maintenance; accepted limitations remain in SECURITY.md |
-| PLANNED | Step 10: optional night sky journal, not started |
-| PLANNED | Step 11: optional polish and delight additions, not started; already delivered presentation details do not start this step |
-
-## Overview
-
-**Step 8:** Home passes existing emotion data and the original server-rendered grid into a client WheelPicker. Eligible browsers dynamically load WheelScene/Three.js; labels and controls stay DOM-based. The scene has one instanced bar mesh, capped DPR, hidden-tab pause and explicit GPU cleanup. Reduced motion, low capability, WebGL failure and slow rendering retain the original grid. Inner selection reuses FeelingLink and existing browser-only recordMood behavior; routes and translation rendering stay unchanged. Intensity lives only in component state and scales the decorative waveform, never storage, URLs or requests. No schema/migration change. Motion polish extends Step 9 with one client DawnReveal per server-rendered passage. Every passage has word spans preserving exact whitespace; active-verse context restarts readable emphasis on each visit and translation change. Skip is scoped to its current disposable run. Reduced motion is instant; hidden tabs and theme changes cancel effects. Wheel navigation intent is no longer a reveal gate. Emotion atmosphere reuses CSS tokens. Scene palettes now live in the global root theme blocks; WebGL observes root data-theme and reads the same CSS shade token. Dawn cancels captured-color effects on theme change. Shared pre-paint resolution honors saved choices then system preference; the toggle observes live system changes until an explicit choice. Browser preference adoption keeps automatic system changes out of the explicit theme key. No personal schema or provider changes. Only optional Steps 10 and 11 remain PLANNED and not started. See [wheel UI plan](wheel-ui-plan.md).
-
-**Step 9 presentation redesign:** The existing results server passes its rendered passage articles as children to a small client VerseCarousel. Before hydration and without JavaScript all four remain visible; enhancement adds transient active-index/list state, touch/keyboard controls and announcements. No new persistence or passage fetch path. Shared QuietDialog uses native modal dialogs around existing daily and WEB share controls; SiteNav adds pathname-based active presentation through a Suspense boundary. Root page/scene palettes supply night and morning styling, with transparent canvas clearing and root-token reads on theme changes. Journal changes only its calendar scroll wrapper. Data, schema, browser bridge, routes, translation selection/providers, reference-only saves and public WEB-only image requests remain unchanged.
-
-**Decision:** Everyone is a guest and every feature is available without an identity requirement. Verselight is strictly noncommercial, with no ads, payments, subscriptions, donations, or paid features. No server persistence will hold personal data.
+## Flow
 
 ```text
-DONE
-Browser -> static home and two-step feeling picker
-        -> translation preference cookie + validated compare URL
-        -> Next.js Server Components + Suspense
-             -> emotions.json + prompts.json
-             -> server-only passage service
-                  -> KJV / WEB / ASV / BSB static JSON
-                  -> official NLT API with server-only key
-                       -> failure/quota: WEB + visible fallback note
-             -> source text, actual translation tag, attribution
-Browser -> localStorage theme preference -> CSS dark/light variables
-
-DONE
-Browser interactions -> typed lib/storage.ts -> versioned localStorage JSON
-                        -> saved references, collections, preferences
-Browser file APIs <-> validated JSON Export and Import (local only)
-
-DONE Step 5
-Browser -> local mood journal, activity ledger -> pure streak/badge calculations
-No personal records flow to the Next.js server or any external service.
+Browser -> Home (constellation wheel or server-rendered List) -> feeling page -> Results
+Results / Compare -> Server Components inside Suspense (read the translation cookie)
+  -> data/emotions.json + data/prompts.json (curated references and prompts)
+  -> lib/verse-passage.ts (server-only dispatcher)
+       -> KJV / WEB / ASV / BSB: data/verses/*.json
+       -> NLT: official Tyndale API with NLT_API_KEY
+            -> any failure or quota: local WEB with a visible fallback note
+Browser -> lib/storage.ts -> localStorage "verselight-data" (saves, collections, journal, streaks, badges)
+Browser <-> local JSON Export / Import (never uploaded)
 ```
 
-Picker, four verses per feeling, prompts, translation preference, comparison and credits work. Reference-only saved verses, collections, My Verses and local backups. **Step 5:** Journal, heatmap, streaks and badges. **Step 6:** WEB share cards and a real local daily WEB passage, merged into main per owner confirmation. Step 7 launch verification is DONE per owner confirmation.
+No personal record reaches the server. The translation cookie is the one documented preference exception.
 
 ## Folder map
 
-| Status | Path | Responsibility |
-| --- | --- | --- |
-| DONE | `app/` | App Router pages, root layout, CSS, error and not-found screens |
-| DONE | `app/emotions/[emotion]/` | Broad feelings and nested results |
-| DONE | `app/compare/`, `app/licenses/` | Comparison and publisher notices |
-| DONE | `components/`, `components/ui/` | Shared shell, theme/translation controls, notices, attribution, shadcn foundation |
-| DONE | `lib/emotions.ts`, `lib/compare.ts` | Typed content lookups and URL validation |
-| DONE | `lib/translations.ts`, `lib/translation-preference.ts` | Extensible metadata, ids, defaults, validated cookie reading |
-| DONE | `lib/verses.ts`, `lib/verse-passage.ts`, `lib/bible-api.ts` | Static reader, server-only dispatcher, NLT parser and request guards |
-| DONE | `data/` | Emotions, prompts, public-domain verses and notice metadata |
-| DONE | `scripts/` | Public-domain downloader, validator, provider tests |
-| DONE | `proxy.ts` | Results path validation before streaming for HTTP 404 |
-| DONE | `public/`, `docs/` | Static assets and project documents |
-| DONE | `lib/storage.ts`, `lib/storage-schema.ts`, `lib/storage-migrations.ts`, `lib/browser-storage.ts` | Typed browser persistence, strict validation, migration runner, local backups and reactive client bridge |
-| DONE | `lib/streaks.ts`, `lib/badges.ts` | Pure calendar, continuity and award functions |
-| DONE | `app/my-verses/`, local storage components | Static shell with client-only saved references, collections, backups and recovery |
-| DONE | `app/journal/` | Static shell with client-only journal |
+| Path | Responsibility |
+| --- | --- |
+| `app/` | Routes, root layout, error and not-found screens. `app/styles/` holds `tokens`, `base`, `layout`, `components`, `screens` CSS; `globals.css` only imports them |
+| `app/emotions/[emotion]/[sub]/` | Results: carousel, dawn reveal, Save, Compare, Share, Reflect |
+| `app/compare/`, `app/my-verses/`, `app/journal/`, `app/about/`, `app/licenses/`, `app/share/` | Compare, personal notebooks, credits, WEB share-card route |
+| `components/` | Client and server UI; `ui/` is shadcn |
+| `lib/` | Pure logic and services (see below) |
+| `data/` | Emotions, prompts, public-domain verses, translation notices |
+| `scripts/` | `test-*.mjs` unit tests, data validator, verse fetcher, brand-asset generator |
+| `e2e/` | Playwright flows, fixes, visual (`@visual`) and README capture (`@capture`) |
+| `proxy.ts` | Rejects unknown emotion/feeling pairs before streaming so they return HTTP 404 |
+| `instrumentation.ts` | `onRequestError` emits only the fixed `server_error` code |
 
-## Data sources and rendering
+Key `lib/` modules: `constellation.ts` (hues, tiers, `buildConstellation`, `leanWeights`), `wheel.ts`, `dawn.ts` (one-use dawn and undo intents), `theme.ts` (pre-paint script, text size, `data-js`), `root-preferences.ts`, `translation-client.ts`, `translations.ts`, `translation-preference.ts`, `verse-passage.ts`, `bible-api.ts` (NLT fetch and parse), `nlt-quota.ts`, `storage*.ts`, `browser-storage.ts`, `streaks.ts`, `badges.ts`, `dates.ts`, `daily-verse.ts`, `share-card.ts`, `social-image.tsx`, `operational-monitor.ts`, `site-url.ts`.
 
-`data/emotions.json` has eight broad emotions, 32 specific feelings, and four references per feeling. `data/prompts.json` covers 84 unique references. `data/verses/{kjv,web,asv,bsb}.json` holds exact public-domain text by reference. KJV, WEB and ASV were downloaded from bible-api.com; BSB from BereanBible.com. KJV has special UK rights. `data/translation-notices.json` holds copyright metadata only. NLT is fetched at runtime. Never invent or paraphrase Bible text. Source terms remain in [translation licensing](TRANSLATION-LICENSES.md).
+## Rendering
 
-| Status | Route / behavior | Rendering and reason |
-| --- | --- | --- |
-| DONE | `/`, `/licenses`, `/about` | Static local content, with client controls |
-| DONE | `/emotions/[emotion]` | Eight prebuilt routes, generateStaticParams and ensureStatic="navigation" |
-| DONE | `/emotions/[emotion]/[sub]` | Known params generated; static shell, request-time passages inside Suspense because translation uses async cookies |
-| DONE | `/compare` | Static shell and request-time comparison inside Suspense for validated search params/cookie |
-| DONE | Results path proxy | Rejects unknown parent/feeling pairs before streaming to preserve HTTP 404 |
-| DONE | `/my-verses` | Static page shell; client reads browser storage after hydration, with loading/empty/error states |
-| DONE | Journal | Static shell and client-only personal history |
-| DONE Step 6 | `/share` and daily verse | WEB-only ImageResponse route with strict public inputs; client daily selection from public WEB data, no date or personal data requests |
+Next.js 16 App Router with Cache Components. Server Components by default.
 
-Next.js 16.4 enables Cache Components and Partial Prefetching. Server Components are the default. Small client controls handle theme and translation. Static pages read the preference cookie in the browser; results and compare use server cookie reads behind Suspense. Personal records are outside server rendering, requests and shared caches. Static data has no artificial loading delay; dynamic passages already show loading notices.
+| Route | Rendering |
+| --- | --- |
+| `/`, `/about`, `/licenses` | Static, with client controls |
+| `/emotions/[emotion]` | Eight prebuilt routes |
+| `/emotions/[emotion]/[sub]`, `/compare` | Static shell; passages stream inside Suspense because they read the cookie |
+| `/my-verses`, `/journal` | Static shell; client reads storage after hydration with loading, empty and error states |
+| `/share` | WEB-only `ImageResponse`, strict inputs, cached by canonical reference |
 
-## Translation flow
+Known limitation: without JavaScript, Results and Compare show only their loading line.
 
-`lib/translations.ts` supplies five active metadata entries and derived `TranslationId`: NLT, KJV, WEB, ASV, BSB. The existing NIV option is disabled Coming soon and is not a valid active id. Adding a provider requires metadata, validation, dispatch, attribution, fallback behavior, tests and licensed access. The current dispatcher is the implemented provider abstraction; no generic adapter registry is built.
+## Constellation wheel
 
-Selection validates an id, writes `translation` for one year at path `/`, SameSite=Lax and Secure on HTTPS, then refreshes the route. Missing/unknown cookies resolve to NLT; valid choices survive. Results validate emotion/feeling pairs. Compare validates the known reference, deduplicates ids, accepts two to four translations and allowlists the return path. Default comparison uses the preference plus WEB, or BSB when WEB is preferred.
+- `components/constellation-scene.tsx`: one `THREE.Points` draw call with a custom shader. Geometry from the seeded `buildConstellation`. Rotation, selection, bloom, intensity, pointer glow and `uLean` (Project 3 hook) are uniforms eased on the CPU.
+- Night uses additive blending; Daylight uses normal blending with deeper hues, switched by a `data-theme` observer.
+- Quality tiers: `initialTier` picks high, medium, low or list from device hints; a two-second fps probe steps down with `nextTier` or falls back to List. WebGL failure or context loss also falls back. The List view is the server and no-JavaScript picker.
+- `.wheel-canvas` exposes `data-daylight` and `data-tier` for e2e.
+- Intensity is component state only; it is never stored, sent or put in URLs.
 
-The server-only service reads local JSON for static translations or calls the official Tyndale endpoint using `NLT_API_KEY`. NLT fetches use `cache: "no-store"`, an eight-second timeout and no redirects. Development HMR response caching is disabled. parse5 checks the returned reference and verse range, removes labels/notes, decodes entities and returns source text with `(NLT)`. Remote HTML is never injected. No NLT verse text is persisted to files, framework caches or the repository; runtime text lives only for request/display. Retain per-passage publisher links and the full notice at `/licenses#nlt`.
+## Translations
 
-**Step 7:** The existing server passage path (no standalone NLT HTTP route) caps curated ranges at 50 verses. A per-instance guard admits at most 20 attempts per rolling minute and 500 TEST or 5,000 registered-key attempts per rolling 24 hours. Reservations happen synchronously before the first await, so concurrent calls in one instance cannot overspend that budget. Failed attempts remain counted. It stores bounded timestamps and cooldowns only, never IPs, cookies, references, visitor identifiers or Scripture. HTTP 429 and 503 honor seconds or HTTP-date Retry-After with a 60-second minimum/default; 401/403 pause requests for 24 hours. A later cooldown never shortens an existing one. No upstream retries. Streamed bodies are capped at 200,000 bytes, including when Content-Length is absent or wrong. Fetch/parse errors are replaced with fixed errors without causes or credential-bearing URLs.
+- `lib/translations.ts`: active NLT, KJV, WEB, ASV, BSB; NIV is disabled Coming soon. A new provider needs metadata, validation, dispatch, attribution, fallback, tests and licensed access.
+- Cookie `translation`: one year, path `/`, SameSite=Lax, Secure on HTTPS. Missing or unknown resolves to NLT.
+- Compare accepts a known reference and two to four deduplicated translations.
+- NLT: `cache: "no-store"`, 8 s timeout, no redirects, body capped at 200,000 bytes, parse5 checks reference and verse range and strips notes. Remote HTML is never injected. Per-instance guard: 20 attempts per minute, 5,000 per day (500 for `TEST`), Retry-After honored with a 60 s minimum, 401/403 pause for a day. Counters are not shared across instances (owner accepted, 2026-10-15).
+- No NLT text in storage, backups, images, files or framework caches.
 
-**Accepted limitation, owner decision 2026-10-15:** Rate limiting is best effort because serverless instances do not share memory. Every restart, instance and deployment has fresh counters/cooldowns; these limits do not enforce the account-wide quota or guarantee availability under abuse. Provider quotas remain authoritative. No Redis, shared quota service, personal-data service or new dependency is introduced. A shared operational store is a future option if traffic grows. Tests explicitly demonstrate a new instance bypassing an existing instance's cooldown. Missing key, guard rejection, timeout, HTTP/network error, invalid/oversized passage or provider quota failure preserves the actual WEB tag and explicit fallback note. Existing valid translation preference cookies remain unchanged. The owner explicitly accepted this limitation in place of the original deployment-wide Step 7 criterion.
+## Storage
 
-**Caching:** No persistent NLT response caching, request deduplication or licensed-text storage was added. API pages do not specify a safe cache TTL. Existing no-store, disabled HMR fetch caching, per-passage markers and full publisher notices remain. See translation terms and issued-key caveats.
-
-Backups and saved verses contain references and translation ids only, including for NLT. Do not cache licensed text in browser storage or exported JSON. Step 7 strengthens the existing request path with the explicitly accepted per-instance limitation above.
-
-## Client storage design
-
-`lib/storage-schema.ts` validates personal data, envelopes and backups. `lib/storage.ts` is a browser-independent store with injected I/O and immutable snapshots. `lib/storage-migrations.ts` runs sequential pure migrations on copies. `lib/browser-storage.ts` supplies the client-only singleton, browser preferences, subscription hook and Web Locks adapter. No storage reads occur during server rendering or module initialization. No new dependencies were added.
-
-**Decision:** Use localStorage key `verselight-data`, with `schemaVersion: 1`, increasing `revision`, `updatedAt` ISO timestamp and `data`. A single JSON write replaces a validated envelope. The initial scope is small text/reference records, with no images or verse text. IndexedDB remains unnecessary; reconsider only with measured size/performance evidence. Version 1 is the first released format; no invented legacy migration exists. Unknown future versions and older versions without an explicitly registered migration are rejected while preserving original data. Tests exercise multi-step migration ordering, copy isolation and invalid/missing steps.
-
-**Validation:** JSON is parsed as unknown. Exact keys, active translations, known canonical references, valid matching feeling context, UUIDs, ISO instants, unique record ids, reference/translation pairs and collection membership are checked. Reject unsafe prototype-related keys, unexpected fields (including verse text), duplicate or dangling links, files/envelopes over 5 MiB UTF-8 and lists over 10,000 entries. Collection names are trimmed, 1-80 characters. Accepted edits must fit both persisted and exported representations. Step 5 accepts bounded 2,000-character notes, matching feeling ids, valid local dates/ISO instants, unique activity dates and sources, offsets from -840 to 840 minutes matching the recorded date/instant, supported unique badge keys, and paired maximum clock metadata covering the ledger. Reflections must have an emotion activity day. Streak totals and grace dates are rebuilt from the ledger on validation and Import.
-
-**Writes and fallback:** The typed methods return success/error results. Each write re-reads and compares the exact stored value before replacement. Cooperating browser tabs use a named Web Lock when the API is available. Storage/focus events detect another tab's writes or clearing and block edits until explicit reload; Export preserves the current tab's view first. Without Web Locks, the stored-value checks are best effort and cannot eliminate a simultaneous check/write race. No server coordination is added.
-
-When reads fail or ordinary writes exceed browser quota, the shared store keeps edits in memory for this tab's session and shows a notice with an Export link. No automatic retry overwrites persisted data. Reload explicitly warns about losing session changes. A persistent Import/reset write failure leaves both visible and persisted records unchanged. Unreadable stored data is blocked rather than erased, with a separate raw recovery download and confirmed fresh start. The raw file is labeled as unvalidated data, not a normal backup.
-
-**DONE Export/Import:** Export creates a local browser download with `format: "verselight-backup"`, `schemaVersion`, `exportedAt` and validated data, never Scripture or keys. Import reads the selected file locally after a file-size check, migrates only supported schemas, validates every record and relationship, previews reference/collection/reflection/activity/badge counts and warns about full replacement. Export of current data is offered before the explicit Replace confirmation. Cancellation, invalid files, stale previews, conflicts and failed persistent writes preserve current records. Memory-only imports carry a session-only warning. Backup files are unencrypted; the UI tells visitors to keep them safe. No upload, remote conversion or automatic download occurs.
-
-### Personal data shapes
-
-Stable browser-generated UUIDs, canonical curated references and active TranslationId values. Saves and collections have ISO device instants. Preferences, saves, collections and the envelope are implemented. **Step 5:** Full MoodEntry, ActivityDay, StreakState and Badge behavior below is implemented. Schema 1 retains the reserved fields and accepts both Step 4 empty progress and the validated Step 5 records. No structural migration is necessary. Streak totals and consumed grace are reconstructed from the activity ledger; historical earned badges are retained. Older clients reject nonempty progress rather than silently discarding it.
+- `lib/storage-schema.ts` validates; `lib/storage.ts` is a browser-independent store with injected I/O and a clock; `lib/storage-migrations.ts` runs pure migrations; `lib/browser-storage.ts` is the client singleton, hook and Web Locks adapter.
+- Envelope: `schemaVersion: 1`, `revision`, `updatedAt`, `data`. Unknown versions are rejected without touching stored data. Any stored-shape change needs a schema bump, migration, validation, older-backup import and tests.
+- Validation: exact keys, active translations, curated references, UUIDs, dates, unique records and valid links. Limits: 5 MiB, 10,000 items per list, 80-character collection names, 2,000-character notes. Verse text fields are rejected.
+- Writes re-read and compare before replacing; tabs coordinate with a Web Lock and block edits on conflict until reload. Storage failure keeps edits in memory for the tab with an Export prompt. Unreadable data is blocked, never erased, with a raw recovery download.
+- Backup: `format: "verselight-backup"`, schema version, `exportedAt`, validated data. Import previews counts and needs confirmation before full replacement.
+- `recordMood(emotion, specific, id?)` is called by `FeelingLink` on ordinary navigation; navigation always proceeds even if recording fails. The id is handed to Results for Undo.
 
 | Shape | Fields |
 | --- | --- |
-| `Preferences` | `theme: "dark" or "light"`, `preferredTranslation: TranslationId` |
-| `SavedVerse` | `id`, `reference`, `translationId`, optional `emotionId` and `specificEmotionId` (valid pair), `createdAt` |
-| `Collection` | `id`, `name`, `savedVerseIds: string[]` (unique valid saved ids), `createdAt`, `updatedAt` |
+| `Preferences` | `theme`, `preferredTranslation` |
+| `SavedVerse` | `id`, `reference`, `translationId`, optional `emotionId`/`specificEmotionId`, `createdAt` |
+| `Collection` | `id`, `name`, `savedVerseIds`, `createdAt`, `updatedAt` |
 | `MoodEntry` | `id`, `emotionId`, `specificEmotionId`, optional `note`, `localDate`, `createdAt` |
-| `ActivityDay` | `localDate` (unique), `firstActivityAt`, `utcOffsetMinutes` at recording, `sources: ("emotion" or "save")[]` (unique) |
-| `StreakState` | `currentStreak`, `longestStreak`, optional `lastActiveDate`, `graceDates: LocalDate[]`, optional `maxObservedLocalDate` and `maxObservedAt`; derived from activity plus clock-safety metadata |
-| `Badge` | `key`, `earnedAt`; one award per supported key |
-| `PersonalData` | `preferences`, `savedVerses`, `collections`, `moodEntries`, `activityDays`, `streakState`, `badges` |
+| `ActivityDay` | `localDate`, `firstActivityAt`, `utcOffsetMinutes`, `sources` (`emotion`, `save`) |
+| `StreakState` | `currentStreak`, `longestStreak`, `lastActiveDate?`, `graceDates`, `maxObservedLocalDate?`, `maxObservedAt?` |
+| `Badge` | `key`, `earnedAt` |
 
+Saves deduplicate by reference plus translation. Deleting a save removes its memberships; deleting a collection keeps its saves.
 
-Saves deduplicate by `(reference, translationId)`. Removing a saved verse removes collection memberships; collection deletion keeps saves. My Verses stores/displays references only and opens the existing public comparison view on demand, with prefetch disabled. Only public curated reference/translation inputs go to that reading view, never collection names or saved-record ids. The Save button stores the actual displayed translation, including WEB when NLT falls back. Step 5 records save activity and awards milestones. Existing Step 4 saves do not create historical activity.
+## Streaks and badges
 
-**Preferences:** Adopt the current DOM theme and validated translation cookie on client load; missing/invalid cookies retain the existing NLT default behavior. These reconcile the envelope's in-memory preferences and persist on the next accepted edit. Explicit theme/translation changes also update the envelope when writable. Confirmed Import applies the backup's theme to the DOM and existing `verselight-theme` key, writes the existing preference cookie, notifies the selector and refreshes the public route. The valid cookie remains the runtime server passage source; conflict/blocked stores keep working controls without replacing unreadable or competing records. Theme/cookie values are the only preference mirrors outside the envelope.
+Pure functions in `lib/streaks.ts` and `lib/badges.ts`, tested in `scripts/test-progress.mjs`.
 
-## Streak logic
-
-Everything here is **DONE** in Step 5. Keep functions pure in `lib/`; pass device timestamp, local calendar date, offset and existing ledger explicitly. Keep storage I/O outside calculations. There is no trusted server clock or anti-cheat guarantee in a local-only app.
-
-- A day is the device's local calendar date, midnight to next midnight, including DST days. Read local year/month/day, not UTC date and not elapsed 24-hour buckets. Retain the date and offset recorded at the time; later travel does not rewrite history.
-- Selecting a specific feeling or saving a verse records activity. Repeated actions and retries on the same date merge sources into one ActivityDay. Collection/note edits do not add days. Record a mood entry for the selection in Step 5; extra note changes do not multiply daily counts.
-- One non-accumulating grace day is available per local Monday-through-Sunday week. On the next activity, bridge exactly one missed date only when its week has no consumed grace. Store that date in `graceDates`, assigned to the missed date's week even at a Sunday/Monday boundary. Grace preserves continuity but adds no active day to streak length or badges. Larger gaps or unavailable grace start a new streak. Retry never consumes grace twice.
-- Derive current/longest streaks from the activity ledger and validated grace dates, counting active days only. Keep the completed run visible through one pending missed date if grace is available; break it when that allowance is exceeded, and consume grace only upon return. Recompute on load and qualifying activity so the displayed streak does not stay stale indefinitely.
-- Compare the supplied clock with persisted max-observed timestamp/date. On a backward timestamp/date, avoid duplicate counts, new grace consumption, badge awards or rewriting previous days; show a warm clock-change notice and resume accrual once time catches up. A large forward jump is evaluated as a real gap, never filled with invented activity. Detectable changes cannot establish true elapsed time; local clock manipulation cannot be fully prevented. Keep prior dates fixed across timezone changes and document this tradeoff.
-- Badge keys: `streak-3`, `streak-7`, `streak-30`, `streak-100`, `first-save`, `saved-10`, `first-collection`, `first-mood`. Award once on qualifying evidence, retain earned awards when ordinary content is removed, and validate supported keys and timestamps on Import using the backup rules above.
-
-**Tests:** Repeated same-day activity, retries, no activity, one and multiple missed dates, used grace, Monday/Sunday and year/leap-day boundaries, DST, clock rollback/forward, timezone travel, import recomputation and duplicate badge prevention. Streak totals are derived; clock metadata is safety input rather than proof of activity.
-
-## Privacy
-
-**Decision:** Never send personal records, notes, backups, activity, streaks or badges to any server. No analytics or tracking is present; ask before adding either. Personal data stays in this browser and origin; no cross-device synchronization. Clearing browser data, private browsing, device loss or eviction can lose it, so explain Export and Import. Backups are unencrypted local files; do not imply device-level secrecy.
-
-**Limitation:** The existing translation cookie goes to this site's server to select passages. Requests also expose normal network metadata; NLT requests send a curated passage reference and the server key, never personal records. This is the narrow documented preference exception to the local-only rule. Never put personal data in URLs, cookies, logs, share-image requests or monitoring reports. **Step 6:** Share cards use public WEB reference/translation data; browser download fetches omit cookies and referrers. Private notes and mood history are excluded. Step 7 adds only fixed operational server warnings; analytics or tracking still require approval.
+- A day is the device's local calendar date. Choosing a feeling or saving a verse counts once per day. Recorded dates never change after travel.
+- One grace day per Monday to Sunday week bridges exactly one missed date; it keeps continuity but adds no active day.
+- Backward clock changes freeze accrual until time catches up; forward jumps are real gaps.
+- Totals are rebuilt from the activity ledger on load and Import.
+- Badges: `streak-3`, `streak-7`, `streak-30`, `streak-100`, `first-save`, `saved-10`, `first-collection`, `first-mood`. Earned once, kept when content is removed.
 
 ## Daily verse and sharing
 
-Home passes the existing public WEB reference/text map to a small client component. Sorted canonical references form a stable 84-passage cycle indexed by `(localDayOfYear - 1) % 84`, resetting each January 1. The pure helper calculates day of year from device-local calendar parts with UTC arithmetic solely to avoid DST day lengths. Leap day has its own ordinal; no reference is missing on day 366. The cycle repeats within the year, rather than claiming 366 unique passages. Hydration shows a loading message until the local date is available; a timer and focus/visibility events refresh across midnight or travel. Dates and timezone are never sent to a server. WEB is explicitly labeled, with comparison available for other preferred translations. No-JavaScript and missing-content states offer a public reading link.
+- Daily verse: WEB only, `(localDayOfYear - 1) % 84` over the sorted curated references, computed on the device. Dates are never sent.
+- `GET /share?ref=<reference>&translation=web` rejects anything else. Successful PNGs are cached (1 day browser, 30 days shared); errors are `no-store`. The share dialog fetches without cookies and reuses the blob for preview, native share and download.
+- Social images contain brand copy only.
 
-`GET /share?ref=<canonical reference>&translation=web` rejects unknown references, other translations, extra fields and repeated parameters. It imports WEB only, never the licensed provider or personal store. ImageResponse renders complete exact text, reference, translation and source credit at 1200px width with content-dependent height. The route consumes rendering before responding so errors return a useful 503; invalid requests return 400, unsupported POST returns 405. Invalid/error responses are no-store. The security audit caches completed public WEB image bytes by canonical reference with cacheLife("max"); successful responses use one-day browser and 30-day shared caching with one-day stale-while-revalidate. Download controls allow ordinary HTTP caching. NLT is never part of this cache. Controls on Home, results and comparison download PNGs via browser object URLs or open the public image in a new tab. Only an explicit click starts an image request. Downloads have timeout, loading, status and retry guidance; object URLs are revoked. This introduces no NLT endpoint, dependencies, analytics or personal data service.
+## Settings and theme
 
-## Environment and deployment
+`components/settings-sheet.tsx` sets translation, theme (Night, Daylight, System) and text size. The pre-paint script in `lib/theme.ts` applies theme and text size before first paint (the only `dangerouslySetInnerHTML`).
 
-| Status | Environment name | Purpose |
-| --- | --- | --- |
-| DONE | `NLT_API_KEY` | Server-only official Tyndale credential |
-| DONE Step 7 | `NEXT_PUBLIC_SITE_URL` | Validated public build-time origin for About link and metadata; localhost default locally |
+## Monitoring
 
-`.env.example` lists the name; `.env.local` is ignored. Never commit or print values. Vercel is the Next.js deployment target and GitHub is the source remote. **Operational verification:** Vercel launch checks are complete per owner confirmation. Git previews create a preview after a branch push. Use the branch deployment URL from Vercel or the GitHub deployment check, review it, and wait for explicit approval before merging to main. Branch storage is origin-specific and does not automatically share production records. No server data service is required.
-
-## Key decisions
-
-| Status | Decision |
-| --- | --- |
-| DONE | Everyone is a guest; all eventual features work without identity gates |
-| DONE | Strictly noncommercial; NLT default, WEB fallback, four static translations, existing disabled NIV |
-| DONE | Static public shells with dynamic cookie-dependent passages; server key and no persistent NLT text |
-| DONE | Preserve current CSS, controls, routes and working features in this documentation change |
-| DONE | Typed localStorage layer, schema-1 validation, migration runner and validated local JSON backups in Step 4 |
-| DONE | Pure local-date streaks, explicit weekly grace ledger and badge calculations in Step 5 |
-| DONE Step 6 | WEB share cards, daily verse and accessibility polish; merged into main per owner |
-| DONE Step 7 | About/privacy, credits, per-instance NLT guards, fixed warnings and launch README |
-| DONE | Step 7 hosting and preview/accessibility verification per owner confirmation |
-
-**Workflow:** Typecheck, lint and build are required before completion. Build includes data validation. Provider tests are available as `npm.cmd run test:bible-api`. `npm.cmd run test:storage` covers persistence, collection relationships, import validation, failure preservation, migrations, memory fallback and tab conflicts. `npm.cmd run test:progress` covers calendar/streak behavior, clock/timezone changes, DST, grace exhaustion, notes and progress imports. No new dependencies were added in Step 4. Live-site verification is complete per owner confirmation; historical automated and browser-review evidence remains in PROGRESS.md and SECURITY.md.
-
-Step 5 implementation details: `components/feeling-link.tsx` records a reflection during ordinary client navigation to a selected feeling, before navigating to the existing public verse route. Direct visits and modified/new-tab links remain reading actions. The journal edits/removes notes locally and filters a monthly heatmap by recorded dates. Removing a reflection retains activity and awards. `PersonalStore` accepts an injected local clock for deterministic tests, captures it once per transaction, and updates maximum observations at safe writes and minute/focus refreshes through the browser bridge. Backward time blocks new reflections and progress while allowing reference saves and existing-content edits. Recovery notices remain shared. Imported future clock metadata may conservatively pause accrual until the device catches up. No data requests, licensed-text changes or dependencies were added.
-
-## Step 7 operational review
-
-Licensed requests explicitly await Next.js connection() before quota clocks or provider work, excluding them from prerender/prefetch. Warning throttling uses performance.now rather than a wall clock.
-
-The static About page shares complete translation credits with /licenses and explains browser-only records, deletion/eviction, unencrypted backups, origin separation, translation-cookie exception and normal network/hosting exposure. NEXT_PUBLIC_SITE_URL supplies metadataBase, About canonical/OG URL and its site link. It must be an HTTPS origin (HTTP localhost allowed for development); credentials, path, query and fragment are rejected with a fixed error. The owner-supplied URL is in .env.example and README, not hardcoded in app code. Changing it requires a build. No personal metadata is generated.
-
-instrumentation.ts onRequestError accepts no arguments and emits only server_error. The passage fallback emits only nlt_fallback. The logger allows just those codes and emits at most once per code per minute per instance. No error message, stack, digest, request, cookie, URL, user input or personal record is accepted or sent to a monitoring service. No browser error upload, analytics or tracking. These are sampled operational warnings, not accurate traffic counts or durable alerts. Hosting/framework access logs and outgoing-fetch tracing are outside this logger: review retention/access, disable personal/body/cookie capture and credential-bearing fetch tracing by hand. Never log raw provider failures.
-
-Launch verification, motion polish and the security audit are merged and live-verified per owner confirmation on 2026-10-17. README retains a reusable deployment verification checklist and identifies the Vercel project, GitHub repository and live URL. Historical pending handoff notes are superseded by this confirmation; accepted security limitations remain documented in SECURITY.md. Future branches still require owner approval before merge, with no independent production deployment.
-
-## Motion polish reveal lifecycle
-The carousel provides transient active-verse context to each server-rendered passage. DawnReveal owns a disposable run per activation and is keyed by passage/translation. Hidden slides cancel effects; revisiting starts a full fresh run, including after Skip. Every passage preserves exact whitespace in DOM spans. Reduced motion, hidden tabs, theme changes and unmount cancel animation, frames and timers. The earlier wheel-intent helper is retained for compatibility but no longer gates display. No personal data, provider, persistence or route behavior changes.
-
-## Shared motion presentation
-React 19.3 ViewTransition in SiteShell supplies route arrivals; VerseCarousel tags transient next/previous state transitions for directional snapshots. CSS provides entrance fallback without API support, passes pointer events through transition overlays and removes movement for reduced motion. Existing server/client boundaries, routes and requests remain. RemovalButton owns a cancellable 150ms visual exit before calling the existing removal handler; native confirmations and persistence validation are unchanged. Save feedback is transient component state and CSS animation-end cleanup. No new runtime dependencies or stored fields.
-
-
-## Motion polish visual assets and metadata
-Night-sky/haze, low-count twinkle, emotion washes and grain are CSS-only behind content. DOM typography and decorative SVG dividers preserve exact source text; UI icons use Lucide at 1.5 stroke. BrandMark shares star-and-wheel styling with favicon sizes, SVG, Apple touch icon and 192/512 manifest icons. The manifest uses browser display and adds no worker, offline caching, notifications or reminders. scripts/generate-brand-assets.mjs uses Next's installed Sharp to regenerate tiny icons without a new dependency.
-
-All page types have titles/descriptions; metadataBase stays the existing validated siteUrl. Next metadata conventions supply Open Graph and Twitter ImageResponse assets with only the name/tagline/wheel. The 47KB static OFL Lora TTF is read server-side for image typography; its license is included in public/fonts. It adds no page font download beyond the existing next/font setup. Share cards remain exact WEB-only with the existing request validator, height calculation and attribution. The merged security audit caches successful public WEB images; invalid/error responses remain no-store. No licensed imagery, provider, personal storage, existing application route or data-flow changes. Requested metadata assets are the only new asset endpoints. Theme-color metadata follows both system and explicit theme changes; hidden-tab CSS decoration pauses. No analytics, accounts or new package dependencies.
-
-
-## Security audit (2026-10-17)
-See [SECURITY.md](SECURITY.md) for findings, evidence and limitations. The provider helper now checks emotions.json independently before quota/network work. Global security headers use a static-compatible same-origin CSP; inline script/style allowances preserve existing streaming/PPR and theme/motion behavior. No personal data flow or NLT caching changes. Public WEB images use a canonical-reference cache, and cached OFL font bytes let branding-only social images prerender with 30-day revalidation. Unused image optimization is disabled. Shadcn CSS/CLI is build-only; unused Button dependencies were removed. Next/eslint-config-next and React received compatible patch updates. The owner explicitly authorized this audit branch, public-domain image caching and security configuration outside the ordinary next-step workflow.
-
-## Constellation redesign (2026-11-20)
-
-- **Styles:** `app/globals.css` only imports `app/styles/tokens.css`, `base.css`, `layout.css`, `components.css` and `screens.css`, in that order. Tokens are the single source of color, type, space and motion; Tailwind utilities map onto them through `@theme inline`.
-- **Particle wheel:** `components/constellation-scene.tsx` renders one `THREE.Points` draw call with a custom `ShaderMaterial`. Geometry comes from the pure, seeded `buildConstellation` in `lib/constellation.ts` (eight emotion sectors, a halo, and an inner feeling ring flagged by an `aRing` attribute). Rotation, selection, inner bloom, intensity, pointer glow and the Project 3 `uLean` weights are uniforms eased on the CPU; no per-particle CPU loop. Night uses additive blending; Daylight uses normal blending with deeper hues, switched by a `data-theme` observer.
-- **Quality tiers:** `initialTier` (reduced motion, cores, device memory, width) picks high, medium, low or list; the scene measures fps for two seconds and `nextTier` steps down one tier or falls back to the List view. WebGL failure or context loss also falls back. The List view is server-rendered and is the no-JavaScript picker.
-- **Settings:** `components/settings-sheet.tsx` writes the translation cookie through `lib/translation-client.ts`, theme and text size through `lib/root-preferences.ts`. `lib/theme.ts` resolves both in the pre-paint script, which also sets `data-js` for no-JavaScript fallbacks.
-- **Undo:** `FeelingLink` supplies its own mood id to `recordMood`, then hands it to Results through a one-use, in-memory `prepareUndo`/`consumeUndo` intent in `lib/dawn.ts`. `UndoToast` is portaled to `body`.
-- **Sharing:** the dialog fetches the WEB card once without cookies and reuses the blob for the preview, the native share sheet and the download.
-- **Known limitation:** Results and Compare depend on the translation cookie, so their passages stream inside Suspense and need JavaScript to appear. Home and feeling pages work without JavaScript.
-- **Checks:** `npm run e2e` (Playwright flows on phone and desktop), the CI visual job (Linux screenshot baselines in `e2e/__screenshots__`), and Lighthouse CI (`lighthouserc.json`, 0.9+ in all categories on Home and Results).
+Server logs emit only `[verselight] nlt_fallback` and `[verselight] server_error`, at most once per code per minute per instance, with no payloads. No client error upload, analytics or tracking.

@@ -2,14 +2,15 @@
 
 Emotion-based Scripture, reflection, and prayer. Stack: Next.js App Router, strict TypeScript, Tailwind CSS, shadcn/ui, npm, Vercel. Production: https://verselight-app.vercel.app. Everyone uses the app as a guest. Personal data stays in the visitor's browser with JSON Export and Import backups. No server persistence for personal data.
 
-## Status
-Steps 1 to 9 are shipped. Steps 10 and 11 are optional and start only when the owner asks. Most work is now an owner-requested task (fix, polish, docs, audit, feature). Do exactly the requested task; never start another step or add unrequested features.
+## Status and partnership
+Steps 1 to 9 and the Constellation redesign are built. `docs/PROGRESS.md` holds the current state, roadmap, decisions and Windows gotchas. Do the requested task; do not build unrequested features. Act as a partner: when you see a better approach, a risk, or a worthwhile idea, say it in one or two lines and let the owner decide.
 
 ## Read first
 Read `docs/PROGRESS.md` (short). Then read only what the task touches:
 
 | Task touches | Read |
 | --- | --- |
+| Product purpose, audience, brand | `PRODUCT.md` |
 | UI or copy | `docs/DESIGN.md` |
 | Structure, routes, data flow, storage | `docs/ARCHITECTURE.md` |
 | Translations, verse display, caching, sharing | `docs/TRANSLATION-LICENSES.md` |
@@ -17,7 +18,7 @@ Read `docs/PROGRESS.md` (short). Then read only what the task touches:
 | Env vars, domains, deploys | `docs/OPERATIONS.md` |
 | An unfamiliar Next.js API | The matching guide in `node_modules/next/dist/docs/` |
 
-Search large files instead of reading them whole. `docs/archive/` and `docs/superpowers/` are history; open them only when asked.
+Search large files instead of reading them whole. History lives in git, not in docs.
 
 ## Workflow (lean, owner decision 2026-11-20)
 Keep token use low. Work directly; no skill workflows (superpowers), spec or plan documents, or subagents unless the owner asks.

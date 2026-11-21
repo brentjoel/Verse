@@ -21,21 +21,23 @@ Copy `.env.example` to ignored `.env.local`, then fill in values privately:
 npm run dev
 ```
 
-Open http://localhost:3000. Choose Anxious > Worried about the future, change translations, and Compare. Try Save verse, My Verses collections, and Journal notes. The theme button switches dark/light. Home selects a WEB passage by device-local day of year from a repeating curated cycle, independent of the reading translation. Download WEB card or Open card uses public WEB text and credits only. Cards never include notes, saved-record metadata or NLT text. Footer links open About/privacy and full translation credits. Never print or commit `.env.local`.
+Open http://localhost:3000. Smoke path: turn the wheel to Anxious > Worried about the future, change translation in Settings, Compare, Save, Share, then check My Verses and Journal. Never print or commit `.env.local`.
 
 ## Checks
 
 ```sh
-npm run test:bible-api
-npm run test:storage
-npm run test:progress
-npm run test:daily-share
-npx tsc --noEmit
-npm run lint
-npm run build
+npm run check     # typecheck, lint, unit tests, data validation, build
+npm run e2e       # Playwright flows on phone and desktop
 ```
 
-Build validates curated data offline; it does not request NLT text. `npm run fetch:verses` is only for intentionally updating public-domain reference data, not a build prerequisite. Provider tests use labeled synthetic fixtures and never consume live NLT quota.
+CI also runs the visual regression job (`npm run e2e:visual`) and Lighthouse (90+ in every category). Do not run Lighthouse locally. Provider tests use labeled synthetic fixtures and never consume NLT quota.
+
+README screenshots and the demo video (`docs/media/demo.webm`) come from a production build with WEB only:
+
+```sh
+npm run build
+npx playwright test e2e/capture.spec.ts --project=desktop --grep @capture
+```
 
 ## Privacy, deletion, and backups
 
@@ -74,4 +76,4 @@ Launch verification is complete per owner confirmation. Keep this checklist for 
 
 ## Delivery workflow
 
-Follow [AGENTS.md](../AGENTS.md): it lists what to read per task and which superpowers and Impeccable skills to use. Steps 1 to 9 and the follow-up motion polish and security audit are complete. Optional Steps 10 and 11 require a separate owner request. Push each authorized branch for a Vercel Git preview, then wait for approval before merging. No independent production deployment.
+Follow [AGENTS.md](../AGENTS.md). Push each branch for a Vercel preview and wait for owner approval before merging. No independent production deployment.
