@@ -33,7 +33,7 @@ Mobile-first web app on Vercel (https://verselight-app.vercel.app). Visits are s
 - Visual system lives in `docs/DESIGN.md`: the Constellation world (void canvas, light display type, violet actions, amber spark, emotion-colored particles).
 
 ## Evidence on Hand
-Curated content in `data/emotions.json` and `data/prompts.json`; public-domain verse files in `data/verses/`. No testimonials, usage numbers or reviews exist; do not fabricate any. README screenshots are still placeholders.
+Curated content in `data/emotions.json` and `data/prompts.json`; public-domain verse files in `data/verses/`. No testimonials, usage numbers or reviews exist; do not fabricate any. README screenshots come from `e2e/capture.spec.ts`.
 
 ## Product Principles
 - Reach the verse fast: the feeling picker and the passage are the product; everything else stays quiet.

@@ -54,5 +54,5 @@ Open http://localhost:3000. On PowerShell, use `npm.cmd` and `npx.cmd` if script
 ## Project documentation
 
 - [Operations](docs/OPERATIONS.md): setup, checks, backups, NLT resilience, monitoring, Vercel verification and delivery workflow.
-- [Product specification](docs/SPEC.md), [architecture](docs/ARCHITECTURE.md) and [design](docs/DESIGN.md).
-- [Progress](docs/PROGRESS.md): completed work and optional future steps.
+- [Product](PRODUCT.md), [architecture](docs/ARCHITECTURE.md) and [design](docs/DESIGN.md).
+- [Progress](docs/PROGRESS.md): current state and roadmap.
