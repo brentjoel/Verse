@@ -4,11 +4,11 @@ Live: Steps 1 to 9 (picker, translations, Compare, storage, journal, share cards
 
 ## Now
 
-- Project 2 started. Night sky journal on `feat/night-sky-journal`.
+- Project 2: night sky journal merged (PR #10). Focus reading mode on `feat/focus-reading`.
 
 ## Roadmap (owner order: features and UI first, performance last)
 
-1. Project 2: night sky journal (in review), then Breathe, focus reading mode, sky share card, prayer list, time-of-day sky, saved intensity (needs a storage schema migration).
+1. Project 2: focus reading mode (in review), then Breathe, focus reading mode, sky share card, prayer list, time-of-day sky, saved intensity (needs a storage schema migration).
 2. Project 3: on-device AI feeling finder. A small in-browser embedding model suggests the top 3 feelings and the person confirms. Crisis text shows resources first. Never generates Scripture, never trains on NLT. Hook: `leanWeights()` and the `uLean` uniform.
 3. Performance pass: skip the first ~500 ms in the fps probe; reserve space for the List-to-wheel swap on Home; no-JS fallback for Results and Compare; real-device fps.
 
