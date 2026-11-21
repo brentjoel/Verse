@@ -1,10 +1,10 @@
 "use client";
 
-import { useContext, useEffect, useRef, type ReactNode } from "react";
-import { createDawnRun, wordDelay } from "@/lib/dawn";
+import { useContext, useEffect, useRef, type CSSProperties, type ReactNode } from "react";
+import { burstStars, createDawnRun, wordDelay } from "@/lib/dawn";
 import { ActiveVerseContext } from "@/components/verse-carousel";
 
-export function DawnReveal({ path, children }: { path: string; children: ReactNode }) {
+export function DawnReveal({ path, reference, children }: { path: string; reference: string; children: ReactNode }) {
   const root = useRef<HTMLDivElement>(null);
   const stop = useRef<() => void>(() => {});
   const active = useContext(ActiveVerseContext);
@@ -32,16 +32,16 @@ export function DawnReveal({ path, children }: { path: string; children: ReactNo
         words.forEach((word, index) => {
           // Both colors remain readable. Animation adds emphasis without hiding text.
           run.add(word.animate([
-            { color: style.getPropertyValue("--muted-foreground") },
-            { color: style.getPropertyValue("--foreground") },
+            { color: style.getPropertyValue("--ink-3") },
+            { color: style.getPropertyValue("--ink") },
           ], { delay: wordDelay(index), duration: 600, fill: "backwards", easing: "ease-out" }));
         });
-        const light = element.querySelector<HTMLElement>(".dawn-light");
-        if (light) run.add(light.animate([
-          { opacity: 0, transform: "scale(.08)" },
-          { opacity: .9, offset: .35 },
-          { opacity: .18, transform: "scale(1)" },
-        ], { duration: 2400, easing: "ease-out" }));
+        // Stars rise behind the reference and settle into a still constellation.
+        element.querySelectorAll<HTMLElement>(".dawn-burst i").forEach(star => run.add(star.animate([
+          { opacity: 0, transform: "translateY(18px) scale(.2)" },
+          { opacity: 1, transform: "translateY(-4px) scale(1.4)", offset: .45 },
+          { opacity: .7, transform: "none" },
+        ], { duration: 1400, delay: Number(star.dataset.delay) || 0, easing: "cubic-bezier(.16, 1, .3, 1)", fill: "backwards" })));
         timer = setTimeout(finish, Math.max(2400, wordDelay(words.length - 1) + 600));
       } catch { finish(); } // Unsupported animation features keep instant reading.
     });
@@ -69,7 +69,7 @@ export function DawnReveal({ path, children }: { path: string; children: ReactNo
       <p className="sr-only">The whole passage is ready to read. Take your time.</p>
       <button type="button" className="compare-link dawn-skip" onClick={() => stop.current()}>Skip animation</button>
     </div>
-    <div className="dawn-horizon" aria-hidden="true"><div className="dawn-light" /><div className="dawn-ring" /></div>
+    <div className="dawn-burst" aria-hidden="true">{burstStars(reference).map((star, index) => <i key={index} data-delay={star.delay} style={{ "--x": star.x, "--y": star.y, "--s": `${star.size}px` } as CSSProperties} />)}</div>
     {children}
   </div>;
 }

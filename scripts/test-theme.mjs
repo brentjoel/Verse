@@ -2,16 +2,19 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import vm from 'node:vm';
 import { readFileSync } from 'node:fs';
-import { resolveTheme, themeScript } from '../lib/theme.ts';
+import { applyThemeChoice, resolveTextSize, resolveTheme, themeScript, THEME_KEY, TEXT_SIZE_KEY } from '../lib/theme.ts';
+import { emotionHues } from '../lib/constellation.ts';
 
-const css = readFileSync(new URL('../app/globals.css', import.meta.url), 'utf8');
+const css = readFileSync(new URL('../app/styles/tokens.css', import.meta.url), 'utf8');
 const tokens = selector => Object.fromEntries([...css.match(selector)[1].matchAll(/(--[\w-]+):\s*([^;]+);/g)].map(m => [m[1], m[2].trim()]));
-const palettes = [tokens(/:root \{([^}]+)\}/), tokens(/:root\[data-theme="light"\] \{([^}]+)\}/)];
-const rgb = hex => hex.slice(1).match(/../g).map(v => parseInt(v, 16));
+const night = tokens(/:root \{([^}]+)\}/);
+const day = tokens(/:root\[data-theme="light"\] \{([^}]+)\}/);
+const rgb = value => value.startsWith('#') ? value.slice(1).match(/../g).map(v => parseInt(v, 16)) : value.match(/\d+(\.\d+)?/g).slice(0, 3).map(Number);
+const alpha = value => { const m = value.match(/\/\s*([\d.]+)(%?)\s*\)/); return m ? Number(m[1]) / (m[2] ? 100 : 1) : 1; };
 const mix = (a, b, amount) => a.map((v, i) => v * (1 - amount) + b[i] * amount);
 const luminance = color => color.map(v => v / 255).map(v => v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4).reduce((sum, v, i) => sum + v * [.2126, .7152, .0722][i], 0);
 const contrast = (a, b) => (Math.max(luminance(a), luminance(b)) + .05) / (Math.min(luminance(a), luminance(b)) + .05);
-const aa = (a, b, minimum = 4.5) => assert.ok(contrast(a, b) >= minimum, `Contrast ${contrast(a, b).toFixed(2)} < ${minimum}`);
+const aa = (a, b, minimum = 4.5, label = '') => assert.ok(contrast(a, b) >= minimum, `${label} contrast ${contrast(a, b).toFixed(2)} < ${minimum}`);
 
 test('explicit theme wins; absent or invalid preference follows system', () => {
   for (const system of [true, false]) {
@@ -21,60 +24,63 @@ test('explicit theme wins; absent or invalid preference follows system', () => {
   }
 });
 
-test('actual pre-paint script selects root theme and handles blocked storage', () => {
-  for (const preference of [null, 'dark', 'light', 'invalid']) for (const system of [true, false]) for (const blocked of [true, false]) {
+test('text size resolves to a known value', () => {
+  assert.equal(resolveTextSize('large'), 'large');
+  assert.equal(resolveTextSize('larger'), 'larger');
+  assert.equal(resolveTextSize('huge'), 'default');
+  assert.equal(resolveTextSize(null), 'default');
+  assert.equal(resolveTextSize(undefined), 'default');
+});
+
+test('theme choice resolves system and stored sources', () => {
+  assert.deepEqual(applyThemeChoice('system', true), { theme: 'light', source: 'system' });
+  assert.deepEqual(applyThemeChoice('system', false), { theme: 'dark', source: 'system' });
+  assert.deepEqual(applyThemeChoice('dark', true), { theme: 'dark', source: 'stored' });
+  assert.deepEqual(applyThemeChoice('light', false), { theme: 'light', source: 'stored' });
+});
+
+test('actual pre-paint script sets theme, text size and js flag, and survives blocked storage', () => {
+  for (const preference of [null, 'dark', 'light', 'invalid']) for (const size of [null, 'large', 'bogus']) for (const system of [true, false]) for (const blocked of [true, false]) {
     const dataset = {};
     vm.runInNewContext(themeScript, {
-      localStorage: { getItem() { if (blocked) throw Error('blocked'); return preference; } },
+      localStorage: { getItem(key) { if (blocked) throw Error('blocked'); return key === THEME_KEY ? preference : key === TEXT_SIZE_KEY ? size : null; } },
       document: { documentElement: { dataset } }, matchMedia: () => ({ matches: system }),
     });
     assert.equal(dataset.theme, resolveTheme(blocked ? null : preference, system));
     assert.equal(dataset.themeSource, !blocked && ['dark', 'light'].includes(preference) ? 'stored' : 'system');
+    assert.equal(dataset.textSize, blocked ? 'default' : resolveTextSize(size));
+    assert.equal(dataset.js, 'true');
   }
 });
 
-test('both palettes define matching scene tokens with distinct light colors', () => {
-  const keys = Object.keys(palettes[0]).filter(key => key.startsWith('--scene-'));
-  assert.deepEqual(keys, Object.keys(palettes[1]).filter(key => key.startsWith('--scene-')));
-  assert.equal(palettes[0]['--scene-sky'], palettes[0]['--background']);
-  assert.equal(palettes[1]['--scene-sky'], palettes[1]['--background']);
-  assert.notEqual(palettes[0]['--scene-sky'], palettes[1]['--scene-sky']);
-  assert.equal(palettes[0]['--scene-bar-shade'], '1');
-  assert.ok(Number(palettes[1]['--scene-bar-shade']) < 1);
+test('canvases are pure void and morning paper', () => {
+  assert.equal(night['--canvas'], '#000000');
+  assert.equal(day['--canvas'], '#f6f4f1');
+  assert.match(css.match(/:root\[data-theme="light"\] \{([^}]+)\}/)[1], /color-scheme:\s*only light\s*;/);
 });
 
-test('explicit light palette opts out of browser automatic darkening', () => {
-  const light = css.match(/:root\[data-theme="light"\] \{([^}]+)\}/)[1];
-  assert.match(light, /color-scheme:\s*only light\s*;/);
-  assert.equal(palettes[1]['--background'], '#faf6ee');
-});
-
-test('scene text, selected controls, borders and focus meet AA across the sky gradient', () => {
-  for (const p of palettes) {
-    for (let i = 0; i <= 100; i++) {
-      const sky = mix(rgb(p['--scene-sky']), rgb(p['--scene-sky-end']), i / 100);
-      for (const key of ['--scene-text', '--scene-muted', '--scene-accent', '--scene-selected']) aa(rgb(p[key]), sky);
-      aa(rgb(p['--scene-control-border']), sky, 3);
-      aa(rgb(p['--scene-accent']), sky, 3);
-    }
-    aa(rgb(p['--scene-on-accent']), rgb(p['--scene-accent']));
-    for (const key of ['--scene-control', '--scene-control-hover']) {
-      aa(rgb(p['--scene-text']), rgb(p[key]));
-      aa(rgb(p['--scene-control-border']), rgb(p[key]), 3);
-    }
+test('ink, spark and action meet AA on the canvas in both themes', () => {
+  for (const [name, p] of [['night', night], ['day', day]]) {
+    const canvas = rgb(p['--canvas']);
+    for (const key of ['--ink', '--ink-2', '--ink-3', '--spark', '--action']) aa(rgb(p[key]), canvas, 4.5, `${name} ${key}`);
+    aa(rgb(p['--on-action']), rgb(p['--action']), 4.5, `${name} on-action`);
+    aa(rgb(p['--ink']), mix(canvas, rgb(p['--veil']), alpha(p['--veil'])), 4.5, `${name} ink on veil`);
+    aa(rgb(p['--ink-3']), mix(canvas, rgb(p['--veil']), alpha(p['--veil'])), 4.5, `${name} ink-3 on veil`);
   }
 });
 
-test('verse ink and all result controls meet AA through every dawn color stage and emotion wash', () => {
-  const emotions = [...css.matchAll(/--emotion-rgb:\s*(\d+) (\d+) (\d+)/g)].map(m => m.slice(1).map(Number));
-  assert.equal(emotions.length, 8);
-  for (const p of palettes) for (const surface of ['--card', '--background']) for (const emotion of emotions) for (let wash = 0; wash <= 9; wash++) {
-    const card = mix(rgb(p[surface]), emotion, wash / 100);
-    for (let i = 0; i <= 100; i++) aa(mix(rgb(p['--muted-foreground']), rgb(p['--foreground']), i / 100), card);
-    for (const key of ['--foreground', '--muted-foreground', '--primary']) aa(rgb(p[key]), card);
-    // Reflection/prayer overlay and Journal's strongest heatmap cell.
-    aa(rgb(p['--muted-foreground']), mix(card, rgb(p['--primary']), .04));
-    aa(rgb(p['--foreground']), mix(rgb(p['--card']), rgb(p['--primary']), .38));
-    aa(rgb(p['--scene-selected']), mix(rgb(p['--background']), rgb(p['--primary']), .10));
+test('emotion hues are visible as dots and particles in both themes', () => {
+  for (const [id, { night: n, day: d }] of Object.entries(emotionHues)) {
+    aa(rgb(n), rgb(night['--canvas']), 3, `night ${id}`);
+    aa(rgb(d), rgb(day['--canvas']), 3, `day ${id}`);
+    assert.match(css, new RegExp(`\\[data-emotion="${id}"\\] \\{ --emotion: ${n}; \\}`));
+    assert.match(css, new RegExp(`\\[data-theme="light"\\] \\[data-emotion="${id}"\\], :root\\[data-theme="light"\\]\\[data-emotion="${id}"\\] \\{ --emotion: ${d}; \\}`));
   }
+});
+
+test('animated components only read color tokens the stylesheet defines', () => {
+  const source = readFileSync(new URL('../components/dawn-reveal.tsx', import.meta.url), 'utf8');
+  const used = [...source.matchAll(/getPropertyValue\("(--[\w-]+)"\)/g)].map(m => m[1]);
+  assert.ok(used.length > 0, 'dawn reveal reads its colors from tokens');
+  for (const token of used) assert.ok(token in night && token in day, `${token} is defined in both themes`);
 });

@@ -6,30 +6,27 @@ Emotion-based Scripture, reflection, and prayer for the feeling you bring today.
 
 ## Features
 
-- Two-step emotion wheel with an accessible simple-picker fallback.
-- Dawn verse reveal with Skip and reduced-motion support.
-- NLT, KJV, WEB, ASV and BSB, with side-by-side translation comparison.
-- Saved verses and collections, a mood journal, streaks and badges.
-- Daily WEB passages and downloadable WEB share cards.
-- Responsive dark and light themes, plus local JSON Export and Import backups.
+- **Constellation wheel:** thousands of WebGL particles form eight emotion clouds. Drag, scroll, use arrow keys or tap a chip; the center opens an inner ring of feelings in that emotion's color. A server-rendered List view covers no-JavaScript, no-WebGL, reduced-motion and slow devices.
+- **Verse first:** the passage, its attribution and the pager fit the first phone screen, with a small particle dawn in the emotion's hue. Tap to finish the reveal.
+- **Five translations:** NLT, KJV, WEB, ASV and BSB, with live side-by-side comparison.
+- **Private by design:** saved verses, collections and a mood journal live in your browser, with local JSON backups and a one-tap Undo.
+- **Night and Daylight** themes, adjustable text size, and WEB share cards through your phone's share sheet.
 
-## Screenshots
+![Constellation wheel in Night](docs/screenshots/wheel-dark.png)
 
-Place the five PNG images directly in [`docs/screenshots/`](docs/screenshots/), using these exact filenames. These are placeholders until images are added.
+| Verse | Daylight | Phone | Journal |
+| --- | --- | --- | --- |
+| ![Verse with particle dawn](docs/screenshots/dawn.png) | ![Daylight wheel, inner ring](docs/screenshots/light.png) | ![Phone home](docs/screenshots/mobile.png) | ![Journal](docs/screenshots/journal.png) |
 
-| View | Image path |
-| --- | --- |
-| Emotion wheel, dark theme | [wheel-dark.png](docs/screenshots/wheel-dark.png) |
-| Dawn verse reveal | [dawn.png](docs/screenshots/dawn.png) |
-| Mood journal | [journal.png](docs/screenshots/journal.png) |
-| Light theme | [light.png](docs/screenshots/light.png) |
-| Mobile layout | [mobile.png](docs/screenshots/mobile.png) |
+[Watch the 20-second demo](docs/media/demo.webm) (turning the wheel to a verse). All captures use public-domain WEB text.
 
-Use public WEB passages and disposable records for screenshots. Exclude NLT text and personal notes.
+## How it is built
 
-## Tech stack
-
-Next.js App Router, React, strict TypeScript, Tailwind CSS, shadcn/ui, Three.js, npm and Vercel.
+- **Next.js App Router** with Cache Components, strict TypeScript and Server Components by default.
+- **Particle engine:** one `THREE.Points` draw call with a custom GLSL shader; rotation, selection, bloom and pointer glow are GPU uniforms. Quality tiers start from device hints and step down after a two-second frame-rate probe.
+- **Design system:** a token-driven stylesheet (`app/styles/`), Night and Daylight palettes with contrast enforced by tests, and the system SF Pro stack on Apple devices.
+- **Quality gates in CI:** unit tests (`node:test`), Playwright flows on phone and desktop, visual regression screenshots, and Lighthouse budgets of 90+ in every category.
+- **Privacy:** no accounts, no analytics, no personal data on any server; share-card requests carry no cookies.
 
 ## Privacy and licensing
 
@@ -49,6 +46,7 @@ npm ci
 npm run dev
 # Before opening a pull request, run everything GitHub checks:
 npm run check
+npm run e2e
 ```
 
 Open http://localhost:3000. On PowerShell, use `npm.cmd` and `npx.cmd` if script launchers are blocked. Keep `NLT_API_KEY` server-only. Set `NEXT_PUBLIC_SITE_URL` to `https://verselight-app.vercel.app` as a stable HTTPS origin, then rebuild; do not hardcode the domain in application code. Never commit `.env.local`.
@@ -56,5 +54,5 @@ Open http://localhost:3000. On PowerShell, use `npm.cmd` and `npx.cmd` if script
 ## Project documentation
 
 - [Operations](docs/OPERATIONS.md): setup, checks, backups, NLT resilience, monitoring, Vercel verification and delivery workflow.
-- [Product specification](docs/SPEC.md), [architecture](docs/ARCHITECTURE.md) and [design](docs/DESIGN.md).
-- [Progress](docs/PROGRESS.md): completed work and optional future steps.
+- [Product](PRODUCT.md), [architecture](docs/ARCHITECTURE.md) and [design](docs/DESIGN.md).
+- [Progress](docs/PROGRESS.md): current state and roadmap.
