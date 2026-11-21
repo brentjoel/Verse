@@ -29,7 +29,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 
 **Phase C: companion**
 - [x] Anchor verse pinned on Home
-- [ ] Letter to your future self, shown in Journal on a chosen date
+- [x] Letter to your future self, shown in Journal on a chosen date
 - [ ] Seven-day gentle path for a feeling, built from its curated verses
 - [ ] Readable journal export to print or save as PDF
 - [ ] "This spoke to me" marks that favor a verse in the rotation
@@ -65,7 +65,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 
 - Real-device 60fps on mid-range Android and iPhone not measured (needs the owner's devices).
 - Screen-reader pass not done.
-- Phase D to fold into JSON Export/Import: personal keys outside schema 1 (`verselight-anchor`).
+- Phase D to fold into JSON Export/Import: personal keys outside schema 1 (`verselight-anchor`, `verselight-letters`).
 - Results and Compare need JavaScript to show passages.
 
 ## Gotchas
@@ -150,3 +150,6 @@ Audit of /craft, /accessibility, footer links, the ?debug overlay and the sky ca
 
 ### Anchor verse (2026-11-21)
 Pin a verse from Results or the Morning star; Home shows it in WEB under the greeting with Unpin. Stored as a reference only in its own key `verselight-anchor`, validated by `lib/anchor.ts`; shared `lib/local-key.ts` hook for later Phase C keys. Not in Export yet (Phase D).
+
+### Letter to your future self (2026-11-21)
+Journal gains "Letters to your future self": write a letter, pick a day after today, and it stays sealed (only the date shows) until that local day, then opens in the list. Own key `verselight-letters`, validated and capped by pure `lib/letters.ts` with tests; plain text, not encrypted, not in Export yet (Phase D).

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { RemovalButton } from "@/components/removal-button";
 import { Constellation } from "@/components/constellation";
 import { NightSky, type GraceVerse } from "@/components/night-sky";
+import { FutureLetters } from "@/components/future-letters";
 import { SkyCardButton } from "@/components/sky-card-button";
 import { buildNightSky } from "@/lib/night-sky";
 import { useState } from "react";
@@ -93,6 +94,7 @@ export function Journal({ graceVerse }: { graceVerse: GraceVerse }) {
       {entries.length > limit && <button className="compare-link" onClick={() => setLimit(limit + 20)}>Show more reflections</button>}
       {entries.length > 0 && <p className="local-help">Each feeling you choose is noted here. Add a note if you like; removing one keeps that day in your calendar.</p>}
     </section>
+    <FutureLetters />
     <section className="library-section rhythm" aria-labelledby="progress-heading">
       <div className="section-heading"><h2 id="progress-heading">Your rhythm</h2></div>
       <p>{streakState.currentStreak === 0 ? "Whenever you are ready, a new rhythm can begin." : `${streakState.currentStreak} ${streakState.currentStreak === 1 ? "day" : "days"} in a row`}{streakState.longestStreak > 1 && <span className="local-help"> · Longest {streakState.longestStreak} days</span>}</p>
