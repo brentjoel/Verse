@@ -110,6 +110,7 @@ export function Journal({ graceVerse }: { graceVerse: GraceVerse }) {
       <div className="section-heading"><h2 id="progress-heading">Your rhythm</h2></div>
       <p>{streakState.currentStreak === 0 ? "Whenever you are ready, a new rhythm can begin." : `${streakState.currentStreak} ${streakState.currentStreak === 1 ? "day" : "days"} in a row`}{streakState.longestStreak > 1 && <span className="local-help"> · Longest {streakState.longestStreak} days</span>}</p>
       {badges.length > 0 && <ul className="badge-list" aria-label="Your milestones">{badges.map(badge => <li key={badge.key}>{BADGES[badge.key]} <span className="local-help"><time dateTime={badge.earnedAt}>{formatDay(badge.earnedAt)}</time></span></li>)}</ul>}
+      <p><Link className="compare-link" href="/year">See your year in light</Link></p>
       <details className="quiet-details"><summary>How your rhythm works</summary>
         <p className="local-help">A day counts when you choose a feeling or save a verse. If you miss one day in a week, your rhythm waits for you. Changing your device clock or time zone can pause counting until your date catches up. There is no pressure here; come back whenever you like.</p>
       </details>

@@ -1,4 +1,4 @@
-import { test, expect } from "./fixtures";
+import { test, expect, noHorizontalOverflow } from "./fixtures";
 
 test.describe("anchor verse", () => {
   test.use({ reducedMotion: "reduce" });
@@ -98,6 +98,24 @@ test.describe("journal passcode", () => {
     await expect(page.getByRole("list", { name: "Still praying" })).toContainText("TEST_SECRET_PRAYER");
     await page.getByRole("button", { name: "Lock now" }).click();
     await expect(page.getByRole("heading", { name: "Your journal is locked" })).toBeVisible();
+  });
+});
+
+test.describe("year in light", () => {
+  test.use({ reducedMotion: "reduce" });
+
+  test("empty at first, then shows the day and the feeling, reached from Journal", async ({ page }) => {
+    await page.goto("/year");
+    await expect(page.getByText("Your year in light is just beginning.")).toBeVisible();
+    await page.goto("/emotions/sad");
+    await page.getByRole("link", { name: "Lonely" }).click();
+    await expect(page.getByText("Noted in your journal")).toBeVisible();
+    await page.goto("/journal");
+    await page.getByRole("link", { name: "See your year in light" }).click();
+    await expect(page.getByRole("heading", { name: /in light$/, level: 2 })).toBeVisible();
+    await expect(page.locator(".year-numbers")).toContainText("1 day you came");
+    await expect(page.getByRole("region", { name: "What you carried most" })).toContainText("Lonely");
+    await noHorizontalOverflow(page);
   });
 });
 

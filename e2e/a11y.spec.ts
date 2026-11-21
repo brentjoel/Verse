@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { test, expect } from "./fixtures";
 
-const routes = ["/", "/emotions/anxious", "/emotions/anxious/overwhelmed", "/compare?ref=Psalm%2061%3A2", "/my-verses", "/journal", "/breathe", "/about", "/craft", "/accessibility", "/not-sure", "/path/sad/lonely", "/offline?to=/emotions/sad/lonely"];
+const routes = ["/", "/emotions/anxious", "/emotions/anxious/overwhelmed", "/compare?ref=Psalm%2061%3A2", "/my-verses", "/journal", "/breathe", "/year", "/about", "/craft", "/accessibility", "/not-sure", "/path/sad/lonely", "/offline?to=/emotions/sad/lonely"];
 
 for (const theme of ["dark", "light"]) {
   test(`no detectable WCAG A/AA violations (${theme})`, async ({ page }) => {
