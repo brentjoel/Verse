@@ -27,6 +27,9 @@
 
 .quiet-link { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; width: fit-content; color: var(--spark); font-size: 15px; font-weight: 500; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; text-decoration-color: color-mix(in srgb, var(--spark) 45%, transparent); transition: text-decoration-color var(--motion-fast); }
 .quiet-link:disabled { color: var(--ink-3); text-decoration: none; }
+.remove-link { display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--space-1); border-radius: 999px; color: var(--ink-3); font-size: 14px; font-weight: 400; transition: color var(--motion-fast), background var(--motion-fast); }
+.remove-link:hover, .remove-link:focus-visible { color: var(--ink-2); background: var(--veil); }
+.remove-link:disabled { opacity: .6; }
 .back-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: 14px; font-weight: 500; color: var(--ink-3); transition: color var(--motion-fast); }
 .back-link:focus-visible { color: var(--ink); }
 
@@ -78,7 +81,7 @@
   background: var(--canvas); color: var(--ink); overflow: auto;
 }
 .quiet-dialog[open], .sheet[open] { animation: arrive var(--motion-slow) var(--ease-out) both; }
-.quiet-dialog::backdrop, .sheet::backdrop { background: var(--scrim); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.quiet-dialog::backdrop, .sheet::backdrop { background: var(--scrim); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
 .dialog-heading { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-4); }
 .dialog-heading h2 { font-size: var(--text-heading-sm); letter-spacing: -0.02em; }
 @media (max-width: 639px) {
@@ -128,6 +131,8 @@ input[type="checkbox"], input[type="radio"] { width: 18px; height: 18px; accent-
 .toast-region { position: fixed; z-index: 40; left: 50%; bottom: calc(84px + env(safe-area-inset-bottom)); transform: translateX(-50%); width: max-content; max-width: calc(100% - 32px); }
 .toast { display: flex; align-items: center; gap: var(--space-2); min-height: 48px; padding: 4px 6px 4px var(--space-3); border-radius: var(--radius-pill); background: var(--ink); color: var(--canvas); font-size: 14px; font-weight: 500; animation: arrive var(--motion-slow) var(--ease-out) both; }
 .toast .compare-link { min-height: 40px; color: var(--canvas); }
+/* Phones: sit just under the header so the toast never covers the Save, Compare and Share row. */
+@media (max-width: 899px) { .toast-region { top: calc(76px + env(safe-area-inset-top)); bottom: auto; } }
 @media (min-width: 900px) { .toast-region { bottom: var(--space-5); } }
 .save-toast-region { position: absolute; left: 50%; bottom: calc(100% + 6px); transform: translateX(-50%); pointer-events: none; }
 .save-toast { display: block; padding: 4px 10px; border-radius: 99px; background: var(--ink); color: var(--canvas); font-size: 12px; font-weight: 600; animation: saved-toast 1.6s var(--ease-out) both; }

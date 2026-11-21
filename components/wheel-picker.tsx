@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Component, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { Component, useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { FeelingLink } from "@/components/feeling-link";
 import type { Emotion } from "@/lib/emotions";
 import { wrapIndex } from "@/lib/wheel";
@@ -33,6 +33,12 @@ export function WheelPicker({ emotions, children }: { emotions: readonly Emotion
   const wheelTime = useRef(0);
   const dial = useRef<HTMLDivElement>(null);
   const listHeading = useRef<HTMLHeadingElement>(null);
+  const focusList = useRef(false);
+
+  // After a fallback commits the List, move focus to its heading if the dial had it.
+  useEffect(() => {
+    if (mode === "list" && focusList.current) { focusList.current = false; listHeading.current?.focus(); }
+  }, [mode]);
 
   const rotate = useCallback((steps: number) => {
     setTurn(value => value + steps);
@@ -46,7 +52,8 @@ export function WheelPicker({ emotions, children }: { emotions: readonly Emotion
       const start = initialTier({ reducedMotion: motion.matches, cores: navigator.hardwareConcurrency, memory: (navigator as Navigator & { deviceMemory?: number }).deviceMemory, width: innerWidth });
       setTier(start);
       setCapable(start !== "list");
-      setMode(start === "list" ? "list" : "wheel");
+      // Phones start in the quick List with a small constellation above; the full wheel is one tap away.
+      setMode(start === "list" || innerWidth < 640 ? "list" : "wheel");
     };
     decide();
     motion.addEventListener("change", decide);
@@ -60,8 +67,8 @@ export function WheelPicker({ emotions, children }: { emotions: readonly Emotion
     setTier(next);
     if (next === "list") {
       const hadFocus = dial.current?.contains(document.activeElement) ?? false;
+      focusList.current = hadFocus;
       setMode("list");
-      if (hadFocus) requestAnimationFrame(() => listHeading.current?.focus());
     }
   }, []);
 
@@ -90,12 +97,18 @@ export function WheelPicker({ emotions, children }: { emotions: readonly Emotion
   }, [mode, rotate]);
 
   const emotion = emotions[broad ?? wrapIndex(turn, emotions.length)];
+  const openWheel = () => { if (tier === "list") setTier("low"); setMode("wheel"); };
+
   const toggle = capable ? <div className="segmented" role="group" aria-label="Choose how to browse feelings">
-    <button type="button" className="chip" aria-pressed={mode === "wheel"} onClick={() => { if (tier === "list") setTier("low"); setMode("wheel"); }}>Wheel</button>
+    <button type="button" className="chip" aria-pressed={mode === "wheel"} onClick={openWheel}>Wheel</button>
     <button type="button" className="chip" aria-pressed={mode === "list"} onClick={() => setMode("list")}>List</button>
   </div> : null;
 
   if (!emotion || mode === "list") return <div className="wheel-picker">
+    {capable && <button type="button" className="wheel-peek" onClick={openWheel}>
+      <span className="wheel-peek-ring" aria-hidden="true">{emotions.map((item, index) => <i key={item.id} data-emotion={item.id} style={{ "--i": index } as CSSProperties} />)}</span>
+      <span>Turn the constellation</span>
+    </button>}
     <div className="wheel-topbar"><h2 ref={listHeading} tabIndex={-1} className="caption">All feelings</h2>{toggle}</div>
     {children}
   </div>;
@@ -123,8 +136,8 @@ export function WheelPicker({ emotions, children }: { emotions: readonly Emotion
         {idle && <SceneRecovery onUnavailable={() => onTierChange("list")}><Scene order={emotions.map(item => item.id)} selected={broad ?? selected} inner={broad !== null} innerCount={emotion.specifics.length} intensity={intensity} rotation={-turn * Math.PI * 2 / options.length} tier={tier as RenderTier} onTierChange={onTierChange} /></SceneRecovery>}
         <div className="wheel-ring-labels" aria-hidden="true">{options.map((item, index) => {
           const angle = (index - selected) / options.length * Math.PI * 2;
-          const radius = broad === null ? 46 : 43;
-          return <span key={item.id} style={{ left: "50%", top: "50%", transform: `translate(-50%, -50%) translate(${Math.sin(angle) * radius}cqw, ${-Math.cos(angle) * radius}cqw)` }} data-selected={selected === index}>{item.name}</span>;
+          const radius = broad === null ? "var(--label-r-outer)" : "var(--label-r-inner)";
+          return <span key={item.id} style={{ left: "50%", top: "50%", transform: `translate(-50%, -50%) translate(calc(${Math.sin(angle).toFixed(4)} * ${radius}), calc(${(-Math.cos(angle)).toFixed(4)} * ${radius}))` }} data-selected={selected === index}>{item.name}</span>;
         })}</div>
         <div className="wheel-center" onKeyDown={event => {
           if (["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"].includes(event.key)) {
@@ -140,8 +153,8 @@ export function WheelPicker({ emotions, children }: { emotions: readonly Emotion
     <p className="sr-only" role="status" aria-live="polite">{selected + 1} of {options.length}: {choice.name}</p>
     <ul className="wheel-options" aria-label={broad === null ? "Feelings" : `Feelings within ${emotion.name}`}>
       {broad === null
-        ? emotions.map((option, index) => <li key={option.id}><button type="button" className="chip" onClick={() => choose(index)}>{option.name}</button></li>)
-        : emotion.specifics.map(option => <li key={option.id}><FeelingLink dawn className="chip" emotionId={emotion.id} specificId={option.id} name={option.name} /></li>)}
+        ? emotions.map((option, index) => <li key={option.id}><button type="button" className={index === selected ? "chip is-current" : "chip"} onClick={() => choose(index)}>{option.name}</button></li>)
+        : emotion.specifics.map(option => <li key={option.id}><FeelingLink dawn className={option.id === choice.id ? "chip is-current" : "chip"} emotionId={emotion.id} specificId={option.id} name={option.name} /></li>)}
     </ul>
     {broad !== null && <>
       <fieldset className="wheel-intensity"><legend>How strong does it feel?</legend>

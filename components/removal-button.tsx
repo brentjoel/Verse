@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 
 // Only presentation is deferred. The caller keeps its existing validation,
 // confirmation, persistence and error handling.
-export function RemovalButton({ children, disabled, onRemove, className = "quiet-link" }: {
+export function RemovalButton({ children, disabled, onRemove, className = "remove-link" }: {
   children: ReactNode; disabled: boolean; onRemove: () => void; className?: string;
 }) {
   const effect = useRef<Animation | null>(null);

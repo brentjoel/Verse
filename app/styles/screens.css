@@ -34,6 +34,14 @@
 .wheel-canvas, .wheel-canvas canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 .wheel-loading { position: absolute; inset: 0; display: grid; place-items: center; font-size: 13px; color: var(--ink-3); }
 .wheel-ring-labels { position: absolute; inset: 0; pointer-events: none; }
+.wheel-peek { display: flex; flex-direction: column; align-items: center; gap: var(--space-1); width: 100%; margin-bottom: var(--space-3); padding: var(--space-1) 0; border-radius: var(--radius-panel, 24px); color: var(--ink-3); font-size: 14px; font-weight: 500; transition: color var(--motion-fast); }
+.wheel-peek:hover, .wheel-peek:focus-visible { color: var(--ink); }
+.wheel-peek-ring { position: relative; width: 120px; height: 120px; }
+.wheel-peek-ring i { position: absolute; left: 50%; top: 50%; width: 7px; height: 7px; border-radius: 50%; background: var(--emotion); box-shadow: 0 0 14px 2px color-mix(in srgb, var(--emotion) 55%, transparent); transform: translate(-50%, -50%) rotate(calc(var(--i) * 45deg)) translateY(-46px); }
+@media (prefers-reduced-motion: no-preference) { .wheel-peek-ring { animation: peek-turn 80s linear infinite; } }
+@keyframes peek-turn { to { transform: rotate(360deg); } }
+.wheel-dial { --label-r-outer: 46cqw; --label-r-inner: 43cqw; }
+@media (max-width: 639px) { .wheel-dial { --label-r-outer: 39cqw; --label-r-inner: 37cqw; } }
 .wheel-ring-labels span {
   position: absolute; padding: 3px 9px; border-radius: 99px;
   background: color-mix(in srgb, var(--canvas) 70%, transparent);
@@ -104,7 +112,9 @@
 .reflect-section[open] > div { margin-top: var(--space-2); }
 .prompt-label { margin-bottom: 6px; font-size: 14px; font-weight: 500; color: var(--ink-3); }
 .reflect-copy, .prayer-copy { font-size: 17px; font-weight: 300; line-height: 1.65; color: var(--ink-2); }
-.prayer-block { margin-top: var(--space-3); }
+.prayer-block { margin-top: var(--space-4); padding-top: var(--space-3); border-top: 1px solid var(--hairline); }
+.prayer-block .prompt-label { color: var(--spark); }
+.prayer-block .prayer-copy { font-size: 20px; line-height: 1.55; font-weight: 400; color: var(--ink); }
 .carousel-mode { display: flex; margin-top: var(--space-2); }
 .results-ending { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); margin-top: var(--space-6); padding-top: var(--space-5); border-top: 1px solid var(--hairline); }
 .results-ending p { flex-basis: 100%; font-size: 15px; font-weight: 300; color: var(--ink-3); }
@@ -151,7 +161,7 @@
 .reflection-item .local-form { margin-top: var(--space-2); }
 .collection-grid { display: grid; gap: var(--space-4); margin-top: var(--space-4); }
 .collection-editor { padding-top: var(--space-3); border-top: 1px solid var(--hairline); }
-.backup-panel > p { color: var(--ink-2); font-weight: 300; }
+.backup-panel > p { color: var(--ink-2); font-weight: 300; max-width: 62ch; }
 .import-preview { margin-top: var(--space-4); padding-top: var(--space-3); border-top: 1px solid var(--hairline); display: grid; gap: var(--space-2); }
 .local-feedback:empty { display: none; }
 
@@ -198,6 +208,7 @@
 .share-preview { width: 100%; height: auto; border-radius: 16px; border: 1px solid var(--hairline); background: #000; }
 .wheel-options .chip > span { display: none; }
 .wheel-options .chip { text-decoration: none; }
+.wheel-options .chip.is-current { border-color: var(--ink); color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
 
 /* ---------- Ambient sky (secondary pages) ---------- */
 .ambient-sky { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
@@ -323,7 +334,9 @@
     radial-gradient(4px 4px at 66.7% 35.4%, #ffffff 50%, transparent 100%),
     radial-gradient(4px 4px at 88.4% 40.6%, #ffffff 50%, transparent 100%),
     radial-gradient(4px 4px at 74.9% 92.6%, #a78bfa 50%, transparent 100%); }
-[data-theme="light"] .ambient-sky { opacity: .55; }
+/* Daylight: invert the night stars into deep ink-and-hue specks on the warm canvas. */
+[data-theme="light"] .ambient-sky { opacity: .45; }
+[data-theme="light"] .ambient-sky i { filter: invert(1) hue-rotate(180deg) saturate(1.4); }
 [data-page-hidden="true"] .ambient-sky i { animation-play-state: paused; }
 @keyframes sky-drift { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-3%, -4%, 0); } }
 @keyframes sky-twinkle { 0%, 100% { opacity: .12; } 50% { opacity: .4; } }
