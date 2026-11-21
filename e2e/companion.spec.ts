@@ -38,3 +38,29 @@ test.describe("future letters", () => {
     await expect(page.getByText("You made it.")).toHaveCount(0);
   });
 });
+
+test.describe("gentle path", () => {
+  test.use({ reducedMotion: "reduce" });
+
+  test("begin a path, see only day one, and leave", async ({ page }) => {
+    await page.goto("/emotions/sad/lonely");
+    await page.getByRole("link", { name: "Walk a seven-day path" }).click();
+    await expect(page.getByRole("heading", { name: "Lonely: a gentle path" })).toBeVisible();
+    await page.getByRole("button", { name: "Begin this path today" }).click();
+    await expect(page.getByRole("status")).toContainText("Day 1 of 7");
+    await expect(page.locator(".path-day[data-today] .verse-text")).toBeVisible();
+    await expect(page.locator(".path-day[data-locked]")).toHaveCount(6);
+    await page.reload();
+    await expect(page.getByRole("status")).toContainText("Day 1 of 7");
+    await page.getByRole("button", { name: "Leave this path" }).click();
+    await expect(page.getByRole("button", { name: "Begin this path today" })).toBeVisible();
+  });
+
+  test("a later day opens more verses", async ({ page }) => {
+    await page.clock.setFixedTime(new Date("2026-11-24T09:00:00"));
+    await page.addInitScript(() => localStorage.setItem("verselight-path", JSON.stringify({ emotionId: "sad", specificId: "lonely", startedOn: "2026-11-21" })));
+    await page.goto("/path/sad/lonely");
+    await expect(page.getByRole("status")).toContainText("Day 4 of 7");
+    await expect(page.locator(".path-day .verse-text")).toHaveCount(4);
+  });
+});
