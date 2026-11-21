@@ -2,7 +2,11 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import vm from 'node:vm';
 import { readFileSync } from 'node:fs';
-import { applyThemeChoice, storedBaseTheme, resolveTextSize, resolveTheme, themeScript, THEME_KEY, TEXT_SIZE_KEY } from '../lib/theme.ts';
+import { registerHooks } from 'node:module';
+registerHooks({ resolve(specifier, context, nextResolve) {
+  return nextResolve(specifier.startsWith('.') && !/\.[a-z]+$/i.test(specifier) ? `${specifier}.ts` : specifier, context);
+} });
+const { applyThemeChoice, storedBaseTheme, resolveTextSize, resolveTheme, themeScript, THEME_KEY, TEXT_SIZE_KEY } = await import('../lib/theme.ts');
 import { emotionHues } from '../lib/constellation.ts';
 
 const css = readFileSync(new URL('../app/styles/tokens.css', import.meta.url), 'utf8');
@@ -52,6 +56,22 @@ test('actual pre-paint script sets theme, text size and js flag, and survives bl
     assert.equal(dataset.textSize, blocked ? 'default' : resolveTextSize(size));
     assert.equal(dataset.js, 'true');
   }
+});
+
+test('pre-paint script marks how Home picker opens, and skips it safely without navigator', () => {
+  const run = (width, cores, reduced) => {
+    const dataset = {};
+    vm.runInNewContext(themeScript, { localStorage: { getItem: () => null }, document: { documentElement: { dataset } }, matchMedia: query => ({ matches: query.includes('reduced-motion') ? reduced : false }), navigator: { hardwareConcurrency: cores }, innerWidth: width });
+    return dataset.wheel;
+  };
+  assert.equal(run(1440, 8, false), 'wheel');
+  assert.equal(run(390, 8, false), 'peek');
+  assert.equal(run(1440, 8, true), 'list');
+  assert.equal(run(1440, 2, false), 'list');
+  const dataset = {};
+  vm.runInNewContext(themeScript, { localStorage: { getItem: () => null }, document: { documentElement: { dataset } }, matchMedia: () => ({ matches: false }) });
+  assert.equal(dataset.wheel, undefined);
+  assert.equal(dataset.js, 'true');
 });
 
 test('canvases are pure void and morning paper', () => {
