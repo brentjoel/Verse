@@ -22,7 +22,10 @@ const nextConfig: NextConfig = {
   // There are no next/image consumers; avoid an unused transformation endpoint.
   images: { unoptimized: true },
   async headers() {
-    return [{ source: "/:path*", headers: [
+    return [{ source: "/sw.js", headers: [
+      { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },
+      { key: "Content-Type", value: "application/javascript; charset=utf-8" },
+    ] }, { source: "/:path*", headers: [
       { key: "Content-Security-Policy", value: contentSecurityPolicy },
       { key: "X-Content-Type-Options", value: "nosniff" },
       { key: "Referrer-Policy", value: "no-referrer" },
