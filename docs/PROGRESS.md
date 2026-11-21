@@ -4,11 +4,11 @@ Live: Steps 1 to 9 (picker, translations, Compare, storage, journal, share cards
 
 ## Now
 
-- Project 2: night sky journal (PR #10) and focus reading (PR #11) merged. Breathe on `feat/breathe`.
+- Project 2: night sky journal (PR #10), focus reading (PR #11) and Breathe (PR #12) merged. More verses with daily rotation on `feat/more-verses`.
 
 ## Roadmap (owner order: features and UI first, performance last)
 
-1. Project 2: Breathe (in review), then sky share card, prayer list, time-of-day sky, saved intensity (needs a storage schema migration).
+1. Project 2: more verses with daily rotation (in review), then sky share card, prayer list, time-of-day sky, saved intensity (needs a storage schema migration).
 2. Project 3: on-device AI feeling finder. A small in-browser embedding model suggests the top 3 feelings and the person confirms. Crisis text shows resources first. Never generates Scripture, never trains on NLT. Hook: `leanWeights()` and the `uLean` uniform.
 3. Performance pass: skip the first ~500 ms in the fps probe; reserve space for the List-to-wheel swap on Home; no-JS fallback for Results and Compare; real-device fps.
 
@@ -59,3 +59,6 @@ Results gain a Focus button: only the passage, attribution and pager remain, cen
 
 ### Breathe (2026-11-21)
 New `/breathe` page and nav tab: a paced guide with Calm (4-4-6) and Steady (4-4-4-4) patterns, a growing orb, a text cue and live status. Pure `lib/breathe.ts` with 5 tests; nothing stored, no Scripture shown, reduced motion drops the orb animation.
+
+### More verses with daily rotation (2026-11-21)
+Each feeling now has 8 curated references (128 added, 211 unique), with drafted reflection and prayer prompts for owner review. Results show 4 a day on a rolling window by UTC day, with Read 4 more verses. Public-domain text fetched by `fetch:verses`; pure `lib/rotation.ts` with tests; Playwright pins the day.

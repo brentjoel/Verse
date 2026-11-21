@@ -14,13 +14,14 @@ export { expect };
 const web = JSON.parse(readFileSync(join(process.cwd(), "data/verses/web.json"), "utf8")) as Record<string, string>;
 const emotions = JSON.parse(readFileSync(join(process.cwd(), "data/emotions.json"), "utf8")) as { id: string; specifics: { id: string; references: string[] }[] }[];
 
-/** The curated feeling whose passages include the longest WEB text, for overflow checks. */
+/** The curated feeling whose passages include the longest WEB text, for overflow checks.
+ * The pinned test day shows each feeling's first four references; the rest are behind `?more`. */
 export function longestPassage() {
   let best = { path: "", reference: "", length: 0 };
-  for (const emotion of emotions) for (const specific of emotion.specifics) for (const reference of specific.references) {
+  for (const emotion of emotions) for (const specific of emotion.specifics) specific.references.forEach((reference, index) => {
     const length = web[reference]?.length ?? 0;
-    if (length > best.length) best = { path: `/emotions/${emotion.id}/${specific.id}`, reference, length };
-  }
+    if (length > best.length) best = { path: `/emotions/${emotion.id}/${specific.id}${index >= 4 ? "?more" : ""}`, reference, length };
+  });
   return best;
 }
 

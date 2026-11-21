@@ -44,6 +44,8 @@ Next.js 16 App Router with Cache Components. Server Components by default.
 | `/`, `/about`, `/licenses` | Static, with client controls |
 | `/emotions/[emotion]` | Eight prebuilt routes |
 | `/emotions/[emotion]/[sub]`, `/compare` | Static shell; passages stream inside Suspense because they read the cookie |
+
+Daily rotation: each feeling has 8 curated references. `lib/rotation.ts` shows a window of 4 that shifts by one per server (UTC) day; `?more` shows the other 4. Only 4 passages render per view, so NLT use per view is unchanged. `VERSELIGHT_TODAY` pins the day for Playwright only.
 | `/my-verses`, `/journal` | Static shell; client reads storage after hydration with loading, empty and error states |
 | `/share` | WEB-only `ImageResponse`, strict inputs, cached by canonical reference |
 
@@ -98,7 +100,7 @@ Pure functions in `lib/streaks.ts` and `lib/badges.ts`, tested in `scripts/test-
 
 ## Daily verse and sharing
 
-- Daily verse: WEB only, `(localDayOfYear - 1) % 84` over the sorted curated references, computed on the device. Dates are never sent.
+- Daily verse: WEB only, `(localDayOfYear - 1) % N` over the N sorted unique curated references (211), computed on the device. Dates are never sent.
 - `GET /share?ref=<reference>&translation=web` rejects anything else. Successful PNGs are cached (1 day browser, 30 days shared); errors are `no-store`. The share dialog fetches without cookies and reuses the blob for preview, native share and download.
 - Social images contain brand copy only.
 

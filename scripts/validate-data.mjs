@@ -41,7 +41,7 @@ export function validateData(emotions, prompts) {
       specificIds.add(specific.id);
       check(isText(specific.name), `Missing specific name or em dash: ${specific.id}`);
       if (!Array.isArray(specific.references)) { errors.push(`Missing references: ${specific.id}`); continue; }
-      check(specific.references.length === 4 && new Set(specific.references).size === 4, `Expected 4 distinct references: ${specific.id}`);
+      check(specific.references.length === 8 && new Set(specific.references).size === 8, `Expected 8 distinct references: ${specific.id}`);
       for (const reference of specific.references) {
         checkReference(reference);
         check(Object.hasOwn(prompts, reference), `Missing prompt: ${reference}`);

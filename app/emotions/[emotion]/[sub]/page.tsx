@@ -2,6 +2,7 @@ import { FocusToggle } from "@/components/focus-toggle";
 import Link from "next/link";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 import { ArrowUpRight } from "lucide-react";
 import { VerseCarousel, VersePager } from "@/components/verse-carousel";
 import { SiteShell } from "@/components/site-shell";
@@ -15,6 +16,7 @@ import { ShareCardControls } from "@/components/share-card-controls";
 import { DawnReveal } from "@/components/dawn-reveal";
 import { UndoToast } from "@/components/undo-toast";
 import { passageTokens } from "@/lib/dawn";
+import { dayNumber, serverToday, todaysReferences } from "@/lib/rotation";
 
 export async function generateMetadata({ params }: { params: Promise<{ emotion: string; sub: string }> }) {
   const { emotion, sub } = await params;
@@ -26,17 +28,22 @@ export function generateStaticParams() {
   return getAllEmotions().flatMap((emotion) => emotion.specifics.map((specific) => ({ emotion: emotion.id, sub: specific.id })));
 }
 
-export default async function ResultsPage({ params }: { params: Promise<{ emotion: string; sub: string }> }) {
+export default async function ResultsPage({ params, searchParams }: { params: Promise<{ emotion: string; sub: string }>; searchParams: Promise<{ more?: string | string[] }> }) {
   const { emotion: emotionId, sub } = await params;
   const emotion = getEmotionById(emotionId);
   const specific = getSpecificEmotionByIds(emotionId, sub);
   if (!emotion || !specific) notFound();
-  return <SiteShell><Suspense fallback={<ContentNotice loading>Finding your verses...</ContentNotice>}><ResultsContent emotion={emotion} specific={specific} /></Suspense></SiteShell>;
+  return <SiteShell><Suspense fallback={<ContentNotice loading>Finding your verses...</ContentNotice>}><ResultsContent emotion={emotion} specific={specific} searchParams={searchParams} /></Suspense></SiteShell>;
 }
 
-async function ResultsContent({ emotion, specific }: { emotion: Emotion; specific: SpecificEmotion }) {
+async function ResultsContent({ emotion, specific, searchParams }: { emotion: Emotion; specific: SpecificEmotion; searchParams: Promise<{ more?: string | string[] }> }) {
   const translation = await getPreferredTranslation();
-  const passages = await Promise.all(specific.references.map(reference => getVersePassage(reference, translation)));
+  const more = (await searchParams).more !== undefined;
+  // The daily window depends on the request time, so wait for a real request before reading the clock.
+  await connection();
+  // Four passages a day from the feeling's eight, shifting by one daily; "more" shows the other four.
+  const references = todaysReferences(specific.references, dayNumber(serverToday()), more);
+  const passages = await Promise.all(references.map(reference => getVersePassage(reference, translation)));
   const returnTo = `/emotions/${emotion.id}/${specific.id}`;
 
   return (
@@ -50,8 +57,8 @@ async function ResultsContent({ emotion, specific }: { emotion: Emotion; specifi
         </div>
         <FocusToggle />
         <section aria-label={`Verse references for ${specific.name.toLowerCase()}`}>
-            <VerseCarousel key={returnTo}>
-              {specific.references.map((reference, index) => {
+            <VerseCarousel key={returnTo + (more ? "?more" : "")}>
+              {references.map((reference, index) => {
                 const prompt = getPromptForReference(reference);
                 const passage = passages[index];
                 return (
@@ -75,10 +82,11 @@ async function ResultsContent({ emotion, specific }: { emotion: Emotion; specifi
                 );
               })}
             </VerseCarousel>
-          {specific.references.length === 0 && <ContentNotice>References for this feeling are being prepared with care. Please visit again soon.</ContentNotice>}
+          {references.length === 0 && <ContentNotice>References for this feeling are being prepared with care. Please visit again soon.</ContentNotice>}
         </section>
         <nav className="results-ending" aria-label="What next">
           <p>Stay as long as you like. When you are ready:</p>
+          {references.length > 0 && <Link href={more ? returnTo : `${returnTo}?more`} className="compare-link">{more ? "Back to today's verses" : "Read 4 more verses"}</Link>}
           <Link href={`/emotions/${emotion.id}`} className="compare-link">Try another feeling</Link>
           <Link href="/" className="pill">Back to the wheel</Link>
         </nav>
