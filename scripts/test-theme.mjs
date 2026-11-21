@@ -77,3 +77,10 @@ test('emotion hues are visible as dots and particles in both themes', () => {
     assert.match(css, new RegExp(`\\[data-theme="light"\\] \\[data-emotion="${id}"\\], :root\\[data-theme="light"\\]\\[data-emotion="${id}"\\] \\{ --emotion: ${d}; \\}`));
   }
 });
+
+test('animated components only read color tokens the stylesheet defines', () => {
+  const source = readFileSync(new URL('../components/dawn-reveal.tsx', import.meta.url), 'utf8');
+  const used = [...source.matchAll(/getPropertyValue\("(--[\w-]+)"\)/g)].map(m => m[1]);
+  assert.ok(used.length > 0, 'dawn reveal reads its colors from tokens');
+  for (const token of used) assert.ok(token in night && token in day, `${token} is defined in both themes`);
+});

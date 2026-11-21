@@ -75,7 +75,7 @@ export class PersonalStore {
     }
   };
   private conflict() {
-    this.publish({ ...this.state, mode: "conflict", message: "Your saved data changed in another tab. Export this tab's copy if needed, then reload saved data before editing." });
+    this.publish({ ...this.state, mode: "conflict", message: "This tab is out of date because Verselight changed in another tab. Reload the page to see your latest verses and journal." });
   }
   private async transaction(work: () => StorageResult): Promise<StorageResult> {
     try { return this.state.mode !== "memory" && this.port.exclusive ? await this.port.exclusive(work) : work(); }

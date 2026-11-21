@@ -21,6 +21,9 @@ type Intensity = "low" | "medium" | "high";
 export function WheelPicker({ emotions, children }: { emotions: readonly Emotion[]; children: ReactNode }) {
   const [mode, setMode] = useState<"list" | "wheel">("list");
   const [tier, setTier] = useState<QualityTier>("list");
+  // Capable devices keep the Wheel option even after a runtime fallback, so the wow is one tap away.
+  const [capable, setCapable] = useState(false);
+  const returning = useRef(false);
   const [idle, setIdle] = useState(false);
   const [turn, setTurn] = useState(0);
   const [broad, setBroad] = useState<number | null>(null);
@@ -42,6 +45,7 @@ export function WheelPicker({ emotions, children }: { emotions: readonly Emotion
     const decide = () => {
       const start = initialTier({ reducedMotion: motion.matches, cores: navigator.hardwareConcurrency, memory: (navigator as Navigator & { deviceMemory?: number }).deviceMemory, width: innerWidth });
       setTier(start);
+      setCapable(start !== "list");
       setMode(start === "list" ? "list" : "wheel");
     };
     decide();
@@ -64,6 +68,7 @@ export function WheelPicker({ emotions, children }: { emotions: readonly Emotion
   useEffect(() => {
     if (mode !== "wheel") return;
     if (broad !== null) dial.current?.querySelector<HTMLAnchorElement>(".wheel-center a")?.focus({ preventScroll: true });
+    else if (returning.current) { returning.current = false; dial.current?.querySelector<HTMLButtonElement>(".wheel-lock")?.focus({ preventScroll: true }); }
   }, [broad, mode]);
 
   useEffect(() => {
@@ -71,8 +76,11 @@ export function WheelPicker({ emotions, children }: { emotions: readonly Emotion
     if (!element || mode !== "wheel") return;
     const scroll = (event: WheelEvent) => {
       if (event.ctrlKey) return;
+      // Vertical scrolling moves the page; only sideways gestures or a focused dial turn the wheel.
+      const sideways = Math.abs(event.deltaX) > Math.abs(event.deltaY);
+      if (!sideways && !element.contains(document.activeElement)) return;
       event.preventDefault();
-      wheelDelta.current += event.deltaY;
+      wheelDelta.current += sideways ? event.deltaX : event.deltaY;
       if (Math.abs(wheelDelta.current) >= 40 && event.timeStamp - wheelTime.current > 140) {
         rotate(Math.sign(wheelDelta.current)); wheelDelta.current = 0; wheelTime.current = event.timeStamp;
       }
@@ -82,9 +90,8 @@ export function WheelPicker({ emotions, children }: { emotions: readonly Emotion
   }, [mode, rotate]);
 
   const emotion = emotions[broad ?? wrapIndex(turn, emotions.length)];
-  const canWheel = tier !== "list";
-  const toggle = canWheel ? <div className="segmented" role="group" aria-label="Choose how to browse feelings">
-    <button type="button" className="chip" aria-pressed={mode === "wheel"} onClick={() => setMode("wheel")}>Wheel</button>
+  const toggle = capable ? <div className="segmented" role="group" aria-label="Choose how to browse feelings">
+    <button type="button" className="chip" aria-pressed={mode === "wheel"} onClick={() => { if (tier === "list") setTier("low"); setMode("wheel"); }}>Wheel</button>
     <button type="button" className="chip" aria-pressed={mode === "list"} onClick={() => setMode("list")}>List</button>
   </div> : null;
 
@@ -101,7 +108,7 @@ export function WheelPicker({ emotions, children }: { emotions: readonly Emotion
   return <div className="wheel-picker" data-emotion={emotion.id}>
     <div className="wheel-topbar">
       {broad === null ? <p id="wheel-help" className="wheel-help">Turn the dial, then press the center.</p>
-        : <button type="button" className="back-link wheel-back" onClick={() => { setBroad(null); setTurn(broad); }}>&#8592; All feelings</button>}
+        : <div className="wheel-context"><button type="button" className="back-link wheel-back" onClick={() => { returning.current = true; setBroad(null); setTurn(broad); }}>&#8592; All feelings</button><span className="heading-sm"><span className="emotion-dot" aria-hidden="true" /> {emotion.name}</span></div>}
       {toggle}
     </div>
     <div className="wheel-stage">

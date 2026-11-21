@@ -50,10 +50,11 @@ export function burstStars(reference: string, count = 16): { x: number; y: numbe
   for (const char of reference) hash = Math.imul(hash ^ char.charCodeAt(0), 16777619);
   const next = () => { hash = Math.imul(hash ^ (hash >>> 13), 0x5bd1e995); hash ^= hash >>> 15; return (hash >>> 0) / 4294967296; };
   return Array.from({ length: count }, () => {
-    const angle = next() * Math.PI * 2, spread = Math.sqrt(next());
+    // Stars settle along an arc, echoing the top of the wheel, with a little jitter.
+    const along = (next() - 0.5) * 2.4, jitter = (next() - 0.5) * 10;
     return {
-      x: Math.round((50 + Math.cos(angle) * spread * 46) * 10) / 10,
-      y: Math.round((50 + Math.sin(angle) * spread * 44) * 10) / 10,
+      x: Math.round(Math.min(100, Math.max(0, 50 + Math.sin(along) * 44 + jitter * 0.4)) * 10) / 10,
+      y: Math.round(Math.min(100, Math.max(0, 100 - Math.cos(along) * 82 + jitter)) * 10) / 10,
       delay: Math.round(next() * 600),
       size: Math.round((2 + next() * 3) * 10) / 10,
     };

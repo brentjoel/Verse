@@ -32,8 +32,8 @@ export function DawnReveal({ path, reference, children }: { path: string; refere
         words.forEach((word, index) => {
           // Both colors remain readable. Animation adds emphasis without hiding text.
           run.add(word.animate([
-            { color: style.getPropertyValue("--muted-foreground") },
-            { color: style.getPropertyValue("--foreground") },
+            { color: style.getPropertyValue("--ink-3") },
+            { color: style.getPropertyValue("--ink") },
           ], { delay: wordDelay(index), duration: 600, fill: "backwards", easing: "ease-out" }));
         });
         // Stars rise behind the reference and settle into a still constellation.

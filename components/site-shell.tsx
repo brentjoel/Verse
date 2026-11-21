@@ -23,7 +23,7 @@ export function SiteShell({ children, ambient = true }: Readonly<{ children: Rea
       <ThemeSync />
       <Suspense><SiteNav /></Suspense>
       <StorageNotice />
-      <ViewTransition default="none" enter="page-arrival" exit="page-arrival"><main id="main-content" className="site-main">{children}</main></ViewTransition>
+      <ViewTransition default="none" enter="page-arrival" exit="page-arrival"><main id="main-content" className="site-main" tabIndex={-1}>{children}</main></ViewTransition>
       <footer className="site-footer">
         <span>Come as you are. Take your time.</span>
         <nav aria-label="About and sources"><Link href="/about">About and privacy</Link><Link href="/licenses">Sources and copyright notices</Link></nav>

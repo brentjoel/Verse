@@ -24,13 +24,13 @@ async function renderCard(reference: string) {
   const text = verses[reference];
   if (!text?.trim()) throw new Error("Passage unavailable.");
   const hue = emotionHue(reference);
-  const ring = Array.from({ length: 72 }, (_, index) => {
-    const angle = index / 72 * Math.PI * 2, wobble = (index * 37 % 11) / 11;
-    return { x: 150 + Math.sin(angle) * (112 + wobble * 22), y: 150 - Math.cos(angle) * (112 + wobble * 22), size: 3 + (index * 53 % 7) * .7, alpha: .35 + wobble * .65 };
+  const ring = Array.from({ length: 64 }, (_, index) => {
+    const angle = index / 64 * Math.PI * 2, wobble = (index * 37 % 11) / 11;
+    return { x: 110 + Math.sin(angle) * (78 + wobble * 18), y: 110 - Math.cos(angle) * (78 + wobble * 18), size: 3 + (index * 53 % 7) * .6, alpha: .35 + wobble * .65 };
   });
   const image = new ImageResponse(
     <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", width: "100%", height: "100%", padding: 72, background: "#000000", color: "#ffffff", fontFamily: "Lora", position: "relative" }}>
-      <div style={{ display: "flex", position: "absolute", top: -40, right: -40, width: 300, height: 300 }}>
+      <div style={{ display: "flex", position: "absolute", top: -36, right: -36, width: 220, height: 220 }}>
         {ring.map((dot, index) => <div key={index} style={{ display: "flex", position: "absolute", left: dot.x, top: dot.y, width: dot.size, height: dot.size, borderRadius: 99, background: hue, opacity: dot.alpha }} />)}
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 14, fontSize: 26, fontFamily: "sans-serif", color: "#ffffff" }}><BrandMark size={40} />Verselight</div>
