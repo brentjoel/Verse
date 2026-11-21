@@ -34,7 +34,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 - [x] Readable journal export to print or save as PDF
 - [x] "This spoke to me" marks that favor a verse in the rotation
 - [x] Time-of-day sky on Home
-- [ ] "Not sure what I feel?" three-question path
+- [x] "Not sure what I feel?" three-question path
 - [ ] Offline reading: a service worker caching the app shell and public-domain data only, never NLT, no notifications
 
 **Phase D: storage (one schema migration, version 2)**
@@ -165,3 +165,6 @@ Results and the Morning star gain a private mark. Every third local day the dail
 
 ### Time-of-day sky (2026-11-21)
 Home gets a faint sky wash that follows the device's local hour (dawn 5-8, day 8-17, dusk 17-20, night). Decorative and client-only; pure `lib/time-sky.ts` with tests; Playwright sets the clock to check each phase.
+
+### Not sure what I feel (2026-11-21)
+Home links to `/not-sure`: three questions (where, what about, what would help) scored by fixed rules in pure `lib/feeling-finder.ts` point to one or two feelings. Tests prove every option names a real feeling and every feeling is reachable. Nothing stored; a hook point for the later on-device finder.

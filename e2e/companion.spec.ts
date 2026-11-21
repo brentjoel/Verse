@@ -113,3 +113,26 @@ test.describe("time-of-day sky", () => {
     });
   }
 });
+
+test.describe("not sure what I feel", () => {
+  test.use({ reducedMotion: "reduce" });
+
+  test("three answers lead to a feeling", async ({ page }) => {
+    await page.goto("/");
+    await page.getByRole("link", { name: "Not sure what I feel?" }).click();
+    await page.getByRole("button", { name: "Light and warm" }).click();
+    await page.getByRole("button", { name: "Something good" }).click();
+    await expect(page.getByRole("heading", { name: "What would help most right now?" })).toBeFocused();
+    await page.getByRole("button", { name: "A way to say thank you" }).click();
+    await expect(page.getByRole("heading", { name: "This sounds like Grateful" })).toBeVisible();
+    await page.getByRole("link", { name: "Find verses for Grateful" }).click();
+    await expect(page).toHaveURL(/\/emotions\/grateful$/);
+  });
+
+  test("Back changes an answer", async ({ page }) => {
+    await page.goto("/not-sure");
+    await page.getByRole("button", { name: "In my chest, a heaviness" }).click();
+    await page.getByRole("button", { name: "Back" }).click();
+    await expect(page.getByRole("heading", { name: "Where do you notice it most?" })).toBeVisible();
+  });
+});
