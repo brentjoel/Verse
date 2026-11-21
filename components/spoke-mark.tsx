@@ -2,15 +2,12 @@
 
 import Link from "next/link";
 import { Heart } from "lucide-react";
-import web from "@/data/verses/web.json";
-import { useLocalKey } from "@/lib/local-key";
-import { SPOKE_KEY, parseMarks, toggleMark } from "@/lib/spoke";
-
-const known = new Set(Object.keys(web));
+import { useCompanion } from "@/lib/browser-storage";
+import { toggleMark } from "@/lib/spoke";
 
 export function useMarks() {
-  const { ready, raw, set } = useLocalKey(SPOKE_KEY);
-  return { ready, marks: ready ? parseMarks(raw, known) : [], set };
+  const { ready, marks, set } = useCompanion();
+  return { ready, marks: ready ? marks : [], set: (next: string[]) => void set({ marks: next }) };
 }
 
 /** "This spoke to me": a private mark that brings the verse back now and then. Only the reference is kept. */

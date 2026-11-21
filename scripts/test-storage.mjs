@@ -29,9 +29,9 @@ function setup(port = memory(), prefs = {}) {
   return { store, port, applied };
 }
 function backup(data = emptyData(preferences)) {
-  return { format: 'verselight-backup', schemaVersion: 1, exportedAt: new Date().toISOString(), data };
+  return { format: 'verselight-backup', schemaVersion: 2, exportedAt: new Date().toISOString(), data };
 }
-function goodEnvelope() { return JSON.stringify({ schemaVersion: 1, revision: 0, updatedAt: new Date().toISOString(), data: emptyData(preferences) }); }
+function goodEnvelope() { return JSON.stringify({ schemaVersion: 2, revision: 0, updatedAt: new Date().toISOString(), data: emptyData(preferences) }); }
 
 test('save, reload, collection membership and deletion round trip without verse text', async () => {
   const { store, port } = setup();

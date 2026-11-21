@@ -2,9 +2,13 @@ import emotions from "../data/emotions.json" with { type: "json" };
 import { isTranslationId, type TranslationId } from "./translations";
 import { deriveStreak, validLocalDate } from "./streaks";
 import { BADGES } from "./badges";
+import { parseAnchor } from "./anchor";
+import { parseLetters, type Letter } from "./letters";
+import { parsePath, type ActivePath } from "./gentle-path";
+import { parseMarks } from "./spoke";
 
 export const STORAGE_KEY = "verselight-data";
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 export const MAX_BYTES = 5 * 1024 * 1024;
 export const MAX_RECORDS = 10000;
 export interface Preferences { theme: "dark" | "light"; preferredTranslation: TranslationId }
@@ -22,11 +26,13 @@ export interface PersonalData {
   preferences: Preferences; savedVerses: SavedVerse[]; collections: Collection[];
   moodEntries: MoodEntry[]; activityDays: ActivityDay[]; badges: Badge[];
   streakState: StreakState;
+  /** Version 2: companion records, references and the visitor's own words only, never verse text. */
+  anchor?: string; letters: Letter[]; path?: ActivePath; marks: string[];
 }
-export interface StorageEnvelope { schemaVersion: 1; revision: number; updatedAt: string; data: PersonalData }
-export interface Backup { format: "verselight-backup"; schemaVersion: 1; exportedAt: string; data: PersonalData }
+export interface StorageEnvelope { schemaVersion: 2; revision: number; updatedAt: string; data: PersonalData }
+export interface Backup { format: "verselight-backup"; schemaVersion: 2; exportedAt: string; data: PersonalData }
 
-const references = new Set(emotions.flatMap(e => e.specifics.flatMap(s => s.references)));
+export const KNOWN_REFERENCES: ReadonlySet<string> = new Set(emotions.flatMap(e => e.specifics.flatMap(s => s.references)));
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 export function requireValid(condition: unknown, message = "This data is not a supported Verselight backup."): asserts condition {
   if (!condition) throw new Error(message);
@@ -47,15 +53,16 @@ function timestamp(value: unknown) {
 }
 function id(value: unknown) { requireValid(typeof value === "string" && uuid.test(value), "A record has an invalid id."); }
 function unique(values: unknown[]) { requireValid(new Set(values).size === values.length, "Some records are duplicated."); }
+export const knownFeeling = (emotionId: string, specificId: string) => emotions.some(e => e.id === emotionId && e.specifics.some(s => s.id === specificId));
 export function validatePersonalData(input: unknown): PersonalData {
-  const data = object(input, ["preferences", "savedVerses", "collections", "moodEntries", "activityDays", "streakState", "badges"]);
+  const data = object(input, ["preferences", "savedVerses", "collections", "moodEntries", "activityDays", "streakState", "badges", "letters", "marks"], ["anchor", "path"]);
   const prefs = object(data.preferences, ["theme", "preferredTranslation"]);
   requireValid((prefs.theme === "dark" || prefs.theme === "light") && isTranslationId(prefs.preferredTranslation), "A preference is invalid.");
   const saves = list(data.savedVerses);
   for (const value of saves) {
     const save = object(value, ["id", "reference", "translationId", "createdAt"], ["emotionId", "specificEmotionId"]);
     id(save.id); timestamp(save.createdAt);
-    requireValid(typeof save.reference === "string" && references.has(save.reference) && isTranslationId(save.translationId), "A saved reference or translation is unavailable.");
+    requireValid(typeof save.reference === "string" && KNOWN_REFERENCES.has(save.reference) && isTranslationId(save.translationId), "A saved reference or translation is unavailable.");
     if (Object.hasOwn(save, "emotionId") || Object.hasOwn(save, "specificEmotionId")) {
       const specific = emotions.find(e => e.id === save.emotionId)?.specifics.find(s => s.id === save.specificEmotionId);
       requireValid(specific && specific.references.some(ref => ref === save.reference), "A saved feeling does not match its reference.");
@@ -110,14 +117,20 @@ export function validatePersonalData(input: unknown): PersonalData {
     requireValid(typeof streak.maxObservedLocalDate === "string" && streak.maxObservedLocalDate >= latest && typeof streak.maxObservedAt === "string" && typedDays.every(day => day.firstActivityAt <= String(streak.maxObservedAt)), "Clock history is incomplete.");
     requireValid((moods as MoodEntry[]).every(mood => mood.createdAt <= String(streak.maxObservedAt)), "A reflection is ahead of the recorded clock.");
   }
+  if (Object.hasOwn(data, "anchor")) requireValid(parseAnchor({ reference: data.anchor }, KNOWN_REFERENCES) !== undefined, "The anchor verse is unavailable.");
+  // The lenient parsers drop bad records; here any dropped record means the data is invalid.
+  requireValid(Array.isArray(data.letters) && parseLetters(data.letters).length === data.letters.length, "A letter is invalid.");
+  requireValid(Array.isArray(data.marks) && parseMarks(data.marks, KNOWN_REFERENCES).length === data.marks.length, "A marked verse is invalid.");
+  if (Object.hasOwn(data, "path")) requireValid(parsePath(data.path, knownFeeling) !== undefined, "The gentle path is invalid.");
   const result = structuredClone(data) as unknown as PersonalData;
+  result.letters = parseLetters(result.letters);
   // Totals and grace are rebuilt from the authoritative ledger, including on Import.
   result.streakState = { ...result.streakState, ...deriveStreak(typedDays, String(streak.maxObservedLocalDate ?? latest ?? "1970-01-01")) };
   if (!latest) delete result.streakState.lastActiveDate;
   return result;
 }
 export function emptyData(preferences: Preferences): PersonalData {
-  return { preferences: { ...preferences }, savedVerses: [], collections: [], moodEntries: [], activityDays: [], badges: [], streakState: { currentStreak: 0, longestStreak: 0, graceDates: [] } };
+  return { preferences: { ...preferences }, savedVerses: [], collections: [], moodEntries: [], activityDays: [], badges: [], streakState: { currentStreak: 0, longestStreak: 0, graceDates: [] }, letters: [], marks: [] };
 }
 export function checkSize(text: string) {
   requireValid(new TextEncoder().encode(text).byteLength <= MAX_BYTES, "This file is too large. The limit is 5 MiB.");
