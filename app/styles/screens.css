@@ -441,5 +441,11 @@
 .finder-option { width: 100%; min-height: 48px; padding: 10px var(--space-3); text-align: left; color: var(--ink); background: var(--veil); border: 1px solid var(--hairline); border-radius: var(--radius-panel); font-size: 16px; transition: border-color var(--motion-fast), background-color var(--motion-fast); }
 .finder-option:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
 @media (hover: hover) and (pointer: fine) { .finder-option:hover { border-color: var(--action); } }
+.finder-words { width: 100%; }
+.results-heading + .finder { margin-top: var(--space-4); }
+.finder-words-result { display: grid; justify-items: start; gap: var(--space-1); }
+.finder-words-result h3 { font-size: 19px; font-weight: 500; color: var(--ink); }
+.finder-words-result h3:focus { outline: none; }
+.finder-or { margin: var(--space-4) 0 var(--space-2); padding-top: var(--space-3); border-top: 1px solid var(--hairline); color: var(--ink-2); max-width: 520px; }
 .path-day .verse-reference { color: var(--ink); }
 .path-day :is(.prompt-label, .quiet-link, .translation-tag) { color: var(--ink-2); }
