@@ -192,6 +192,19 @@ test("Read 4 more verses shows the rest of the feeling's passages and comes back
   await expect(page.locator(".verse-reference").first()).toHaveText("Psalm 61:2");
 });
 
+test.describe("help note", () => {
+  test("shows on a heavy feeling with the directory link, and not on a joyful one", async ({ page }) => {
+    await page.goto("/emotions/sad/lonely");
+    const note = page.locator(".help-note");
+    await note.getByText("If you are struggling").click();
+    await expect(note).toContainText("local emergency services");
+    await expect(note.getByRole("link", { name: /findahelpline\.com/ })).toHaveAttribute("href", "https://findahelpline.com");
+    await page.goto("/emotions/grateful/blessed");
+    await expect(page.getByRole("heading", { level: 1, name: "Blessed" })).toBeVisible();
+    await expect(page.locator(".help-note")).toHaveCount(0);
+  });
+});
+
 test.describe("return check-in", () => {
   test.use({ reducedMotion: "reduce" });
 
