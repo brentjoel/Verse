@@ -20,3 +20,21 @@ test.describe("anchor verse", () => {
     await expect(page.getByRole("region", { name: "Your anchor" })).toHaveCount(0);
   });
 });
+
+test.describe("future letters", () => {
+  test.use({ reducedMotion: "reduce" });
+
+  test("a sealed letter hides its text and an old one opens", async ({ page }) => {
+    await page.goto("/journal");
+    await page.getByLabel("Write to the person you will be").fill("Keep going, friend.");
+    await page.getByRole("button", { name: "Seal this letter" }).click();
+    await expect(page.getByText("A letter waits for")).toBeVisible();
+    await expect(page.getByText("Keep going, friend.", { exact: true })).toHaveCount(0);
+    await page.evaluate(() => localStorage.setItem("verselight-letters", JSON.stringify([{ id: "00000000-0000-4000-8000-000000000001", writtenOn: "2026-01-01", openOn: "2026-01-02", text: "You made it." }])));
+    await page.reload();
+    await expect(page.getByText("You made it.")).toBeVisible();
+    await page.getByRole("button", { name: "Remove letter" }).click();
+    await page.getByRole("button", { name: "Yes, remove" }).click();
+    await expect(page.getByText("You made it.")).toHaveCount(0);
+  });
+});

@@ -157,3 +157,7 @@ input[type="checkbox"], input[type="radio"] { width: 18px; height: 18px; accent-
 .debug-overlay { position: fixed; z-index: 50; left: 8px; bottom: calc(76px + env(safe-area-inset-bottom)); margin: 0; padding: 6px 10px; display: grid; gap: 2px; border-radius: 10px; background: color-mix(in srgb, var(--canvas) 85%, transparent); border: 1px solid var(--hairline); font: 500 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--ink-2); pointer-events: none; }
 .debug-overlay div { display: flex; justify-content: space-between; gap: 16px; }
 .debug-overlay dd { margin: 0; color: var(--ink); }
+
+.letter-text { white-space: pre-wrap; }
+.letter-sealed { display: grid; gap: var(--space-1); list-style: none; padding: 0; margin: 0 0 var(--space-2); color: var(--ink-2); }
+.letter-sealed li { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-2); }
