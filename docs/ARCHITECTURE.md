@@ -88,6 +88,12 @@ Known limitation: without JavaScript, Results and Compare show only their loadin
 
 Saves deduplicate by reference plus translation. Deleting a save removes its memberships; deleting a collection keeps its saves.
 
+Personal keys outside the schema-1 envelope (own localStorage keys, validated on read, references only, not yet in Export; Phase D folds them in): `verselight-anchor`, `verselight-letters`, `verselight-path`, `verselight-spoke`, plus `verselight-check-in-dismissed`.
+
+## Offline reading
+
+`public/sw.js` (registered by `components/service-worker.tsx` in production) caches the app shell pages, `/emotions/<feeling>` indexes, `/path/*` and `/_next/static` assets. `classify()` in the worker is the allowlist; Results (`/emotions/<feeling>/<sub>`), Compare, Share and everything else are never cached. Offline, a Results request redirects to `/offline?to=...`, which shows that feeling's WEB verses bundled in the app. Playwright blocks the worker by default; `e2e/offline.spec.ts` enables it.
+
 ## Streaks and badges
 
 Pure functions in `lib/streaks.ts` and `lib/badges.ts`, tested in `scripts/test-progress.mjs`.
