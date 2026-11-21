@@ -1,6 +1,12 @@
 /* Screens. Each block owns one route family. */
 
 /* ---------- Home ---------- */
+.time-sky { position: fixed; inset: 0; z-index: 0; pointer-events: none; transition: opacity var(--motion-slow, 600ms); }
+.time-sky[data-phase="dawn"] { background: linear-gradient(to top, color-mix(in srgb, #ff9d6e 16%, transparent), transparent 60%); }
+.time-sky[data-phase="day"] { background: radial-gradient(120% 70% at 50% 0%, color-mix(in srgb, #ffd98a 12%, transparent), transparent 70%); }
+.time-sky[data-phase="dusk"] { background: linear-gradient(to top, color-mix(in srgb, #c46ea8 18%, transparent), transparent 65%); }
+.time-sky[data-phase="night"] { background: radial-gradient(120% 70% at 50% 0%, color-mix(in srgb, #6b64e6 12%, transparent), transparent 70%); }
+[data-theme="light"] .time-sky { opacity: .55; }
 .home-stage { display: grid; gap: var(--space-4); align-items: center; }
 .home-hero { display: grid; gap: var(--space-3); }
 .home-hero h1 { max-width: 9.5ch; }

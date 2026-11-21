@@ -33,7 +33,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 - [x] Seven-day gentle path for a feeling, built from its curated verses
 - [x] Readable journal export to print or save as PDF
 - [x] "This spoke to me" marks that favor a verse in the rotation
-- [ ] Time-of-day sky on Home
+- [x] Time-of-day sky on Home
 - [ ] "Not sure what I feel?" three-question path
 - [ ] Offline reading: a service worker caching the app shell and public-domain data only, never NLT, no notifications
 
@@ -162,3 +162,6 @@ Journal gains "Print or save as PDF": `window.print()` with a print stylesheet t
 
 ### This spoke to me (2026-11-21)
 Results and the Morning star gain a private mark. Every third local day the daily verse is a marked one; Results notes a marked verse sitting in the other four. Client-side only (the server never learns marks); pure `favorFirst` and `dailyWithMarks` in `lib/rotation.ts` with tests; own key `verselight-spoke`.
+
+### Time-of-day sky (2026-11-21)
+Home gets a faint sky wash that follows the device's local hour (dawn 5-8, day 8-17, dusk 17-20, night). Decorative and client-only; pure `lib/time-sky.ts` with tests; Playwright sets the clock to check each phase.
