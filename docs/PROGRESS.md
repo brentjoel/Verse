@@ -45,7 +45,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 - [x] Year in light recap
 
 **Phase E**
-- [ ] Project 3: on-device AI feeling finder (suggests feelings, never generates Scripture, never trains on NLT; rules out NIV's no-AI license)
+- [x] Project 3: on-device AI feeling finder (suggests feelings, never generates Scripture, never trains on NLT; rules out NIV's no-AI license)
 - [ ] Performance pass: skip the first ~500 ms of the fps probe, reserve space for the List-to-wheel swap, no-JS Results and Compare, real-device fps
 
 **Owner actions:** buy a custom domain if wanted; publish the write-up (drafted in `docs/writeup.md` during Phase B).
@@ -190,3 +190,6 @@ New `/year`, linked from Journal: days you came, feelings named, longest run, ve
 
 ### Phase D audit (2026-11-21)
 Audit of Journal (prayers, passcode, lock screen, reflection line), Home check-in, import preview and /year: 44px targets, AA contrast in both themes, no overflow at phone width. Fixed: focus now lands on the lock heading after Lock now and on the journal after unlock; axe covers populated Phase D states and the passcode screens. Not run: the detector (browser would not launch here), a screen-reader pass.
+
+### On-device feeling finder (2026-11-21)
+`/not-sure` gains "In your own words": a few typed words are scored on the device by pure `lib/feeling-words.ts` (a plain-phrase lexicon with stemming and negation, no Bible text, no model download) into one to three feelings with their closest specific. Loads only on use; nothing sent or stored; the three questions stay as the fallback. Tests reach every feeling and specific; ADR 0005 updated.
