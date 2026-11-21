@@ -2,7 +2,13 @@
 
 Emotion-based Scripture, reflection, and prayer for the feeling you bring today.
 
+[![Checks](https://github.com/brentjoel/Verse/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/brentjoel/Verse/actions/workflows/ci.yml) ![Lighthouse 90+ in CI](https://img.shields.io/badge/Lighthouse-90%2B%20in%20CI-brightgreen) ![Local-first, no tracking](https://img.shields.io/badge/privacy-local--first%2C%20no%20tracking-8b5cf6)
+
+![Turning the constellation wheel to a verse](docs/media/demo.gif)
+
 **Live site:** https://verselight-app.vercel.app/
+
+Built with Next.js 16, React 19, strict TypeScript, Tailwind CSS 4, Three.js and Playwright, deployed on Vercel. Lighthouse 90+ in every category is a CI gate.
 
 ## Features
 
@@ -18,7 +24,7 @@ Emotion-based Scripture, reflection, and prayer for the feeling you bring today.
 | --- | --- | --- | --- |
 | ![Verse with particle dawn](docs/screenshots/dawn.png) | ![Daylight wheel, inner ring](docs/screenshots/light.png) | ![Phone home](docs/screenshots/mobile.png) | ![Journal](docs/screenshots/journal.png) |
 
-[Watch the 20-second demo](docs/media/demo.webm) (turning the wheel to a verse). All captures use public-domain WEB text.
+[Full-quality demo video](docs/media/demo.webm) (turning the wheel to a verse). All captures use public-domain WEB text.
 
 ## How it is built
 
