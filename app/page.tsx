@@ -6,6 +6,7 @@ import { getAllEmotions } from "@/lib/emotions";
 import { DailyVerse } from "@/components/daily-verse";
 import web from "@/data/verses/web.json";
 import { ReturnCheckIn } from "@/components/return-check-in";
+import { TimeSky } from "@/components/time-sky";
 import { WheelPicker } from "@/components/wheel-picker";
 
 export const metadata = { title: "Verselight | A moment of peace", description: "Choose a feeling and find a quiet moment with Scripture, reflection, and prayer." };
@@ -14,6 +15,7 @@ export default function Home() {
   const emotions = getAllEmotions();
   return (
     <SiteShell ambient={false}>
+      <TimeSky />
       <div className="home-stage">
         <div className="home-hero">
           <h1 className="display">How is your heart today?</h1>
