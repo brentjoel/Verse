@@ -162,6 +162,11 @@ test.describe("night sky journal", () => {
     await star.click();
     await expect(page.getByRole("heading", { name: /^Reflections on / })).toBeVisible();
     await expect(page.getByRole("link", { name: "Read the verses" })).toHaveAttribute("href", "/emotions/sad/lonely");
+    const [download] = await Promise.all([page.waitForEvent("download"), page.getByRole("button", { name: "Save this sky as a card" }).click()]);
+    expect(download.suggestedFilename()).toMatch(/^verselight-sky-.*.png$/);
+    const { readFile } = await import("node:fs/promises");
+    const png = await readFile(await download.path());
+    expect([...png.subarray(0, 4)]).toEqual([0x89, 0x50, 0x4e, 0x47]);
     await page.getByRole("button", { name: "Calendar" }).click();
     await expect(page.locator(".journal-calendar")).toBeVisible();
     await expect(page.locator(".night-sky")).toHaveCount(0);
