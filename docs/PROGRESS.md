@@ -117,3 +117,6 @@ Reopening a feeling's Results in the same browser session returns to the passage
 
 ### Keyboard shortcuts (2026-11-21)
 `?` (or the footer link on non-touch devices) opens a shortcuts dialog; F toggles Focus on Results. Single keys never fire while typing, with a modifier, or over an open dialog. Pure `lib/shortcuts.ts` with tests; new e2e flow.
+
+### Phase A audit (2026-11-21)
+Audit of Results, Settings, shortcuts and footer: help-note summary now meets the 44px touch target. Known and accepted: Bedtime keeps Night's emotion hues, so the particles and dots stay as blue as Night; a warm-shifted hue set is a later option. The automated detector could not launch a browser here, so rendered contrast came from the token tests only.
