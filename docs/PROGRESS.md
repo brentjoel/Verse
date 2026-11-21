@@ -23,7 +23,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 - [x] "How it's built" case study page `/craft` with real numbers and a small architecture diagram
 - [x] Decision records in `docs/decisions/` (accounts, NLT and fallback, local-first storage, WebGL tiers, on-device AI)
 - [x] Per-feeling Open Graph and Twitter images in the emotion hue (brand copy only, no Scripture)
-- [ ] Live engineering overlay `?debug` (fps, tier, particles, draw calls)
+- [x] Live engineering overlay `?debug` (fps, tier, particles, draw calls)
 - [ ] Accessibility checks in CI with `@axe-core/playwright`, plus an Accessibility page
 - [ ] Sky share card: month constellation plus a WEB verse as a client-side PNG
 
@@ -129,3 +129,6 @@ Five short ADRs in `docs/decisions/` (guest-only, NLT with WEB fallback, local-f
 
 ### Per-feeling social images (2026-11-21)
 Each feeling page now has its own Open Graph and Twitter image in its hue (name, short description, Verselight; no Scripture), prebuilt for the 8 feelings via `lib/social-image.tsx`. The proxy matcher now skips the image routes, which it had been treating as unknown Results paths.
+
+### Engineering overlay (2026-11-21)
+`?debug` shows a small readout of fps, quality tier, particle count and draw calls (the wheel publishes draw calls in a data attribute every 30 frames). Client-only, read per page load, never stored; pure `lib/debug.ts` with tests and an e2e flow.
