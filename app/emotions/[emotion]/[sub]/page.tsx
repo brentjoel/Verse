@@ -59,7 +59,7 @@ async function ResultsContent({ emotion, specific, searchParams }: { emotion: Em
         </div>
         <FocusToggle />
         <section aria-label={`Verse references for ${specific.name.toLowerCase()}`}>
-            <VerseCarousel key={returnTo + (more ? "?more" : "")}>
+            <VerseCarousel key={returnTo + (more ? "?more" : "")} memoryKey={returnTo + (more ? "?more" : "")}>
               {references.map((reference, index) => {
                 const prompt = getPromptForReference(reference);
                 const passage = passages[index];

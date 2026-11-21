@@ -1,6 +1,7 @@
 "use client";
 
-import { addTransitionType, createContext, startTransition, useContext, ViewTransition, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import { addTransitionType, createContext, startTransition, useContext, ViewTransition, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import { readLastVerse, writeLastVerse } from "@/lib/last-verse";
 import { ArrowLeft, ArrowRight, List, BookOpen } from "lucide-react";
 
 const subscribe = () => () => {};
@@ -9,17 +10,23 @@ export const ActiveVerseContext = createContext(false);
 type Pager = { index: number; count: number; move: (offset: number) => void; select: (item: number) => void };
 const PagerContext = createContext<Pager | null>(null);
 
-export function VerseCarousel({ children }: { children: ReactNode[] }) {
+export function VerseCarousel({ children, memoryKey }: { children: ReactNode[]; memoryKey?: string }) {
   const enhanced = useSyncExternalStore(subscribe, () => true, () => false);
-  const [index, setIndex] = useState(0);
+  // Come back to the passage you were on earlier in this browser session (server and first paint show the first).
+  const count = children.length;
+  const remembered = useSyncExternalStore(subscribe, () => (memoryKey ? readLastVerse(memoryKey, count) : 0), () => 0);
+  const [chosen, setIndex] = useState<number | null>(null);
+  const index = chosen ?? remembered;
   const [list, setList] = useState(false);
   const region = useRef<HTMLDivElement>(null);
   const start = useRef<{ x: number; y: number } | null>(null);
   const [direction, setDirection] = useState(1);
   const activeIndex = useRef(0);
+  useEffect(() => { activeIndex.current = index; }, [index]);
   const select = (item: number, travel: number) => {
     if (item === activeIndex.current) return;
     activeIndex.current = item;
+    if (memoryKey) writeLastVerse(memoryKey, item);
     startTransition(() => {
       addTransitionType(travel > 0 ? "verse-next" : "verse-previous");
       setDirection(travel > 0 ? 1 : -1);
