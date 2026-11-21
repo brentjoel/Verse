@@ -167,3 +167,17 @@ test("focus reading keeps only the passage and leaves with Escape", async ({ pag
   await expect(page.locator(".site-header")).toBeVisible();
   await expect(page.getByRole("button", { name: "Focus" })).toBeVisible();
 });
+
+test("breathe guides a round and stops", async ({ page }) => {
+  await page.goto("/breathe");
+  await expect(page.getByRole("heading", { name: "Breathe", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Begin" }).click();
+  await expect(page.locator(".breathe-label")).toHaveText("Breathe in");
+  await expect(page.getByRole("button", { name: "Calm" })).toBeDisabled();
+  await expect(page.locator(".breathe-label")).toHaveText("Hold", { timeout: 6000 });
+  await noHorizontalOverflow(page);
+  await page.getByRole("button", { name: "Stop" }).click();
+  await expect(page.locator(".breathe-label")).toHaveText("Ready");
+  await page.getByRole("button", { name: "Steady" }).click();
+  await expect(page.getByRole("button", { name: "Steady" })).toHaveAttribute("aria-pressed", "true");
+});

@@ -4,11 +4,11 @@ Live: Steps 1 to 9 (picker, translations, Compare, storage, journal, share cards
 
 ## Now
 
-- Project 2: night sky journal merged (PR #10). Focus reading mode on `feat/focus-reading`.
+- Project 2: night sky journal (PR #10) and focus reading (PR #11) merged. Breathe on `feat/breathe`.
 
 ## Roadmap (owner order: features and UI first, performance last)
 
-1. Project 2: focus reading mode (in review), then Breathe, sky share card, prayer list, time-of-day sky, saved intensity (needs a storage schema migration).
+1. Project 2: Breathe (in review), then sky share card, prayer list, time-of-day sky, saved intensity (needs a storage schema migration).
 2. Project 3: on-device AI feeling finder. A small in-browser embedding model suggests the top 3 feelings and the person confirms. Crisis text shows resources first. Never generates Scripture, never trains on NLT. Hook: `leanWeights()` and the `uLean` uniform.
 3. Performance pass: skip the first ~500 ms in the fps probe; reserve space for the List-to-wheel swap on Home; no-JS fallback for Results and Compare; real-device fps.
 
@@ -56,3 +56,6 @@ Journal month opens as a sky: visited days are emotion-colored stars, consecutiv
 
 ### Focus reading mode (2026-11-21)
 Results gain a Focus button: only the passage, attribution and pager remain, centered and larger; Exit focus or Escape leaves. Transient root `data-focus`, nothing stored. New e2e flow.
+
+### Breathe (2026-11-21)
+New `/breathe` page and nav tab: a paced guide with Calm (4-4-6) and Steady (4-4-4-4) patterns, a growing orb, a text cue and live status. Pure `lib/breathe.ts` with 5 tests; nothing stored, no Scripture shown, reduced motion drops the orb animation.
