@@ -125,3 +125,27 @@ test('import and reset fully replace companion records, including an anchor or p
   assert.equal((await store.reset()).ok, true);
   assert.equal(JSON.parse(p.raw).data.anchor, undefined);
 });
+
+test('intensity and the check-in answer are saved on the reflection, validated and exported', async () => {
+  const p = port(null);
+  let today = '2026-11-20';
+  const store = new PersonalStore(p, () => {}, () => ({ localDate: today, instant: `${today}T12:00:00.000Z`, utcOffsetMinutes: 0 }));
+  store.initialize();
+  const [emotion] = (await import('../data/emotions.json', { with: { type: 'json' } })).default;
+  assert.equal((await store.recordMood(emotion.id, emotion.specifics[0].id, undefined, 'high')).ok, true);
+  assert.equal((await store.recordMood(emotion.id, emotion.specifics[0].id)).ok, true);
+  const [first, second] = store.getSnapshot().envelope.data.moodEntries;
+  assert.equal(first.intensity, 'high');
+  assert.equal(Object.hasOwn(second, 'intensity'), false, 'no intensity unless one was chosen');
+  today = '2026-11-21';
+  assert.equal((await store.answerCheckIn(second.id, 'lighter')).ok, true);
+  const back = readBackup(store.exportBackup()).data.moodEntries;
+  assert.equal(back[0].intensity, 'high');
+  assert.deepEqual(back[1].checkIn, { answer: 'lighter', on: '2026-11-21' });
+  assert.equal((await store.answerCheckIn('missing', 'same')).ok, false);
+  const data = store.getSnapshot().envelope.data;
+  for (const edit of [m => { m.intensity = 'extreme'; }, m => { m.checkIn = { answer: 'better', on: '2026-11-21' }; },
+    m => { m.checkIn = { answer: 'same', on: m.localDate }; }, m => { m.checkIn = { answer: 'same', on: '2026-11-21', extra: 1 }; }]) {
+    const copy = structuredClone(data); edit(copy.moodEntries[0]); assert.throws(() => validatePersonalData(copy));
+  }
+});

@@ -25,3 +25,10 @@ test('stored dismissal is validated', () => {
   assert.equal(parseDismissed('2026-11-21'), '2026-11-21');
   for (const bad of [null, '', 'yes', '2026-13-40', {}, 5]) assert.equal(parseDismissed(bad), undefined);
 });
+
+test('an answer from today keeps the card; one from an earlier day hides it until a new reflection', () => {
+  const answered = on => [{ ...mood('2026-11-19', 'sad'), checkIn: { answer: 'lighter', on } }];
+  assert.equal(pickCheckIn(answered('2026-11-21'), '2026-11-21').checkIn.answer, 'lighter');
+  assert.equal(pickCheckIn(answered('2026-11-20'), '2026-11-21'), undefined);
+  assert.ok(pickCheckIn([...answered('2026-11-20'), mood('2026-11-20', 'tired', 9)], '2026-11-21'));
+});
