@@ -1,5 +1,4 @@
 /* Printing the journal: only .print-journal remains, in black on white. */
-.print-journal { display: none; }
 @media print {
   :root, :root[data-theme] { --canvas: #fff; --ink: #000; --ink-2: #000; --ink-3: #333; --hairline: #999; --veil: #fff; }
   html, body, .site-shell { background: #fff !important; color: #000 !important; }
