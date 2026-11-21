@@ -172,7 +172,7 @@ input[type="checkbox"], input[type="radio"] { width: 18px; height: 18px; accent-
 .year-numbers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2); list-style: none; padding: 0; margin: 0 0 var(--space-3); color: var(--ink-2); }
 .year-numbers strong { display: block; font-size: var(--text-heading); font-weight: 600; color: var(--ink); line-height: 1.1; }
 .year-months { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--space-2) var(--space-1); list-style: none; padding: 0; margin: 0; }
-.year-months li { display: grid; justify-items: center; gap: 6px; color: var(--ink-2); font-size: var(--text-caption); }
+.year-months li { display: grid; grid-template-rows: 22px auto; place-items: center; gap: 6px; color: var(--ink-2); font-size: var(--text-caption); }
 .year-star { width: calc(6px + 14px * var(--glow, 0)); height: calc(6px + 14px * var(--glow, 0)); border-radius: 50%; background: var(--ink); opacity: calc(0.35 + 0.65 * var(--glow, 0)); box-shadow: 0 0 calc(18px * var(--glow, 0)) var(--action); }
 .year-months li[data-empty] .year-star { background: transparent; border: 1px dashed var(--ink-2); opacity: 0.6; box-shadow: none; }
 @media (min-width: 720px) { .year-numbers { grid-template-columns: repeat(4, minmax(0, 1fr)); } .year-months { grid-template-columns: repeat(12, minmax(0, 1fr)); } }
