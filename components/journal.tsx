@@ -7,6 +7,7 @@ import { NightSky, type GraceVerse } from "@/components/night-sky";
 import { PrintButton, PrintJournal } from "@/components/print-journal";
 import { FutureLetters } from "@/components/future-letters";
 import { PrayerList } from "@/components/prayer-list";
+import { JournalLockGate, PasscodeSettings } from "@/components/journal-lock";
 import { SkyCardButton } from "@/components/sky-card-button";
 import { buildNightSky } from "@/lib/night-sky";
 import { useState } from "react";
@@ -59,7 +60,8 @@ export function Journal({ graceVerse }: { graceVerse: GraceVerse }) {
   }
   if (!snapshot.ready) return <p className="content-notice skeleton" role="status">Opening your journal...</p>;
   if (snapshot.mode === "blocked") return <p className="content-notice">Your saved data needs care. <Link href="/my-verses#backups">Open backup and recovery</Link> to keep a copy and choose your next step.</p>;
-  const { moodEntries, activityDays, streakState, badges } = snapshot.envelope.data;
+  if (getPersonalStore().isLocked()) return <JournalLockGate />;
+  const { moodEntries, activityDays, streakState, badges, lock } = snapshot.envelope.data;
   const disabled = busy || snapshot.mode === "conflict";
   const first = `${month || (streakState.maxObservedLocalDate ?? localClock().localDate).slice(0, 7)}-01`;
   const next = shiftDate(first, 32).slice(0, 7) + "-01";
@@ -111,7 +113,8 @@ export function Journal({ graceVerse }: { graceVerse: GraceVerse }) {
       <details className="quiet-details"><summary>How your rhythm works</summary>
         <p className="local-help">A day counts when you choose a feeling or save a verse. If you miss one day in a week, your rhythm waits for you. Changing your device clock or time zone can pause counting until your date catches up. There is no pressure here; come back whenever you like.</p>
       </details>
-      <p className="local-help"><Link href="/my-verses#backups">Keep a backup of your journal</Link>. Backups include your notes and are not encrypted.</p>
+      <p className="local-help"><Link href="/my-verses#backups">Keep a backup of your journal</Link>. {lock ? "Backups keep your notes, letters and prayers encrypted with your passcode." : "Backups include your notes and are not encrypted."}</p>
     </section>
+    <PasscodeSettings hasLock={Boolean(lock)} disabled={disabled} />
   </>;
 }

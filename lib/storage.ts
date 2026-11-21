@@ -1,6 +1,7 @@
 import { foldLegacy, migrateVersioned, type LegacyKey, type LegacyValues } from "./storage-migrations";
 import { clockIsBehind, deriveStreak, localClock, recordActivity, type LocalClock } from "./streaks";
 import { awardBadges } from "./badges";
+import { hasSecret, newLockKey, seal, secretOf, unlock, withSecret, withoutSecret, type LockKey } from "./journal-lock";
 import { checkSize, emptyData, parseJson, requireValid, SCHEMA_VERSION, validateBackup, validateEnvelope, validatePersonalData, type Backup, type CheckInAnswer, type Intensity, type PersonalData, type Preferences, type SavedVerse, type StorageEnvelope } from "./storage-schema";
 
 export interface StoragePort {
@@ -37,6 +38,9 @@ function replaceAll(data: PersonalData, source: PersonalData) {
 export class PersonalStore {
   private state: StorageSnapshot = serverStorageSnapshot;
   private raw: string | null = null;
+  /** The stored form of the data (sealed when a passcode is set); Export uses it. */
+  private sealed?: PersonalData;
+  private lockKey?: LockKey;
   private listeners = new Set<() => void>();
   private port: StoragePort;
   private applyPreferences: (preferences: Preferences) => void;
@@ -67,6 +71,7 @@ export class PersonalStore {
       const clock = this.clock();
       const clockNotice = clockIsBehind(data.streakState, clock);
       data.streakState = { ...data.streakState, ...deriveStreak(data.activityDays, clockNotice ? data.streakState.maxObservedLocalDate! : clock.localDate) };
+      this.lockKey = undefined; this.sealed = data;
       this.publish({ ready: true, mode: "persistent", envelope: { ...saved, data }, clockNotice });
     } catch {
       this.publish({ ready: true, mode: "blocked", envelope: envelope(emptyData({ ...defaults, ...preferences })), message: "Your saved data could not be opened safely. It has not been changed. Download the recovery file before choosing a fresh start." });
@@ -83,8 +88,8 @@ export class PersonalStore {
   private conflict() {
     this.publish({ ...this.state, mode: "conflict", message: "This tab is out of date because Verselight changed in another tab. Reload the page to see your latest verses and journal." });
   }
-  private async transaction(work: () => StorageResult): Promise<StorageResult> {
-    try { return this.state.mode !== "memory" && this.port.exclusive ? await this.port.exclusive(work) : work(); }
+  private async transaction(work: () => StorageResult | Promise<StorageResult>): Promise<StorageResult> {
+    try { return this.state.mode !== "memory" && this.port.exclusive ? await this.port.exclusive(work) : await work(); }
     catch { return { ok: false, error: "We could not safely access browser storage. Your saved data has not been replaced." }; }
   }
   private change(edit: (data: PersonalData, clock: LocalClock) => void, options: { replace?: boolean; expected?: StorageEnvelope; reset?: boolean } = {}): Promise<StorageResult> {
@@ -100,7 +105,32 @@ export class PersonalStore {
           if (options.replace || options.reset) return { ok: false, error: "Import or reset was not applied because storage became unavailable. Existing data is unchanged." };
         }
       }
+      const commit = (next: StorageEnvelope, stored: StorageEnvelope, clockNotice: boolean): StorageResult => {
+        const serialized = JSON.stringify(stored); checkSize(serialized);
+        serializeBackup(next.data); // Every accepted edit must remain exportable within the file limit.
+        if (stored !== next) serializeBackup(stored.data);
+        if (this.state.mode !== "memory") {
+          try { this.port.write(serialized); this.raw = serialized; }
+          catch {
+            if (options.replace || options.reset) {
+              this.publish({ ...this.state, message: "The replacement could not be saved. Your current data is unchanged. Free browser space or export a backup and try again." });
+              return { ok: false, error: "The replacement could not be saved. Your current data is unchanged." };
+            }
+            this.sealed = stored.data;
+            this.publish({ ready: true, mode: "memory", envelope: next, clockNotice, message: "Your browser could not save these changes. They last only this session. Export a backup before leaving." });
+            this.applyPreferences(next.data.preferences);
+            return { ok: true };
+          }
+        }
+        if (options.replace || options.reset) this.lockKey = undefined;
+        this.sealed = stored.data;
+        const mode = this.state.mode === "memory" ? "memory" : "persistent";
+        this.publish({ ready: true, mode, envelope: next, clockNotice, ...(mode === "memory" ? { message: "Changes last only this session. Export a backup before leaving." } : {}) });
+        this.applyPreferences(next.data.preferences);
+        return { ok: true };
+      };
       try {
+        const before = this.state;
         const data = structuredClone(this.state.envelope.data);
         const clock = this.clock();
         edit(data, clock);
@@ -110,26 +140,63 @@ export class PersonalStore {
           data.badges = awardBadges(data, clock.instant);
         }
         const next = validateEnvelope(envelope(validatePersonalData(data), this.state.envelope.revision + 1));
-        const serialized = JSON.stringify(next); checkSize(serialized);
-        serializeBackup(next.data); // Every accepted edit must remain exportable within the file limit.
-        if (this.state.mode !== "memory") {
-          try { this.port.write(serialized); this.raw = serialized; }
-          catch {
-            if (options.replace || options.reset) {
-              this.publish({ ...this.state, message: "The replacement could not be saved. Your current data is unchanged. Free browser space or export a backup and try again." });
-              return { ok: false, error: "The replacement could not be saved. Your current data is unchanged." };
-            }
-            this.publish({ ready: true, mode: "memory", envelope: next, clockNotice, message: "Your browser could not save these changes. They last only this session. Export a backup before leaving." });
-            this.applyPreferences(next.data.preferences);
-            return { ok: true };
-          }
-        }
-        const mode = this.state.mode === "memory" ? "memory" : "persistent";
-        this.publish({ ready: true, mode, envelope: next, clockNotice, ...(mode === "memory" ? { message: "Changes last only this session. Export a backup before leaving." } : {}) });
-        this.applyPreferences(next.data.preferences);
-        return { ok: true };
+        const lockKey = options.replace || options.reset ? undefined : this.lockKey;
+        if (!next.data.lock) return commit(next, next, clockNotice);
+        // A locked journal never stores its private text in plain form.
+        if (!lockKey) { requireValid(!hasSecret(next.data), "Unlock your journal first."); return commit(next, next, clockNotice); }
+        return seal(secretOf(next.data), lockKey).then(lock => {
+          if (this.state !== before) return { ok: false, error: "Something changed while saving. Please try again." } as StorageResult;
+          const stored = validateEnvelope({ ...next, data: { ...withoutSecret(next.data), lock } });
+          return commit({ ...next, data: { ...next.data, lock } }, stored, clockNotice);
+        }).catch((error: unknown) => ({ ok: false, error: message(error) }) as StorageResult);
       } catch (error) { return { ok: false, error: message(error) }; }
     });
+  }
+  /** True while a passcode protects the journal and this tab has not opened it. */
+  isLocked() { return Boolean(this.state.envelope.data.lock) && !this.lockKey; }
+  /** Opens the journal for this tab only. The key stays in memory and is never stored. */
+  async unlockJournal(passcode: string): Promise<StorageResult> {
+    const before = this.state;
+    const lock = before.envelope.data.lock;
+    if (!lock || this.lockKey) return { ok: true };
+    try {
+      const opened = await unlock(lock, passcode);
+      if (this.state !== before) return { ok: false, error: "Something changed while opening. Please try again." };
+      const data = validatePersonalData(withSecret(before.envelope.data, opened.secret));
+      this.lockKey = opened.lockKey;
+      this.publish({ ...before, envelope: { ...before.envelope, data } });
+      return { ok: true };
+    } catch (error) { return { ok: false, error: message(error) }; }
+  }
+  /** Closes the journal again in this tab. */
+  lockJournal() {
+    if (!this.lockKey || !this.state.envelope.data.lock) return;
+    this.lockKey = undefined;
+    this.publish({ ...this.state, envelope: { ...this.state.envelope, data: withoutSecret(this.state.envelope.data) } });
+  }
+  /** Seals notes, letters and prayers with a new passcode. */
+  async setPasscode(passcode: string): Promise<StorageResult> {
+    if (this.state.envelope.data.lock) return { ok: false, error: "Your journal already has a passcode." };
+    let lockKey: LockKey;
+    try { lockKey = await newLockKey(passcode); } catch (error) { return { ok: false, error: message(error) }; }
+    const lock = await seal(secretOf(this.state.envelope.data), lockKey);
+    this.lockKey = lockKey;
+    const result = await this.change(data => { data.lock = lock; });
+    if (!result.ok) this.lockKey = undefined;
+    return result;
+  }
+  /** Removes the passcode while open: the private text is stored plainly again. */
+  async removePasscode(): Promise<StorageResult> {
+    if (!this.state.envelope.data.lock) return { ok: true };
+    if (!this.lockKey) return { ok: false, error: "Unlock your journal first." };
+    const result = await this.change(data => { delete data.lock; });
+    if (result.ok) this.lockKey = undefined;
+    return result;
+  }
+  /** For a forgotten passcode: removes the lock and the sealed text for good. Feelings and dates stay. */
+  async eraseLockedText(): Promise<StorageResult> {
+    this.lockKey = undefined;
+    return this.change(data => { Object.assign(data, withoutSecret(data)); delete data.prayers; delete data.lock; });
   }
   save(input: Omit<SavedVerse, "id" | "createdAt">) {
     return this.change((data, clock) => {
@@ -206,7 +273,8 @@ export class PersonalStore {
   setPreferences(preferences: Partial<Preferences>) { return this.change(data => { data.preferences = { ...data.preferences, ...preferences }; }); }
   exportBackup() {
     requireValid(this.state.ready && this.state.mode !== "blocked", "Please use the recovery download for unreadable data.");
-    return serializeBackup(validatePersonalData(this.state.envelope.data));
+    // A passcode-protected journal exports in its sealed form: the private text stays encrypted.
+    return serializeBackup(validatePersonalData(this.state.envelope.data.lock && this.sealed?.lock ? this.sealed : this.state.envelope.data));
   }
   importBackup(backup: Backup, expected: StorageEnvelope) {
     return this.change(data => { const validated = validateBackup(backup); replaceAll(data, validated.data); }, { replace: true, expected });

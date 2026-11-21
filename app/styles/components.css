@@ -161,3 +161,9 @@ input[type="checkbox"], input[type="radio"] { width: 18px; height: 18px; accent-
 .letter-text { white-space: pre-wrap; }
 .letter-sealed { display: grid; gap: var(--space-1); list-style: none; padding: 0; margin: 0 0 var(--space-2); color: var(--ink-2); }
 .letter-sealed li { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-2); }
+/* Journal passcode */
+.journal-lock h2 { display: inline-flex; align-items: center; gap: var(--space-1); }
+.lock-warning { padding: var(--space-2); border: 1px solid var(--hairline); border-radius: var(--radius-control); color: var(--ink-2); font-size: var(--text-ui); }
+.lock-warning strong { color: var(--ink); }
+.lock-consent { display: flex; align-items: flex-start; gap: var(--space-1); min-height: 44px; font-weight: 400; color: var(--ink-2); }
+.lock-consent input { width: 20px; height: 20px; margin-top: 2px; flex: none; accent-color: var(--action); }
