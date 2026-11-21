@@ -76,7 +76,9 @@ test.describe("printable journal", () => {
     await page.goto("/journal");
     await page.getByRole("button", { name: "Print or save as PDF" }).click();
     expect(await page.evaluate(() => (window as unknown as { printed: number }).printed)).toBe(1);
+    await expect(page.locator(".print-journal")).toHaveCount(0);
     await page.emulateMedia({ media: "print" });
+    await page.evaluate(() => window.dispatchEvent(new Event("beforeprint")));
     await expect(page.locator(".print-journal")).toBeVisible();
     await expect(page.locator(".print-journal")).toContainText("Overwhelmed");
     await expect(page.locator(".site-header")).toBeHidden();
