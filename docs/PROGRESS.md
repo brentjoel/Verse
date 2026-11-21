@@ -42,7 +42,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 - [x] Saved intensity and the check-in answer
 - [x] Prayer list with answered dates
 - [x] Optional journal passcode (Web Crypto, on-device; warn that a forgotten passcode means the data is lost)
-- [ ] Year in light recap
+- [x] Year in light recap
 
 **Phase E**
 - [ ] Project 3: on-device AI feeling finder (suggests feelings, never generates Scripture, never trains on NLT; rules out NIV's no-AI license)
@@ -184,3 +184,6 @@ Journal gains "Your prayers": add a prayer in your own words, mark it answered (
 
 ### Journal passcode (2026-11-21)
 Optional passcode on Journal: PBKDF2 plus AES-GCM via Web Crypto seals notes, letters and prayers on the device; feelings and dates stay plain so streaks and the check-in work. The key lives only in tab memory; Export keeps the sealed form (tested), and a clear warning plus a consent box say a forgotten passcode means the text is lost, with an erase path.
+
+### Year in light (2026-11-21)
+New `/year`, linked from Journal: days you came, feelings named, longest run, verses saved, a twelve-star month row, the three feelings carried most, and answered prayers and letters (hidden while the journal is locked). Built on the device by pure `lib/year-recap.ts` with tests; nothing stored or sent; added to the offline shell and axe routes.

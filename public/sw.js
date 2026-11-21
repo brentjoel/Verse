@@ -4,7 +4,7 @@
 "use strict";
 
 const CACHE = "verselight-v1";
-const PAGES = ["/", "/journal", "/my-verses", "/breathe", "/not-sure", "/about", "/licenses", "/craft", "/accessibility", "/offline"];
+const PAGES = ["/", "/journal", "/my-verses", "/breathe", "/year", "/not-sure", "/about", "/licenses", "/craft", "/accessibility", "/offline"];
 const ICONS = ["/icon-192.png", "/icon-512.png", "/icon.svg", "/apple-icon.png", "/favicon.ico"];
 
 /** "page" may be cached as HTML, "asset" is immutable build output, "never" must never touch the cache. */
