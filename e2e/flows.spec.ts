@@ -248,3 +248,22 @@ test.describe("return check-in", () => {
     await expect(page.getByRole("heading", { name: /Last time you felt/ })).toHaveCount(0);
   });
 });
+
+test.describe("reading memory", () => {
+  test.use({ reducedMotion: "reduce" });
+  test("reopening a feeling returns to the verse you were reading in this session", async ({ page }) => {
+  await page.goto("/emotions/anxious/overwhelmed");
+  await expect(page.locator(".verse-list > li:not([hidden]) .verse-reference").first()).toHaveText("Psalm 61:2");
+  await page.getByRole("button", { name: "Show verse 3" }).click();
+  await expect(page.getByRole("button", { name: "Show verse 3" })).toHaveAttribute("aria-current", "true");
+  const third = await page.locator(".verse-list > li:not([hidden]) .verse-reference").first().textContent();
+  expect(third).not.toBe("Psalm 61:2");
+  await page.goto("/emotions/anxious");
+  await page.getByRole("link", { name: "Overwhelmed" }).click();
+  await expect(page.locator(".verse-list > li:not([hidden]) .verse-reference").first()).toHaveText(third ?? "");
+  // A different feeling is unaffected, and a bad stored value falls back to the first verse.
+  await page.evaluate(() => sessionStorage.setItem("verselight-last-verse:/emotions/anxious/overwhelmed", "99"));
+  await page.reload();
+  await expect(page.locator(".verse-list > li:not([hidden]) .verse-reference").first()).toHaveText("Psalm 61:2");
+});
+});
