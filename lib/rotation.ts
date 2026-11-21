@@ -21,3 +21,17 @@ export function serverToday(now = new Date()): string {
   const pinned = process.env.VERSELIGHT_TODAY;
   return pinned && /^\d{4}-\d{2}-\d{2}$/.test(pinned) ? pinned : now.toISOString().slice(0, 10);
 }
+
+/** Marked references first, otherwise in the original order. */
+export function favorFirst(references: readonly string[], marked: ReadonlySet<string>): string[] {
+  return [...references.filter(reference => marked.has(reference)), ...references.filter(reference => !marked.has(reference))];
+}
+
+/**
+ * Every third day the daily verse is one the visitor marked "This spoke to me" (cycling through them);
+ * other days, and when nothing is marked, it is the usual daily passage.
+ */
+export function dailyWithMarks(day: number, usual: string | undefined, marked: readonly string[]): string | undefined {
+  if (marked.length === 0 || day % 3 !== 0) return usual;
+  return marked[(day / 3) % marked.length];
+}

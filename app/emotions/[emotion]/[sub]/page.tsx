@@ -13,6 +13,7 @@ import { getVersePassage } from "@/lib/verse-passage";
 import { PassageAttribution } from "@/components/passage-attribution";
 import { SaveVerseButton } from "@/components/save-verse-button";
 import { AnchorButton } from "@/components/anchor-verse";
+import { MarkedNote, SpokeButton } from "@/components/spoke-mark";
 import { ShareCardControls } from "@/components/share-card-controls";
 import { DawnReveal } from "@/components/dawn-reveal";
 import { HelpNote } from "@/components/help-note";
@@ -72,6 +73,7 @@ async function ResultsContent({ emotion, specific, searchParams }: { emotion: Em
                     <VersePager />
                     <div className="verse-actions">
                       <SaveVerseButton reference={reference} translationId={passage.translationId} emotionId={emotion.id} specificEmotionId={specific.id} />
+                      <SpokeButton reference={reference} />
                       <AnchorButton reference={reference} />
                       <Link className="compare-link" data-tooltip="Compare translations" href={`/compare?${new URLSearchParams({ ref: reference, from: returnTo })}`} aria-label={`Compare translations of ${reference}`}><ArrowUpRight size={17} aria-hidden="true" />Compare</Link>
                       <ShareCardControls reference={reference} />
@@ -88,6 +90,7 @@ async function ResultsContent({ emotion, specific, searchParams }: { emotion: Em
             </VerseCarousel>
           {references.length === 0 && <ContentNotice>References for this feeling are being prepared with care. Please visit again soon.</ContentNotice>}
         </section>
+        {!more && <MarkedNote others={specific.references.filter(reference => !references.includes(reference))} moreHref={`${returnTo}?more`} />}
         {showsHelpNote(emotion.id) && <HelpNote />}
         <nav className="results-ending" aria-label="What next">
           <p>Stay as long as you like. When you are ready:</p>

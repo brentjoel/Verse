@@ -5,7 +5,7 @@ test.describe("anchor verse", () => {
 
   test("pinning on Results shows the verse on Home and Unpin removes it", async ({ page }) => {
     await page.goto("/emotions/anxious/overwhelmed");
-    await page.locator(".verse-list > li:not([hidden]) button[aria-pressed]").first().click();
+    await page.locator(".verse-list > li:not([hidden])").getByRole("button", { name: /^Pin/ }).click();
     await page.goto("/");
     const anchor = page.getByRole("region", { name: "Your anchor" });
     await expect(anchor).toContainText("Psalm 61:2");
@@ -83,5 +83,21 @@ test.describe("printable journal", () => {
     await expect(page.locator(".print-journal")).toContainText("Overwhelmed");
     await expect(page.locator(".site-header")).toBeHidden();
     await expect(page.locator("#letters-heading")).toBeHidden();
+  });
+});
+
+test.describe("this spoke to me", () => {
+  test.use({ reducedMotion: "reduce" });
+
+  test("marking toggles, and a marked verse in the other four is pointed out", async ({ page }) => {
+    await page.goto("/emotions/anxious/overwhelmed");
+    const button = page.locator(".verse-list > li:not([hidden])").getByRole("button", { name: /This spoke to me/ });
+    await button.click();
+    await expect(page.locator(".verse-list > li:not([hidden])").getByRole("button", { name: /It spoke to me/ })).toHaveAttribute("aria-pressed", "true");
+    await page.reload();
+    await expect(page.locator(".verse-list > li:not([hidden])").getByRole("button", { name: /It spoke to me/ })).toBeVisible();
+    await page.evaluate(() => localStorage.setItem("verselight-spoke", JSON.stringify(["Psalm 94:19", "Nope 1:1"])));
+    await page.reload();
+    await expect(page.locator(".marked-note")).toHaveCount(1);
   });
 });
