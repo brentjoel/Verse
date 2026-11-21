@@ -1,9 +1,8 @@
-import { MAX_NOTE_LENGTH } from "./storage-schema";
 import { validLocalDate } from "./streaks";
 
 export const LETTERS_KEY = "verselight-letters";
 export const MAX_LETTERS = 50;
-export const MAX_LETTER_LENGTH = MAX_NOTE_LENGTH;
+export const MAX_LETTER_LENGTH = 2000; // Same as a journal note.
 
 export interface Letter { id: string; writtenOn: string; openOn: string; text: string }
 

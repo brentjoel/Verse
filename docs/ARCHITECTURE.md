@@ -70,7 +70,7 @@ Known limitation: without JavaScript, Results and Compare show only their loadin
 ## Storage
 
 - `lib/storage-schema.ts` validates; `lib/storage.ts` is a browser-independent store with injected I/O and a clock; `lib/storage-migrations.ts` runs pure migrations; `lib/browser-storage.ts` is the client singleton, hook and Web Locks adapter.
-- Envelope: `schemaVersion: 1`, `revision`, `updatedAt`, `data`. Unknown versions are rejected without touching stored data. Any stored-shape change needs a schema bump, migration, validation, older-backup import and tests.
+- Envelope: `schemaVersion: 2`, `revision`, `updatedAt`, `data`. Unknown versions are rejected without touching stored data. Version 1 data and backups migrate on read (`migrate1to2`); the original stays stored until the next successful save. Any stored-shape change needs a schema bump, migration, validation, older-backup import and tests.
 - Validation: exact keys, active translations, curated references, UUIDs, dates, unique records and valid links. Limits: 5 MiB, 10,000 items per list, 80-character collection names, 2,000-character notes. Verse text fields are rejected.
 - Writes re-read and compare before replacing; tabs coordinate with a Web Lock and block edits on conflict until reload. Storage failure keeps edits in memory for the tab with an Export prompt. Unreadable data is blocked, never erased, with a raw recovery download.
 - Backup: `format: "verselight-backup"`, schema version, `exportedAt`, validated data. Import previews counts and needs confirmation before full replacement.
@@ -85,10 +85,11 @@ Known limitation: without JavaScript, Results and Compare show only their loadin
 | `ActivityDay` | `localDate`, `firstActivityAt`, `utcOffsetMinutes`, `sources` (`emotion`, `save`) |
 | `StreakState` | `currentStreak`, `longestStreak`, `lastActiveDate?`, `graceDates`, `maxObservedLocalDate?`, `maxObservedAt?` |
 | `Badge` | `key`, `earnedAt` |
+| Companion (v2) | `anchor?` (reference), `letters` (`id`, `writtenOn`, `openOn`, `text`), `path?` (`emotionId`, `specificId`, `startedOn`), `marks` (references) |
 
 Saves deduplicate by reference plus translation. Deleting a save removes its memberships; deleting a collection keeps its saves.
 
-Personal keys outside the schema-1 envelope (own localStorage keys, validated on read, references only, not yet in Export; Phase D folds them in): `verselight-anchor`, `verselight-letters`, `verselight-path`, `verselight-spoke`, plus `verselight-check-in-dismissed`.
+Before version 2, anchor, letters, path and marks lived in their own keys (`verselight-anchor`, `verselight-letters`, `verselight-path`, `verselight-spoke`). On first load `foldLegacy` merges them into the envelope (stored values win, lists merge) and each key is removed only after the merged data is saved. `verselight-check-in-dismissed` stays its own key.
 
 ## Offline reading
 

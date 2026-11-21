@@ -13,6 +13,15 @@ test.describe("anchor verse", () => {
     await expect(anchor).toHaveCount(0);
   });
 
+  test("an anchor in the old separate key moves into the main record", async ({ page }) => {
+    await page.goto("/");
+    await page.evaluate(() => localStorage.setItem("verselight-anchor", JSON.stringify({ reference: "Psalm 46:1" })));
+    await page.reload();
+    await expect(page.getByRole("region", { name: "Your anchor" })).toContainText("Psalm 46:1");
+    await expect.poll(() => page.evaluate(() => localStorage.getItem("verselight-anchor"))).toBeNull();
+    expect(await page.evaluate(() => JSON.parse(localStorage.getItem("verselight-data") ?? "{}").data?.anchor)).toBe("Psalm 46:1");
+  });
+
   test("a tampered key shows nothing", async ({ page }) => {
     await page.addInitScript(() => localStorage.setItem("verselight-anchor", JSON.stringify({ reference: "Nope 9:9" })));
     await page.goto("/");

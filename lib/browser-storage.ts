@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { PersonalStore, serverStorageSnapshot } from "./storage";
+import { LEGACY_KEYS, type LegacyValues } from "./storage-migrations";
 import { STORAGE_KEY, type Preferences } from "./storage-schema";
 import { resolveTranslation } from "./translations";
 import { setTranslationCookie } from "./translation-client";
@@ -42,6 +43,7 @@ function connect() {
   connected = true;
   current.initialize(readBrowserPreferences());
   current.refreshProgress();
+  adoptLegacyKeys(current);
   window.setInterval(() => current.refreshProgress(), 60000);
   if (current.getSnapshot().mode !== "blocked") applyBrowserPreferences(current.getSnapshot().envelope.data.preferences);
   window.addEventListener("storage", event => {
@@ -53,6 +55,15 @@ function connect() {
     const snapshot = current.getSnapshot();
     const preferences = readBrowserPreferences();
     if (snapshot.mode === "persistent" && preferences.preferredTranslation !== snapshot.envelope.data.preferences.preferredTranslation) void current.setPreferences(preferences);
+  });
+}
+/** One-time move of the old separate keys into the main record; each key is removed only after it is saved. */
+function adoptLegacyKeys(current: PersonalStore) {
+  const legacy: LegacyValues = {};
+  try { for (const key of LEGACY_KEYS) legacy[key] = localStorage.getItem(key); } catch { return; }
+  if (!Object.values(legacy).some(value => value !== null)) return;
+  void current.adoptLegacy(legacy).then(clear => {
+    try { for (const key of clear) localStorage.removeItem(key); } catch { /* Kept; folding again is harmless. */ }
   });
 }
 function subscribe(listener: () => void) {
@@ -67,4 +78,10 @@ export function reloadPersonalStorage() {
   const current = getPersonalStore();
   current.reload(readBrowserPreferences());
   if (current.getSnapshot().mode !== "blocked") applyBrowserPreferences(current.getSnapshot().envelope.data.preferences);
+}
+/** Anchor, letters, path and marks from the main record. Not ready while loading or when the data is blocked. */
+export function useCompanion() {
+  const snapshot = usePersonalStorage();
+  const { anchor, letters, path, marks } = snapshot.envelope.data;
+  return { ready: snapshot.ready && snapshot.mode !== "blocked", anchor, letters, path, marks, set: getPersonalStore().setCompanion.bind(getPersonalStore()) };
 }
