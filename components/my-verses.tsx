@@ -30,7 +30,7 @@ function CollectionEditor({ collection, disabled, run }: { collection: Collectio
       <div className="local-input-row"><input id={`rename-${collection.id}`} value={name} required maxLength={80} onChange={event => setName(event.target.value)} disabled={disabled} /><button className="compare-link" disabled={disabled || !name.trim()}>Rename</button></div>
     </form>
     <p className="local-help">{collection.savedVerseIds.length} saved {collection.savedVerseIds.length === 1 ? "reference" : "references"}</p>
-    {confirm ? <div className="inline-confirm"><p>Delete this collection? Your saved verses will stay.</p><RemovalButton className="compare-link" disabled={disabled} onRemove={() => void run(() => getPersonalStore().deleteCollection(collection.id), "Collection deleted. Your saved verses are still here.")}>Delete collection</RemovalButton><button type="button" className="compare-link" onClick={() => setConfirm(false)}>Keep collection</button></div> : <button type="button" className="quiet-link" disabled={disabled} onClick={() => setConfirm(true)}>Delete collection</button>}
+    {confirm ? <div className="inline-confirm"><p>Delete this collection? Your saved verses will stay.</p><RemovalButton className="compare-link" disabled={disabled} onRemove={() => void run(() => getPersonalStore().deleteCollection(collection.id), "Collection deleted. Your saved verses are still here.")}>Delete collection</RemovalButton><button type="button" className="compare-link" onClick={() => setConfirm(false)}>Keep collection</button></div> : <button type="button" className="remove-link" disabled={disabled} onClick={() => setConfirm(true)}>Delete collection</button>}
   </div>;
 }
 
