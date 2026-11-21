@@ -92,6 +92,7 @@ async function ResultsContent({ emotion, specific, searchParams }: { emotion: Em
         <nav className="results-ending" aria-label="What next">
           <p>Stay as long as you like. When you are ready:</p>
           {references.length > 0 && <Link href={more ? returnTo : `${returnTo}?more`} className="compare-link">{more ? "Back to today's verses" : "Read 4 more verses"}</Link>}
+          <Link href={`/path/${emotion.id}/${specific.id}`} className="compare-link">Walk a seven-day path</Link>
           <Link href={`/emotions/${emotion.id}`} className="compare-link">Try another feeling</Link>
           <Link href="/" className="pill">Back to the wheel</Link>
         </nav>
