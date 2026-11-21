@@ -74,6 +74,24 @@
   --emotion: #a35f00;
 }
 
+:root[data-theme="bedtime"] {
+  /* Extra dim, warm and low in blue light; violet is softened but still the action color. */
+  color-scheme: dark;
+  --canvas: #0d0805;
+  --ink: #e6d3bc;
+  --ink-2: #bba58e;
+  --ink-3: #a08b75;
+  --action: #9a78b5;
+  --on-action: #0d0805;
+  --spark: #d9a45a;
+  --hairline: rgb(255 214 170 / 10%);
+  --veil: rgb(255 214 170 / 6%);
+  --scrim: rgb(13 8 5 / 52%);
+  --glass: rgb(13 8 5 / 84%);
+  --logo-start: #9a78b5;
+  --logo-end: #2f6f5f;
+}
+
 @media (min-width: 900px) {
   :root {
     --text-display: 104px;

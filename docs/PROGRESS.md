@@ -15,7 +15,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 **Phase A: quick wins**
 - [x] Crisis resources: a quiet help link on Sad, Anxious, Doubtful and Tired results (international directory, local emergency number first)
 - [x] README that sells: autoplay demo GIF at the top, CI and Lighthouse badges, Built with
-- [ ] Bedtime mode: extra dim, warm, low-violet theme option in Settings
+- [x] Bedtime mode: extra dim, warm, low-violet theme option in Settings
 - [ ] Remember the last verse you were reading per feeling (session only, no storage schema change)
 - [ ] Keyboard shortcuts sheet on `?`
 
@@ -108,3 +108,6 @@ Home greets a returning visitor whose latest reflection is from an earlier local
 
 ### README that sells (2026-11-21)
 README opens with CI, Lighthouse and privacy badges, an inline 1.4 MB demo GIF (made from `demo.webm` with ffmpeg via the `imageio-ffmpeg` Python package) and a Built with line.
+
+### Bedtime theme (2026-11-21)
+Third theme in Settings: warm, extra-dim `[data-theme="bedtime"]` tokens with a softened violet, chosen before paint and kept in the theme key. The data schema stays on dark/light (Bedtime saves as dark). Contrast test covers it; emotion hues are unchanged for now.

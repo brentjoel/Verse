@@ -2,13 +2,14 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import vm from 'node:vm';
 import { readFileSync } from 'node:fs';
-import { applyThemeChoice, resolveTextSize, resolveTheme, themeScript, THEME_KEY, TEXT_SIZE_KEY } from '../lib/theme.ts';
+import { applyThemeChoice, storedBaseTheme, resolveTextSize, resolveTheme, themeScript, THEME_KEY, TEXT_SIZE_KEY } from '../lib/theme.ts';
 import { emotionHues } from '../lib/constellation.ts';
 
 const css = readFileSync(new URL('../app/styles/tokens.css', import.meta.url), 'utf8');
 const tokens = selector => Object.fromEntries([...css.match(selector)[1].matchAll(/(--[\w-]+):\s*([^;]+);/g)].map(m => [m[1], m[2].trim()]));
 const night = tokens(/:root \{([^}]+)\}/);
 const day = tokens(/:root\[data-theme="light"\] \{([^}]+)\}/);
+const bedtime = tokens(/:root\[data-theme="bedtime"\] \{([^}]+)\}/);
 const rgb = value => value.startsWith('#') ? value.slice(1).match(/../g).map(v => parseInt(v, 16)) : value.match(/\d+(\.\d+)?/g).slice(0, 3).map(Number);
 const alpha = value => { const m = value.match(/\/\s*([\d.]+)(%?)\s*\)/); return m ? Number(m[1]) / (m[2] ? 100 : 1) : 1; };
 const mix = (a, b, amount) => a.map((v, i) => v * (1 - amount) + b[i] * amount);
@@ -40,14 +41,14 @@ test('theme choice resolves system and stored sources', () => {
 });
 
 test('actual pre-paint script sets theme, text size and js flag, and survives blocked storage', () => {
-  for (const preference of [null, 'dark', 'light', 'invalid']) for (const size of [null, 'large', 'bogus']) for (const system of [true, false]) for (const blocked of [true, false]) {
+  for (const preference of [null, 'dark', 'light', 'bedtime', 'invalid']) for (const size of [null, 'large', 'bogus']) for (const system of [true, false]) for (const blocked of [true, false]) {
     const dataset = {};
     vm.runInNewContext(themeScript, {
       localStorage: { getItem(key) { if (blocked) throw Error('blocked'); return key === THEME_KEY ? preference : key === TEXT_SIZE_KEY ? size : null; } },
       document: { documentElement: { dataset } }, matchMedia: () => ({ matches: system }),
     });
     assert.equal(dataset.theme, resolveTheme(blocked ? null : preference, system));
-    assert.equal(dataset.themeSource, !blocked && ['dark', 'light'].includes(preference) ? 'stored' : 'system');
+    assert.equal(dataset.themeSource, !blocked && ['dark', 'light', 'bedtime'].includes(preference) ? 'stored' : 'system');
     assert.equal(dataset.textSize, blocked ? 'default' : resolveTextSize(size));
     assert.equal(dataset.js, 'true');
   }
@@ -60,7 +61,7 @@ test('canvases are pure void and morning paper', () => {
 });
 
 test('ink, spark and action meet AA on the canvas in both themes', () => {
-  for (const [name, p] of [['night', night], ['day', day]]) {
+  for (const [name, p] of [['night', night], ['day', day], ['bedtime', bedtime]]) {
     const canvas = rgb(p['--canvas']);
     for (const key of ['--ink', '--ink-2', '--ink-3', '--spark', '--action']) aa(rgb(p[key]), canvas, 4.5, `${name} ${key}`);
     aa(rgb(p['--on-action']), rgb(p['--action']), 4.5, `${name} on-action`);
@@ -83,4 +84,21 @@ test('animated components only read color tokens the stylesheet defines', () => 
   const used = [...source.matchAll(/getPropertyValue\("(--[\w-]+)"\)/g)].map(m => m[1]);
   assert.ok(used.length > 0, 'dawn reveal reads its colors from tokens');
   for (const token of used) assert.ok(token in night && token in day, `${token} is defined in both themes`);
+});
+
+test('bedtime is a stored choice that the data schema keeps as dark', () => {
+  assert.equal(resolveTheme('bedtime', true), 'bedtime');
+  assert.deepEqual(applyThemeChoice('bedtime', true), { theme: 'bedtime', source: 'stored' });
+  assert.equal(storedBaseTheme('bedtime'), 'dark');
+  assert.equal(storedBaseTheme('light'), 'light');
+  assert.equal(storedBaseTheme(undefined), 'dark');
+});
+
+test('bedtime is dimmer and warmer than night, and low in blue', () => {
+  const [r, g, b] = rgb(bedtime['--ink']);
+  assert.ok(r > g && g > b, 'ink is warm');
+  assert.ok(luminance(rgb(bedtime['--ink'])) < luminance(rgb(night['--ink'])) * .8, 'ink is dimmer than night');
+  assert.ok(rgb(bedtime['--ink'])[2] < 200 && rgb(bedtime['--spark'])[2] < 120, 'little blue light');
+  const [ar, ag, ab] = rgb(bedtime['--action']);
+  assert.ok(Math.max(ar, ag, ab) < 0xc0 && ab - ar < 0x40, 'violet is toned down');
 });
