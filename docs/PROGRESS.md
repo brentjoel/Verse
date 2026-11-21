@@ -39,7 +39,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 
 **Phase D: storage (one schema migration, version 2)**
 - [x] Schema 2: anchor, letters, path and marks folded into the envelope and backups
-- [ ] Saved intensity and the check-in answer
+- [x] Saved intensity and the check-in answer
 - [ ] Prayer list with answered dates
 - [ ] Optional journal passcode (Web Crypto, on-device; warn that a forgotten passcode means the data is lost)
 - [ ] Year in light recap
@@ -175,3 +175,6 @@ Audit of Home, /not-sure, /path, /offline, Journal and Results additions: detect
 
 ### Schema 2 (2026-11-21)
 Storage moves to version 2: anchor, letters, path and marks join the main record, so Export and Import carry them; version 1 data and backups migrate on read. Old keys fold in on load and are removed only after the merged record saves. Pure `migrate1to2` and `foldLegacy` with tests for round trip, corrupted input and failed writes.
+
+### Saved intensity and check-in answer (2026-11-21)
+A wheel intensity the visitor actually chose is kept on the reflection; the return check-in answer is kept on the reflection it asked about, dated, and the card stays answered for that day only. Journal shows both ("Felt strongly. Later: lighter."). Optional schema 2 fields, validated and tested.

@@ -81,7 +81,7 @@ Known limitation: without JavaScript, Results and Compare show only their loadin
 | `Preferences` | `theme`, `preferredTranslation` |
 | `SavedVerse` | `id`, `reference`, `translationId`, optional `emotionId`/`specificEmotionId`, `createdAt` |
 | `Collection` | `id`, `name`, `savedVerseIds`, `createdAt`, `updatedAt` |
-| `MoodEntry` | `id`, `emotionId`, `specificEmotionId`, optional `note`, `localDate`, `createdAt` |
+| `MoodEntry` | `id`, `emotionId`, `specificEmotionId`, optional `note`, `localDate`, `createdAt`, optional `intensity` (`low`, `medium`, `high`, only when chosen on the wheel), optional `checkIn` (`answer`: `lighter`, `same`, `heavier`; `on`: a later local date) |
 | `ActivityDay` | `localDate`, `firstActivityAt`, `utcOffsetMinutes`, `sources` (`emotion`, `save`) |
 | `StreakState` | `currentStreak`, `longestStreak`, `lastActiveDate?`, `graceDates`, `maxObservedLocalDate?`, `maxObservedAt?` |
 | `Badge` | `key`, `earnedAt` |
