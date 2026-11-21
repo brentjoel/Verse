@@ -24,7 +24,8 @@ Search large files instead of reading them whole. History lives in git, not in d
 Keep token use low. Work directly; no skill workflows (superpowers), spec or plan documents, or subagents unless the owner asks.
 
 1. Branch from `main`: `fix/`, `feat/`, `docs/`, `chore/` plus a short name. Never commit to `main`.
-2. Make the smallest change that does the job. Touch only the files it needs. No new dependency without a one-line reason.
+2. Make the smallest change that does the job. Touch only the files it needs. No new dependency without a one-line reason. Batch two or three small related roadmap items per PR.
+   Quality comes first: use the cheapest model that does the work well, and move up a model (Haiku, Sonnet, Opus) when the work or its result needs it.
 3. Ask one short question only when blocked; otherwise pick the simplest option.
 4. Add or update a `node:test` (`scripts/test-*.mjs`) for logic changes and bug fixes when practical.
 5. Verify with `npm run check`. For UI changes also run `npm run e2e`. CI runs the visual and Lighthouse checks; do not run Lighthouse locally. Check a UI change by eye once, at phone and desktop size.
@@ -33,7 +34,7 @@ Keep token use low. Work directly; no skill workflows (superpowers), spec or pla
 8. Reply in under 10 lines, then stop.
 
 ## Impeccable (UI work)
-Each roadmap phase ends with `/impeccable audit` on the UI it changed, and the material findings get fixed (owner decision 2026-11-21). Otherwise use it only when the owner asks, and run only the command asked for. Skip `critique` and its subagents unless requested. `docs/DESIGN.md` is the design authority; keep the calm Constellation world.
+Each release ends with `/impeccable audit` on the UI it changed, plus one wherever a change reshapes the UI, and the material findings get fixed (owner decision 2026-11-21). Otherwise use it only when the owner asks, and run only the command asked for. Skip `critique` and its subagents unless requested. `docs/DESIGN.md` is the design authority; keep the calm Constellation world.
 
 ## Code and UI
 - Strict TypeScript; no `any` without a comment. Server Components by default; `"use client"` only when needed.
