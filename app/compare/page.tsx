@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Suspense } from "react";
 import { SiteShell } from "@/components/site-shell";
 import { ContentNotice } from "@/components/content-notice";
 import { getPreferredTranslation } from "@/lib/translation-preference";
@@ -13,10 +12,13 @@ import { CompareToggles } from "@/components/compare-toggles";
 
 type Query = Record<string, string | string[] | undefined>;
 
+// Blocking on purpose: the passages arrive in the first HTML, so Compare reads without JavaScript.
+export const instant = false;
+
 export const metadata = { title: "Compare Scripture | Verselight", description: "Read Scripture side by side in two to four translations, with source credits and room to reflect." };
 
 export default function ComparePage({ searchParams }: { searchParams: Promise<Query> }) {
-  return <SiteShell><Suspense fallback={<ContentNotice loading>Preparing your comparison...</ContentNotice>}><Comparison searchParams={searchParams} /></Suspense></SiteShell>;
+  return <SiteShell><Comparison searchParams={searchParams} /></SiteShell>;
 }
 
 async function Comparison({ searchParams }: { searchParams: Promise<Query> }) {

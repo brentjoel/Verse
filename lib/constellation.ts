@@ -28,6 +28,29 @@ export function initialTier(hints: { reducedMotion: boolean; cores?: number; mem
   return hints.width < 640 ? "medium" : "high";
 }
 
+// How Home opens: phones start in the List under a small peek ring, larger screens on the wheel.
+// Self-contained so the pre-paint script can inline it and reserve the space before first paint.
+export type WheelStart = "wheel" | "peek" | "list";
+export function wheelStart(tier: QualityTier, width: number): WheelStart {
+  return tier === "list" ? "list" : width < 640 ? "peek" : "wheel";
+}
+
+// The first frames after mount pay for shader compiles and uploads, so the probe skips them.
+export const PROBE_WARMUP_MS = 500;
+export const PROBE_WINDOW_MS = 2000;
+export interface FpsProbe { readonly first: number; readonly from: number; readonly frames: number }
+export const freshProbe: FpsProbe = { first: 0, from: 0, frames: 0 };
+
+/** Feeds one frame time. Returns the average fps once a full window after the warm-up has passed, else null. */
+export function stepProbe(probe: FpsProbe, now: number): { probe: FpsProbe; fps: number | null } {
+  if (!probe.first) return { probe: { first: now, from: 0, frames: 0 }, fps: null };
+  if (now - probe.first < PROBE_WARMUP_MS) return { probe, fps: null };
+  if (!probe.from) return { probe: { ...probe, from: now, frames: 0 }, fps: null };
+  const next = { ...probe, frames: probe.frames + 1 };
+  const span = now - probe.from;
+  return { probe: next, fps: span >= PROBE_WINDOW_MS ? next.frames / (span / 1000) : null };
+}
+
 export function nextTier(current: QualityTier, averageFps: number): QualityTier {
   if (current === "list") return "list";
   if (current === "low") return averageFps < 24 ? "list" : "low";
