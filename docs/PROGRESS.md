@@ -31,7 +31,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 - [x] Anchor verse pinned on Home
 - [x] Letter to your future self, shown in Journal on a chosen date
 - [x] Seven-day gentle path for a feeling, built from its curated verses
-- [ ] Readable journal export to print or save as PDF
+- [x] Readable journal export to print or save as PDF
 - [ ] "This spoke to me" marks that favor a verse in the rotation
 - [ ] Time-of-day sky on Home
 - [ ] "Not sure what I feel?" three-question path
@@ -156,3 +156,6 @@ Journal gains "Letters to your future self": write a letter, pick a day after to
 
 ### Seven-day gentle path (2026-11-21)
 Results gains "Walk a seven-day path": `/path/[emotion]/[sub]` (16 prebuilt pages) shows one curated verse a day in WEB with its question and prayer; later days stay closed until their local date. Start date lives in `verselight-path` (one active path), validated by pure `lib/gentle-path.ts` with tests; without JavaScript all days show.
+
+### Printable journal (2026-11-21)
+Journal gains "Print or save as PDF": `window.print()` with a print stylesheet that hides the app and prints only a plain black-on-white list of reflections, notes and opened letters (no verse text, sealed letters excluded). Pure `lib/journal-export.ts` with tests; no dependency.

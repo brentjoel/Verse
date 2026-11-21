@@ -64,3 +64,24 @@ test.describe("gentle path", () => {
     await expect(page.locator(".path-day .verse-text")).toHaveCount(4);
   });
 });
+
+test.describe("printable journal", () => {
+  test.use({ reducedMotion: "reduce" });
+
+  test("the button prints and the print view shows only the journal", async ({ page }) => {
+    await page.addInitScript(() => { (window as unknown as { printed: number }).printed = 0; window.print = () => { (window as unknown as { printed: number }).printed++; }; });
+    await page.goto("/emotions/anxious");
+    await page.getByRole("link", { name: "Overwhelmed" }).click();
+    await expect(page.getByText("Noted in your journal")).toBeVisible();
+    await page.goto("/journal");
+    await page.getByRole("button", { name: "Print or save as PDF" }).click();
+    expect(await page.evaluate(() => (window as unknown as { printed: number }).printed)).toBe(1);
+    await expect(page.locator(".print-journal")).toHaveCount(0);
+    await page.emulateMedia({ media: "print" });
+    await page.evaluate(() => window.dispatchEvent(new Event("beforeprint")));
+    await expect(page.locator(".print-journal")).toBeVisible();
+    await expect(page.locator(".print-journal")).toContainText("Overwhelmed");
+    await expect(page.locator(".site-header")).toBeHidden();
+    await expect(page.locator("#letters-heading")).toBeHidden();
+  });
+});
