@@ -8,7 +8,7 @@ export function parseShareReference(query: URLSearchParams, references: readonly
 }
 
 export function shareCardHeight(text: string): number {
-  // Reserve one line per 45 characters, including explicit source line breaks.
+  // 40px Lora at 1.45 line height: one 60px line per 45 characters (source breaks included), plus header, reference and attribution.
   const lines = text.split("\n").reduce((count, line) => count + Math.max(1, Math.ceil(line.length / 45)), 0);
-  return Math.max(630, 340 + lines * 48);
+  return Math.max(630, 420 + lines * 60);
 }

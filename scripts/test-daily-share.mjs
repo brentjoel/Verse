@@ -57,3 +57,11 @@ test('share requests accept only one known public reference and explicit WEB', (
     assert.equal(parseShareReference(query, references), undefined);
   }
 });
+
+test('share card height leaves room for every curated passage at 40px Lora', () => {
+  // About 50 characters per 58px line inside the 1056px text column, plus header, reference and attribution.
+  for (const text of Object.values(web)) {
+    const lines = text.split('\n').reduce((count, line) => count + Math.max(1, Math.ceil(line.length / 50)), 0);
+    assert.ok(shareCardHeight(text) >= 400 + lines * 58, `height ${shareCardHeight(text)} for ${lines} lines`);
+  }
+});

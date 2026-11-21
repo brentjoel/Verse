@@ -225,3 +225,15 @@ test('browser bridge reads only after initialization and mirrors only theme and 
     names.forEach((name, index) => { if (descriptors[index]) Object.defineProperty(globalThis, name, descriptors[index]); else delete globalThis[name]; });
   }
 });
+
+test('a caller-supplied mood id supports one-tap undo that keeps the activity day', async () => {
+  const { store } = setup();
+  const id = '7f9c2b1e-4d3a-4f6b-9a8e-1c2d3e4f5a6b';
+  assert.deepEqual(await store.recordMood(saveInput.emotionId, saveInput.specificEmotionId, id), { ok: true });
+  assert.equal(store.getSnapshot().envelope.data.moodEntries[0].id, id);
+  assert.deepEqual(await store.removeMood(id), { ok: true });
+  assert.deepEqual(await store.removeMood(id), { ok: true });
+  const data = store.getSnapshot().envelope.data;
+  assert.equal(data.moodEntries.length, 0);
+  assert.equal(data.activityDays.length, 1);
+});

@@ -1,27 +1,32 @@
-import { Suspense, ViewTransition } from "react";
-import { SiteNav } from "@/components/site-nav";
+import { Suspense, ViewTransition, type ReactNode } from "react";
 import Link from "next/link";
+import { SiteNav } from "@/components/site-nav";
 import { BrandMark } from "@/components/brand-mark";
 import { StorageNotice } from "@/components/storage-notice";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { TranslationSelector } from "@/components/translation-selector";
+import { SettingsSheet } from "@/components/settings-sheet";
+import { ThemeSync } from "@/components/theme-sync";
+import { AmbientSky } from "@/components/ambient-sky";
 
-export function SiteShell({ children, translationControl }: Readonly<{ children: React.ReactNode; translationControl?: React.ReactNode }>) {
+export function SiteShell({ children, ambient = true }: Readonly<{ children: ReactNode; ambient?: boolean }>) {
   return (
     <div className="site-shell">
+      {ambient && <AmbientSky />}
       <header className="site-header">
         <Link href="/" aria-label="Verselight home" className="brand">
           <BrandMark />
-          <span>Verselight<span className="text-primary">.</span></span>
+          <span>Verselight</span>
         </Link>
-        <div className="header-controls">{translationControl ?? <TranslationSelector />}<ThemeToggle /></div>
+        <div className="header-controls">
+          <SettingsSheet />
+        </div>
       </header>
+      <ThemeSync />
       <Suspense><SiteNav /></Suspense>
       <StorageNotice />
-      <ViewTransition default="none" enter="page-arrival" exit="page-arrival"><main id="main-content" className="site-main">{children}</main></ViewTransition>
+      <ViewTransition default="none" enter="page-arrival" exit="page-arrival"><main id="main-content" className="site-main" tabIndex={-1}>{children}</main></ViewTransition>
       <footer className="site-footer">
         <span>Come as you are. Take your time.</span>
-        <p className="translation-credits">Scripture: NLT via Tyndale. KJV, WEB, ASV via bible-api.com; BSB via BereanBible.com. This is a noncommercial project. <Link href="/about">About and privacy</Link>. <a href="/licenses">Sources and copyright notices</a></p>
+        <nav aria-label="About and sources"><Link href="/about">About and privacy</Link><Link href="/licenses">Sources and copyright notices</Link></nav>
       </footer>
     </div>
   );

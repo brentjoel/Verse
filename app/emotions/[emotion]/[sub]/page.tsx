@@ -9,11 +9,10 @@ import { getAllEmotions, getEmotionById, getPromptForReference, getSpecificEmoti
 import { getPreferredTranslation } from "@/lib/translation-preference";
 import { getVersePassage } from "@/lib/verse-passage";
 import { PassageAttribution } from "@/components/passage-attribution";
-import { PreferredTranslationSelector } from "@/components/preferred-translation-selector";
 import { SaveVerseButton } from "@/components/save-verse-button";
-import { TranslationSelector } from "@/components/translation-selector";
 import { ShareCardControls } from "@/components/share-card-controls";
 import { DawnReveal } from "@/components/dawn-reveal";
+import { UndoToast } from "@/components/undo-toast";
 import { passageTokens } from "@/lib/dawn";
 
 export async function generateMetadata({ params }: { params: Promise<{ emotion: string; sub: string }> }) {
@@ -31,7 +30,7 @@ export default async function ResultsPage({ params }: { params: Promise<{ emotio
   const emotion = getEmotionById(emotionId);
   const specific = getSpecificEmotionByIds(emotionId, sub);
   if (!emotion || !specific) notFound();
-  return <SiteShell translationControl={<Suspense fallback={<TranslationSelector />}><PreferredTranslationSelector /></Suspense>}><Suspense fallback={<ContentNotice loading>Finding your verses...</ContentNotice>}><ResultsContent emotion={emotion} specific={specific} /></Suspense></SiteShell>;
+  return <SiteShell><Suspense fallback={<ContentNotice loading>Finding your verses...</ContentNotice>}><ResultsContent emotion={emotion} specific={specific} /></Suspense></SiteShell>;
 }
 
 async function ResultsContent({ emotion, specific }: { emotion: Emotion; specific: SpecificEmotion }) {
@@ -41,8 +40,9 @@ async function ResultsContent({ emotion, specific }: { emotion: Emotion; specifi
 
   return (
     <>
-      <Link href={`/emotions/${emotion.id}`} className="back-link">← {emotion.name} feelings</Link>
+      <UndoToast path={returnTo} />
       <div data-emotion={emotion.id} className="results-wrap">
+        <Link href={`/emotions/${emotion.id}`} className="back-link">&#8592; {emotion.name} feelings</Link>
         <div className="results-heading">
           <h1><span className="emotion-dot" aria-hidden="true" />{specific.name}</h1>
           <p>Take your time. Let a question or a prayer be a place to begin.</p>
@@ -53,7 +53,7 @@ async function ResultsContent({ emotion, specific }: { emotion: Emotion; specifi
                 const prompt = getPromptForReference(reference);
                 const passage = passages[index];
                 return (
-                  <DawnReveal key={reference} path={returnTo + reference + translation}><article className="verse-card reading-verse">
+                  <DawnReveal key={reference} reference={reference} path={returnTo + reference + translation}><article className="verse-card reading-verse">
                     <div className="verse-heading-row"><h2 className="verse-reference">{reference}</h2><span className="translation-tag">{passage.translationId.toUpperCase()}</span></div>
                     <p className="verse-text">{passageTokens(passage.text).map((token, tokenIndex) => /^\s+$/u.test(token) ? token : <span key={tokenIndex} data-dawn-word="">{token}</span>)}</p>
                     <PassageAttribution passage={passage} />
@@ -75,6 +75,11 @@ async function ResultsContent({ emotion, specific }: { emotion: Emotion; specifi
             </VerseCarousel>
           {specific.references.length === 0 && <ContentNotice>References for this feeling are being prepared with care. Please visit again soon.</ContentNotice>}
         </section>
+        <nav className="results-ending" aria-label="What next">
+          <p>Stay as long as you like. When you are ready:</p>
+          <Link href={`/emotions/${emotion.id}`} className="compare-link">Try another feeling</Link>
+          <Link href="/" className="pill">Back to the wheel</Link>
+        </nav>
       </div>
     </>
   );

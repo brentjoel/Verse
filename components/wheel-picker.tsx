@@ -1,29 +1,13 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Component, useCallback, useEffect, useRef, useState, type ComponentProps, type ReactNode } from "react";
+import { Component, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { FeelingLink } from "@/components/feeling-link";
 import type { Emotion } from "@/lib/emotions";
-import { needsSimplePicker, wrapIndex } from "@/lib/wheel";
+import { wrapIndex } from "@/lib/wheel";
+import { initialTier, type QualityTier, type RenderTier } from "@/lib/constellation";
 
-const Scene = dynamic(() => import("@/components/wheel-scene"), { ssr: false, loading: () => <span className="wheel-loading skeleton">Opening the light...</span> });
-
-function SettledScene(props: ComponentProps<typeof Scene>) {
-  const [ready, setReady] = useState(false);
-  useEffect(() => {
-    let frame = 0;
-    let idle: number | undefined;
-    // Paint the usable DOM dial before loading/initializing decorative WebGL.
-    frame = requestAnimationFrame(() => {
-      frame = requestAnimationFrame(() => {
-        if ("requestIdleCallback" in window) idle = window.requestIdleCallback(() => setReady(true), { timeout: 700 });
-        else setReady(true);
-      });
-    });
-    return () => { cancelAnimationFrame(frame); if (idle !== undefined) window.cancelIdleCallback(idle); };
-  }, []);
-  return ready ? <Scene {...props} /> : <span className="wheel-loading skeleton">Opening the light...</span>;
-}
+const Scene = dynamic(() => import("@/components/constellation-scene"), { ssr: false, loading: () => <span className="wheel-loading">Gathering the stars...</span> });
 
 class SceneRecovery extends Component<{ children: ReactNode; onUnavailable: () => void }, { failed: boolean }> {
   state = { failed: false };
@@ -32,91 +16,138 @@ class SceneRecovery extends Component<{ children: ReactNode; onUnavailable: () =
   render() { return this.state.failed ? null : this.props.children; }
 }
 
-export function WheelPicker({ emotions, corner, children }: { emotions: readonly Emotion[]; corner?: ReactNode; children: ReactNode }) {
-  const [enabled, setEnabled] = useState(false);
-  const [simple, setSimple] = useState(false);
+type Intensity = "low" | "medium" | "high";
+
+export function WheelPicker({ emotions, children }: { emotions: readonly Emotion[]; children: ReactNode }) {
+  const [mode, setMode] = useState<"list" | "wheel">("list");
+  const [tier, setTier] = useState<QualityTier>("list");
+  // Capable devices keep the Wheel option even after a runtime fallback, so the wow is one tap away.
+  const [capable, setCapable] = useState(false);
+  const returning = useRef(false);
+  const [idle, setIdle] = useState(false);
   const [turn, setTurn] = useState(0);
   const [broad, setBroad] = useState<number | null>(null);
-  const [intensity, setIntensity] = useState("medium");
+  const [intensity, setIntensity] = useState<Intensity>("medium");
   const drag = useRef<number | null>(null);
   const wheelDelta = useRef(0);
   const wheelTime = useRef(0);
   const dial = useRef<HTMLDivElement>(null);
-  const unavailable = useCallback(() => setSimple(true), []);
+  const listHeading = useRef<HTMLHeadingElement>(null);
+
   const rotate = useCallback((steps: number) => {
     setTurn(value => value + steps);
-    try { navigator.vibrate?.(8); } catch { /* Haptics are optional. */ }
+    try { navigator.vibrate?.(6); } catch { /* Haptics are optional. */ }
   }, []);
+
+  // Decide once after hydration; the server and no-JS view is always the List.
   useEffect(() => {
-    if (broad !== null) dial.current?.querySelector("a")?.focus();
-    else dial.current?.querySelector<HTMLButtonElement>(".wheel-lock")?.focus();
-  }, [broad]);
-  useEffect(() => {
-    const query = matchMedia("(prefers-reduced-motion: reduce)");
-    const sync = () => setEnabled(!needsSimplePicker(query.matches, navigator.hardwareConcurrency));
-    sync(); query.addEventListener("change", sync);
-    return () => query.removeEventListener("change", sync);
+    const motion = matchMedia("(prefers-reduced-motion: reduce)");
+    const decide = () => {
+      const start = initialTier({ reducedMotion: motion.matches, cores: navigator.hardwareConcurrency, memory: (navigator as Navigator & { deviceMemory?: number }).deviceMemory, width: innerWidth });
+      setTier(start);
+      setCapable(start !== "list");
+      setMode(start === "list" ? "list" : "wheel");
+    };
+    decide();
+    motion.addEventListener("change", decide);
+    // Paint the headline and DOM dial before loading WebGL.
+    const idleId = "requestIdleCallback" in window ? window.requestIdleCallback(() => setIdle(true), { timeout: 900 }) : undefined;
+    const timer = idleId === undefined ? window.setTimeout(() => setIdle(true), 300) : undefined;
+    return () => { motion.removeEventListener("change", decide); if (idleId !== undefined) window.cancelIdleCallback(idleId); if (timer !== undefined) clearTimeout(timer); };
   }, []);
+
+  const onTierChange = useCallback((next: QualityTier) => {
+    setTier(next);
+    if (next === "list") {
+      const hadFocus = dial.current?.contains(document.activeElement) ?? false;
+      setMode("list");
+      if (hadFocus) requestAnimationFrame(() => listHeading.current?.focus());
+    }
+  }, []);
+
+  useEffect(() => {
+    if (mode !== "wheel") return;
+    if (broad !== null) dial.current?.querySelector<HTMLAnchorElement>(".wheel-center a")?.focus({ preventScroll: true });
+    else if (returning.current) { returning.current = false; dial.current?.querySelector<HTMLButtonElement>(".wheel-lock")?.focus({ preventScroll: true }); }
+  }, [broad, mode]);
+
   useEffect(() => {
     const element = dial.current;
-    if (!element) return;
+    if (!element || mode !== "wheel") return;
     const scroll = (event: WheelEvent) => {
       if (event.ctrlKey) return;
+      // Vertical scrolling moves the page; only sideways gestures or a focused dial turn the wheel.
+      const sideways = Math.abs(event.deltaX) > Math.abs(event.deltaY);
+      if (!sideways && !element.contains(document.activeElement)) return;
       event.preventDefault();
-      wheelDelta.current += event.deltaY;
-      if (Math.abs(wheelDelta.current) >= 40 && event.timeStamp - wheelTime.current > 160) {
+      wheelDelta.current += sideways ? event.deltaX : event.deltaY;
+      if (Math.abs(wheelDelta.current) >= 40 && event.timeStamp - wheelTime.current > 140) {
         rotate(Math.sign(wheelDelta.current)); wheelDelta.current = 0; wheelTime.current = event.timeStamp;
       }
     };
     element.addEventListener("wheel", scroll, { passive: false });
     return () => element.removeEventListener("wheel", scroll);
-  }, [enabled, simple, rotate]);
+  }, [mode, rotate]);
+
   const emotion = emotions[broad ?? wrapIndex(turn, emotions.length)];
-  if (!emotion || !enabled || simple) return <>{corner && <div className="morning-star-wrap">{corner}</div>}{enabled && simple && <p className="local-help" role="status">The simple picker is ready for you.</p>}{children}</>;
+  const toggle = capable ? <div className="segmented" role="group" aria-label="Choose how to browse feelings">
+    <button type="button" className="chip" aria-pressed={mode === "wheel"} onClick={() => { if (tier === "list") setTier("low"); setMode("wheel"); }}>Wheel</button>
+    <button type="button" className="chip" aria-pressed={mode === "list"} onClick={() => setMode("list")}>List</button>
+  </div> : null;
+
+  if (!emotion || mode === "list") return <div className="wheel-picker">
+    <div className="wheel-topbar"><h2 ref={listHeading} tabIndex={-1} className="caption">All feelings</h2>{toggle}</div>
+    {children}
+  </div>;
+
   const options = broad === null ? emotions : emotion.specifics;
   const selected = wrapIndex(turn, options.length);
   const choice = options[selected];
   const choose = (index: number) => { setBroad(index); setTurn(0); };
-  const lock = () => { if (broad === null) choose(selected); };
+
   return <div className="wheel-picker" data-emotion={emotion.id}>
-    {broad !== null && <button type="button" className="quiet-link wheel-back" onClick={() => { setBroad(null); setTurn(broad); }}>&#8592; All feelings</button>}
-    <p id="wheel-help" className="wheel-help">{broad === null ? "Turn the dial and press the center, or tap a feeling below." : `What feels closest within ${emotion.name.toLowerCase()}?`}</p>
+    <div className="wheel-topbar">
+      {broad === null ? <p id="wheel-help" className="wheel-help">Turn the dial, then press the center.</p>
+        : <div className="wheel-context"><button type="button" className="back-link wheel-back" onClick={() => { returning.current = true; setBroad(null); setTurn(broad); }}>&#8592; All feelings</button><span className="heading-sm"><span className="emotion-dot" aria-hidden="true" /> {emotion.name}</span></div>}
+      {toggle}
+    </div>
     <div className="wheel-stage">
-    {corner && <div className="wheel-corner">{corner}</div>}
-    <div ref={dial} className={`wheel-dial${broad !== null ? " wheel-inner" : ""}`} onPointerDown={event => {
-      if (event.target instanceof Element && event.target.closest("button, a")) return;
-      drag.current = event.clientX; event.currentTarget.dataset.dragging = "true"; event.currentTarget.setPointerCapture(event.pointerId);
-    }} onPointerMove={event => {
-      if (drag.current === null) return;
-      const steps = Math.trunc((event.clientX - drag.current) / 36);
-      if (steps) { rotate(steps); drag.current += steps * 36; }
-    }} onPointerUp={event => { drag.current = null; event.currentTarget.dataset.dragging = "false"; }} onPointerCancel={event => { drag.current = null; event.currentTarget.dataset.dragging = "false"; }}>
-      <SceneRecovery onUnavailable={unavailable}><SettledScene emotionId={emotion.id} inner={broad !== null} intensity={intensity} rotation={-turn * Math.PI * 2 / options.length} onUnavailable={unavailable} /></SceneRecovery>
-      <div className="wheel-orbit" aria-hidden="true" />
-      {broad === null && <div className="wheel-ring-labels" aria-hidden="true">{emotions.map((item, index) => {
-        const angle = (index - selected) / emotions.length * Math.PI * 2;
-        return <span key={item.id} style={{ left: "50%", top: "50%", transform: `translate(-50%, -50%) translate(${Math.sin(angle) * 42}cqw, ${-Math.cos(angle) * 42}cqw)` }} data-selected={selected === index}>{item.name}</span>;
-      })}</div>}
-      <div className="wheel-center" onKeyDown={event => {
-        if (["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"].includes(event.key)) {
-          event.preventDefault(); rotate(event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : 1);
-        }
-      }}>
-        <p className="eyebrow">{broad === null ? "Turn toward a feeling" : emotion.name}</p>
-        {broad === null ? <button type="button" className="wheel-lock" aria-describedby="wheel-help" onClick={lock}>{choice.name}<span>Press to choose</span></button> : <FeelingLink dawn emotionId={emotion.id} specificId={choice.id} name={choice.name} />}
+      <div ref={dial} className={`wheel-dial${broad !== null ? " wheel-inner" : ""}`} onPointerDown={event => {
+        if (event.target instanceof Element && event.target.closest("button, a")) return;
+        drag.current = event.clientX; event.currentTarget.dataset.dragging = "true"; event.currentTarget.setPointerCapture(event.pointerId);
+      }} onPointerMove={event => {
+        if (drag.current === null) return;
+        const steps = Math.trunc((drag.current - event.clientX) / 34);
+        if (steps) { rotate(steps); drag.current -= steps * 34; }
+      }} onPointerUp={event => { drag.current = null; event.currentTarget.dataset.dragging = "false"; }} onPointerCancel={event => { drag.current = null; event.currentTarget.dataset.dragging = "false"; }}>
+        {idle && <SceneRecovery onUnavailable={() => onTierChange("list")}><Scene order={emotions.map(item => item.id)} selected={broad ?? selected} inner={broad !== null} innerCount={emotion.specifics.length} intensity={intensity} rotation={-turn * Math.PI * 2 / options.length} tier={tier as RenderTier} onTierChange={onTierChange} /></SceneRecovery>}
+        <div className="wheel-ring-labels" aria-hidden="true">{options.map((item, index) => {
+          const angle = (index - selected) / options.length * Math.PI * 2;
+          const radius = broad === null ? 46 : 43;
+          return <span key={item.id} style={{ left: "50%", top: "50%", transform: `translate(-50%, -50%) translate(${Math.sin(angle) * radius}cqw, ${-Math.cos(angle) * radius}cqw)` }} data-selected={selected === index}>{item.name}</span>;
+        })}</div>
+        <div className="wheel-center" onKeyDown={event => {
+          if (["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"].includes(event.key)) {
+            event.preventDefault(); rotate(event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : 1);
+          }
+        }}>
+          {broad === null
+            ? <button type="button" className="wheel-lock" aria-describedby="wheel-help" onClick={() => choose(selected)}>{choice.name}<span>Press to choose</span></button>
+            : <FeelingLink dawn emotionId={emotion.id} specificId={choice.id} name={choice.name} />}
+        </div>
       </div>
     </div>
-    </div>
-    <p className="wheel-current sr-only" role="status" aria-live="polite">{selected + 1} of {options.length}: {choice.name}</p>
-    <ul className="wheel-options" aria-label={broad === null ? "Broad emotions" : `Feelings within ${emotion.name}`}>
+    <p className="sr-only" role="status" aria-live="polite">{selected + 1} of {options.length}: {choice.name}</p>
+    <ul className="wheel-options" aria-label={broad === null ? "Feelings" : `Feelings within ${emotion.name}`}>
       {broad === null
-        ? emotions.map((option, index) => <li key={option.id}><button type="button" onClick={() => choose(index)}>{option.name}</button></li>)
-        : emotion.specifics.map(option => <li key={option.id}><FeelingLink dawn className="wheel-chip" emotionId={emotion.id} specificId={option.id} name={option.name} /></li>)}
+        ? emotions.map((option, index) => <li key={option.id}><button type="button" className="chip" onClick={() => choose(index)}>{option.name}</button></li>)
+        : emotion.specifics.map(option => <li key={option.id}><FeelingLink dawn className="chip" emotionId={emotion.id} specificId={option.id} name={option.name} /></li>)}
     </ul>
     {broad !== null && <>
-      <fieldset className="wheel-intensity"><legend>How strong does it feel?</legend>{["low", "medium", "high"].map(value => <label key={value}><input type="radio" name="intensity" value={value} checked={intensity === value} onChange={() => setIntensity(value)} />{value}</label>)}</fieldset>
-      <p className="local-help">Intensity is just for this moment and is not saved in your journal.</p>
+      <fieldset className="wheel-intensity"><legend>How strong does it feel?</legend>
+        {(["low", "medium", "high"] as const).map(value => <button key={value} type="button" className="chip" aria-pressed={intensity === value} onClick={() => setIntensity(value)}>{value[0].toUpperCase() + value.slice(1)}</button>)}
+      </fieldset>
+      <p className="caption wheel-intensity-note">Intensity shapes the light for this moment. It is not saved.</p>
     </>}
-    <p className="wheel-simple"><button type="button" className="quiet-link" onClick={() => setSimple(true)}>Use simple picker</button></p>
   </div>;
 }

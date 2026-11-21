@@ -4,6 +4,8 @@ import { useSyncExternalStore } from "react";
 import { PersonalStore, serverStorageSnapshot } from "./storage";
 import { STORAGE_KEY, type Preferences } from "./storage-schema";
 import { resolveTranslation } from "./translations";
+import { setTranslationCookie } from "./translation-client";
+import { THEME_KEY } from "./theme";
 
 let store: PersonalStore | undefined;
 let connected = false;
@@ -21,12 +23,9 @@ export function applyBrowserPreferences(preferences: Preferences) {
   if (previous.theme !== preferences.theme) document.documentElement.dataset.themeSource = "stored";
   document.documentElement.dataset.theme = preferences.theme;
   try {
-    if (document.documentElement.dataset.themeSource !== "system") localStorage.setItem("verselight-theme", preferences.theme);
+    if (document.documentElement.dataset.themeSource !== "system") localStorage.setItem(THEME_KEY, preferences.theme);
   } catch { /* The in-memory theme still works. */ }
-  if (previous.preferredTranslation !== preferences.preferredTranslation) {
-    try { document.cookie = `translation=${preferences.preferredTranslation}; Path=/; Max-Age=31536000; SameSite=Lax${location.protocol === "https:" ? "; Secure" : ""}`; } catch { /* Cookie access can be blocked by browser privacy settings. */ }
-    window.dispatchEvent(new Event("translation-change"));
-  }
+  if (previous.preferredTranslation !== preferences.preferredTranslation) setTranslationCookie(preferences.preferredTranslation);
 }
 export function getPersonalStore() {
   if (!store) store = new PersonalStore({

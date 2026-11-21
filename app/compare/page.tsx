@@ -8,16 +8,15 @@ import { hasVerseReference } from "@/lib/verses";
 import { getVersePassage } from "@/lib/verse-passage";
 import { PassageAttribution } from "@/components/passage-attribution";
 import { parseCompareTranslations, validResultsPath } from "@/lib/compare";
-import { PreferredTranslationSelector } from "@/components/preferred-translation-selector";
-import { TranslationSelector } from "@/components/translation-selector";
 import { ShareCardControls } from "@/components/share-card-controls";
+import { CompareToggles } from "@/components/compare-toggles";
 
 type Query = Record<string, string | string[] | undefined>;
 
 export const metadata = { title: "Compare Scripture | Verselight", description: "Read Scripture side by side in two to four translations, with source credits and room to reflect." };
 
 export default function ComparePage({ searchParams }: { searchParams: Promise<Query> }) {
-  return <SiteShell translationControl={<Suspense fallback={<TranslationSelector />}><PreferredTranslationSelector /></Suspense>}><Suspense fallback={<ContentNotice loading>Preparing your comparison...</ContentNotice>}><Comparison searchParams={searchParams} /></Suspense></SiteShell>;
+  return <SiteShell><Suspense fallback={<ContentNotice loading>Preparing your comparison...</ContentNotice>}><Comparison searchParams={searchParams} /></Suspense></SiteShell>;
 }
 
 async function Comparison({ searchParams }: { searchParams: Promise<Query> }) {
@@ -28,11 +27,12 @@ async function Comparison({ searchParams }: { searchParams: Promise<Query> }) {
   const { ids, error } = parseCompareTranslations(query.translations ?? (query.submitted ? [] : undefined), preferred);
   const passages = reference && !error ? await Promise.all(ids.map(id => getVersePassage(reference, id))) : [];
   return <div className="compare-wrap">
-    <Link className="back-link" href={from ?? "/"}>← {from ? "Back to your verses" : "Choose a feeling"}</Link>
+    <Link className="back-link" href={from ?? "/"}>&#8592; {from ? "Back to your verses" : "Choose a feeling"}</Link>
     <div className="results-heading"><h1 className={reference ? "compare-reference" : undefined}>{reference ?? "Compare Scripture"}</h1><p>Take a little time with the words. Notice what speaks to you.</p></div>
     {!reference ? <ContentNotice>This reference is not in our collection yet. Choose a feeling to find a verse to compare.</ContentNotice> : <>
       {query.from !== undefined && !from && <p className="comparison-notice" role="status">We could not find the results page in this link. You can choose a feeling to begin again.</p>}
-      <form key={`${reference}:${ids.join(",")}`} action="/compare" method="get" className="compare-form">
+      {!error && <CompareToggles reference={reference} from={from} selected={ids} />}
+      <form key={`form:${reference}:${ids.join(",")}`} action="/compare" method="get" className="compare-form js-hidden">
         <input type="hidden" name="submitted" value="1" />
         <input type="hidden" name="ref" value={reference} />
         {from && <input type="hidden" name="from" value={from} />}
