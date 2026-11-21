@@ -41,7 +41,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 - [x] Schema 2: anchor, letters, path and marks folded into the envelope and backups
 - [x] Saved intensity and the check-in answer
 - [x] Prayer list with answered dates
-- [ ] Optional journal passcode (Web Crypto, on-device; warn that a forgotten passcode means the data is lost)
+- [x] Optional journal passcode (Web Crypto, on-device; warn that a forgotten passcode means the data is lost)
 - [ ] Year in light recap
 
 **Phase E**
@@ -181,3 +181,6 @@ A wheel intensity the visitor actually chose is kept on the reflection; the retu
 
 ### Prayer list (2026-11-21)
 Journal gains "Your prayers": add a prayer in your own words, mark it answered (the local day is kept, never before it was added), or move it back. Optional `prayers` in schema 2, in Export and Import, capped at 200; pure `lib/prayers.ts` with tests and an e2e flow.
+
+### Journal passcode (2026-11-21)
+Optional passcode on Journal: PBKDF2 plus AES-GCM via Web Crypto seals notes, letters and prayers on the device; feelings and dates stay plain so streaks and the check-in work. The key lives only in tab memory; Export keeps the sealed form (tested), and a clear warning plus a consent box say a forgotten passcode means the text is lost, with an erase path.

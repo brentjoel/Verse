@@ -69,6 +69,38 @@ test.describe("prayer list", () => {
   });
 });
 
+test.describe("journal passcode", () => {
+  test.use({ reducedMotion: "reduce" });
+
+  test("locking encrypts the prayers, a reload asks for the passcode, and it opens again", async ({ page }) => {
+    await page.goto("/journal");
+    await page.getByLabel("Something to bring to God").fill("TEST_SECRET_PRAYER");
+    await page.getByRole("button", { name: "Add to my prayers" }).click();
+    await expect(page.getByRole("list", { name: "Still praying" })).toContainText("TEST_SECRET_PRAYER");
+    await page.getByRole("button", { name: "Set a passcode" }).click();
+    await expect(page.getByText("If you forget this passcode, your locked notes, letters and prayers are lost.")).toBeVisible();
+    await page.getByLabel("New passcode").fill("quiet morning");
+    await page.getByLabel("Type it again").fill("quiet morning");
+    await page.getByRole("button", { name: "Lock my journal" }).click();
+    await expect(page.locator(".local-error")).toContainText("forgotten passcode");
+    await page.getByLabel(/I understand/).check();
+    await page.getByRole("button", { name: "Lock my journal" }).click();
+    await expect(page.getByRole("button", { name: "Lock now" })).toBeVisible();
+    expect(await page.evaluate(() => localStorage.getItem("verselight-data"))).not.toContain("TEST_SECRET_PRAYER");
+    await page.reload();
+    await expect(page.getByRole("heading", { name: "Your journal is locked" })).toBeVisible();
+    await expect(page.getByText("TEST_SECRET_PRAYER")).toHaveCount(0);
+    await page.getByLabel("Passcode").fill("wrong words");
+    await page.getByRole("button", { name: "Open my journal" }).click();
+    await expect(page.locator(".local-error")).toContainText("did not open");
+    await page.getByLabel("Passcode").fill("quiet morning");
+    await page.getByRole("button", { name: "Open my journal" }).click();
+    await expect(page.getByRole("list", { name: "Still praying" })).toContainText("TEST_SECRET_PRAYER");
+    await page.getByRole("button", { name: "Lock now" }).click();
+    await expect(page.getByRole("heading", { name: "Your journal is locked" })).toBeVisible();
+  });
+});
+
 test.describe("gentle path", () => {
   test.use({ reducedMotion: "reduce" });
 
