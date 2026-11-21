@@ -192,5 +192,6 @@ Audit of Journal (prayers, passcode, lock screen, reflection line), Home check-i
 
 ### On-device feeling finder (2026-11-21)
 `/not-sure` gains "In your own words": a few typed words are scored on the device by pure `lib/feeling-words.ts` (a plain-phrase lexicon with stemming and negation, no Bible text, no model download) into one to three feelings with their closest specific. Loads only on use; nothing sent or stored; the three questions stay as the fallback. Tests reach every feeling and specific; ADR 0005 updated.
+
 ### Performance pass (2026-11-21)
 The fps probe skips its first 500 ms (pure `stepProbe`). The pre-paint script marks how Home's picker opens (`data-wheel`), so CSS holds the wheel's footprint and the phone peek from first paint; Home CLS is now 0 at phone and desktop. Results and Compare render passages in the first HTML (`instant = false`, no Suspense), so they read without JavaScript.
