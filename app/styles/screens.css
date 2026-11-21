@@ -16,7 +16,9 @@
 .check-in-reply:empty { display: none; }
 .check-in-links { display: flex; flex-wrap: wrap; gap: var(--space-1); }
 .anchor-verse { flex-basis: 100%; display: grid; justify-items: start; gap: var(--space-1); max-width: 460px; padding: var(--space-3); border: 1px solid var(--hairline); border-radius: var(--radius-panel); background: var(--veil); }
-.anchor-label { display: flex; align-items: center; gap: 8px; color: var(--spark); font-size: 15px; font-weight: 500; }
+.anchor-label { display: flex; align-items: center; gap: 8px; color: var(--ink-2); font-size: 15px; font-weight: 500; }
+.anchor-label svg { color: var(--spark); }
+.anchor-verse .quiet-link { min-width: 44px; color: var(--ink); }
 .anchor-verse .verse-text { font-size: 17px; }
 .home-tools { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); margin-top: var(--space-2); }
 @media (min-width: 900px) {
@@ -426,7 +428,7 @@
 .path-days { display: grid; gap: var(--space-3); list-style: none; padding: 0; margin: var(--space-3) 0; }
 .path-day { display: grid; gap: var(--space-1); padding: var(--space-3); border: 1px solid var(--hairline); border-radius: var(--radius-panel); background: var(--veil); }
 .path-day[data-today] { border-color: var(--spark); }
-.path-day[data-locked] { opacity: .75; }
+.path-day[data-locked] { border-style: dashed; background: transparent; }
 .path-day > h2 { font-size: 17px; font-weight: 500; color: var(--ink); }
 .path-status { color: var(--ink-2); }
 .path-intro { display: grid; justify-items: start; gap: var(--space-1); margin-top: var(--space-3); }
@@ -439,3 +441,5 @@
 .finder-option { width: 100%; min-height: 48px; padding: 10px var(--space-3); text-align: left; color: var(--ink); background: var(--veil); border: 1px solid var(--hairline); border-radius: var(--radius-panel); font-size: 16px; transition: border-color var(--motion-fast), background-color var(--motion-fast); }
 .finder-option:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
 @media (hover: hover) and (pointer: fine) { .finder-option:hover { border-color: var(--action); } }
+.path-day .verse-reference { color: var(--ink); }
+.path-day :is(.prompt-label, .quiet-link, .translation-tag) { color: var(--ink-2); }

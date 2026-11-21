@@ -171,3 +171,6 @@ Home links to `/not-sure`: three questions (where, what about, what would help) 
 
 ### Offline reading (2026-11-21)
 `public/sw.js` caches the app shell, feeling indexes, seven-day paths and build assets, never Results, Compare or Share (so never NLT); no push or notifications. Offline Results requests open `/offline`, which reads the bundled WEB verses. Allowlist unit-tested; Playwright covers offline navigation and that no Results URL is stored.
+
+### Phase C audit (2026-11-21)
+Audit of Home, /not-sure, /path, /offline, Journal and Results additions: detector clean, no horizontal overflow, axe extended to the new pages with their stored states. Fixed: light-theme contrast on the anchor card, path day labels and Unpin; locked path days no longer fade (dashed instead); Unpin target 44px wide. Not run: screen-reader pass, offline behavior on a real phone.
