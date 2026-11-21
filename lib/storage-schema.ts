@@ -7,6 +7,7 @@ import { parseLetters, type Letter } from "./letters";
 import { parsePath, type ActivePath } from "./gentle-path";
 import { parseMarks } from "./spoke";
 import { parsePrayers, type Prayer } from "./prayers";
+import { validLock, type JournalLock } from "./journal-lock";
 
 export const STORAGE_KEY = "verselight-data";
 export const SCHEMA_VERSION = 2;
@@ -36,6 +37,8 @@ export interface PersonalData {
   anchor?: string; letters: Letter[]; path?: ActivePath; marks: string[];
   /** Optional in version 2 (added later in Phase D); missing means none. */
   prayers?: Prayer[];
+  /** Optional journal passcode: notes, letters and prayers sealed with AES-GCM. */
+  lock?: JournalLock;
 }
 export interface StorageEnvelope { schemaVersion: 2; revision: number; updatedAt: string; data: PersonalData }
 export interface Backup { format: "verselight-backup"; schemaVersion: 2; exportedAt: string; data: PersonalData }
@@ -63,7 +66,7 @@ function id(value: unknown) { requireValid(typeof value === "string" && uuid.tes
 function unique(values: unknown[]) { requireValid(new Set(values).size === values.length, "Some records are duplicated."); }
 export const knownFeeling = (emotionId: string, specificId: string) => emotions.some(e => e.id === emotionId && e.specifics.some(s => s.id === specificId));
 export function validatePersonalData(input: unknown): PersonalData {
-  const data = object(input, ["preferences", "savedVerses", "collections", "moodEntries", "activityDays", "streakState", "badges", "letters", "marks"], ["anchor", "path", "prayers"]);
+  const data = object(input, ["preferences", "savedVerses", "collections", "moodEntries", "activityDays", "streakState", "badges", "letters", "marks"], ["anchor", "path", "prayers", "lock"]);
   const prefs = object(data.preferences, ["theme", "preferredTranslation"]);
   requireValid((prefs.theme === "dark" || prefs.theme === "light") && isTranslationId(prefs.preferredTranslation), "A preference is invalid.");
   const saves = list(data.savedVerses);
@@ -134,6 +137,7 @@ export function validatePersonalData(input: unknown): PersonalData {
   // The lenient parsers drop bad records; here any dropped record means the data is invalid.
   requireValid(Array.isArray(data.letters) && parseLetters(data.letters).length === data.letters.length, "A letter is invalid.");
   requireValid(Array.isArray(data.marks) && parseMarks(data.marks, KNOWN_REFERENCES).length === data.marks.length, "A marked verse is invalid.");
+  if (Object.hasOwn(data, "lock")) requireValid(validLock(data.lock), "The journal lock is invalid.");
   if (Object.hasOwn(data, "prayers")) requireValid(Array.isArray(data.prayers) && parsePrayers(data.prayers).length === data.prayers.length, "A prayer is invalid.");
   if (Object.hasOwn(data, "path")) requireValid(parsePath(data.path, knownFeeling) !== undefined, "The gentle path is invalid.");
   const result = structuredClone(data) as unknown as PersonalData;

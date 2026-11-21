@@ -85,7 +85,9 @@ Known limitation: without JavaScript, Results and Compare show only their loadin
 | `ActivityDay` | `localDate`, `firstActivityAt`, `utcOffsetMinutes`, `sources` (`emotion`, `save`) |
 | `StreakState` | `currentStreak`, `longestStreak`, `lastActiveDate?`, `graceDates`, `maxObservedLocalDate?`, `maxObservedAt?` |
 | `Badge` | `key`, `earnedAt` |
-| Companion (v2) | `anchor?` (reference), `letters` (`id`, `writtenOn`, `openOn`, `text`), `path?` (`emotionId`, `specificId`, `startedOn`), `marks` (references), optional `prayers` (`id`, `text` up to 500 characters, `addedOn`, `answeredOn?`) |
+| Companion (v2) | `anchor?` (reference), `letters` (`id`, `writtenOn`, `openOn`, `text`), `path?` (`emotionId`, `specificId`, `startedOn`), `marks` (references), optional `prayers` (`id`, `text` up to 500 characters, `addedOn`, `answeredOn?`), optional `lock` (`version`, `salt`, `iterations`, `iv`, `data`) |
+
+Journal passcode (`lib/journal-lock.ts`): PBKDF2-SHA-256 (600,000 iterations) derives an AES-GCM key from the passcode on the device. With a lock, notes, letters and prayers are stored only inside `lock.data`; feelings, dates and everything else stay plain. The key lives in the tab's memory after Unlock and is never stored. Export writes the sealed form, so locked text stays encrypted in backups; importing one starts locked. A stored lock alongside plain private text is rejected. No recovery: a forgotten passcode can only be cleared with "erase locked text".
 
 Saves deduplicate by reference plus translation. Deleting a save removes its memberships; deleting a collection keeps its saves.
 
