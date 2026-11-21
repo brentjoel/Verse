@@ -17,6 +17,9 @@ import { formatDay, formatMonth } from "@/lib/dates";
 import { MAX_NOTE_LENGTH, type MoodEntry } from "@/lib/storage-schema";
 import type { StorageResult } from "@/lib/storage";
 
+const INTENSITY_LABEL = { low: "gently", medium: "moderately", high: "strongly" } as const;
+const ANSWER_LABEL = { lighter: "lighter", same: "about the same", heavier: "heavier" } as const;
+
 function Reflection({ mood, disabled, run }: { mood: MoodEntry; disabled: boolean; run: (work: () => Promise<StorageResult>) => Promise<void> }) {
   const [note, setNote] = useState(mood.note ?? "");
   const [confirm, setConfirm] = useState(false);
@@ -25,6 +28,7 @@ function Reflection({ mood, disabled, run }: { mood: MoodEntry; disabled: boolea
   return <li className="reflection-item" data-emotion={emotion.id}>
     <p className="reflection-date"><time dateTime={mood.localDate}>{formatDay(mood.localDate)}</time></p>
     <h3><span className="emotion-dot" aria-hidden="true" />{emotion.specifics.find(s => s.id === mood.specificEmotionId)?.name} <span className="reflection-parent">{emotion.name}</span></h3>
+    {(mood.intensity || mood.checkIn) && <p className="local-help reflection-meta">{[mood.intensity && `Felt ${INTENSITY_LABEL[mood.intensity]}.`, mood.checkIn && `Later: ${ANSWER_LABEL[mood.checkIn.answer]}.`].filter(Boolean).join(" ")}</p>}
     {mood.note && !editing && <p className="reflection-note">{mood.note}</p>}
     {!editing && !confirm && <div className="reflection-actions"><Link href={`/emotions/${mood.emotionId}/${mood.specificEmotionId}`} prefetch={false} className="quiet-link">Read the verses</Link><button className="quiet-link" disabled={disabled} onClick={() => setEditing(true)}>{mood.note ? "Edit note" : "Add a note"}</button><button className="remove-link" disabled={disabled} onClick={() => setConfirm(true)}>Remove</button></div>}
     {editing && <form className="local-form" onSubmit={event => { event.preventDefault(); void run(() => getPersonalStore().editMood(mood.id, note)).then(() => setEditing(false)); }}>

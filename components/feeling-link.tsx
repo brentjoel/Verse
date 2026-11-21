@@ -5,8 +5,10 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { getPersonalStore, usePersonalStorage } from "@/lib/browser-storage";
 import { prepareDawn, prepareUndo } from "@/lib/dawn";
+import type { Intensity } from "@/lib/storage-schema";
 
-export function FeelingLink({ emotionId, specificId, name, dawn = false, className = "emotion-link specific-link" }: { emotionId: string; specificId: string; name: string; dawn?: boolean; className?: string }) {
+/** `intensity` is passed only when the visitor chose one on the wheel; it is kept with the reflection. */
+export function FeelingLink({ emotionId, specificId, name, dawn = false, className = "emotion-link specific-link", intensity }: { emotionId: string; specificId: string; name: string; dawn?: boolean; className?: string; intensity?: Intensity }) {
   const snapshot = usePersonalStorage();
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -20,7 +22,7 @@ export function FeelingLink({ emotionId, specificId, name, dawn = false, classNa
       if (!snapshot.ready) { go(); return; }
       setBusy(true);
       const id = crypto.randomUUID();
-      void getPersonalStore().recordMood(emotionId, specificId, id).then(result => {
+      void getPersonalStore().recordMood(emotionId, specificId, id, intensity).then(result => {
         if (result.ok) prepareUndo(href, id);
         go();
       }, go).finally(() => setBusy(false));

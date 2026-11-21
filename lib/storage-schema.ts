@@ -17,7 +17,12 @@ export interface SavedVerse {
   emotionId?: string; specificEmotionId?: string; createdAt: string;
 }
 export interface Collection { id: string; name: string; savedVerseIds: string[]; createdAt: string; updatedAt: string }
-export interface MoodEntry { id: string; emotionId: string; specificEmotionId: string; note?: string; localDate: string; createdAt: string }
+export const INTENSITIES = ["low", "medium", "high"] as const;
+export type Intensity = typeof INTENSITIES[number];
+export const CHECK_IN_ANSWERS = ["lighter", "same", "heavier"] as const;
+export type CheckInAnswer = typeof CHECK_IN_ANSWERS[number];
+/** Version 2 adds the optional wheel intensity and the later "How is your heart now?" answer. */
+export interface MoodEntry { id: string; emotionId: string; specificEmotionId: string; note?: string; localDate: string; createdAt: string; intensity?: Intensity; checkIn?: { answer: CheckInAnswer; on: string } }
 export interface ActivityDay { localDate: string; firstActivityAt: string; utcOffsetMinutes: number; sources: ("emotion" | "save")[] }
 export interface StreakState { currentStreak: number; longestStreak: number; graceDates: string[]; lastActiveDate?: string; maxObservedLocalDate?: string; maxObservedAt?: string }
 export interface Badge { key: keyof typeof BADGES; earnedAt: string }
@@ -84,7 +89,12 @@ export function validatePersonalData(input: unknown): PersonalData {
   unique((collections as Collection[]).map(c => c.id));
   const moods = list(data.moodEntries);
   for (const value of moods) {
-    const mood = object(value, ["id", "emotionId", "specificEmotionId", "localDate", "createdAt"], ["note"]);
+    const mood = object(value, ["id", "emotionId", "specificEmotionId", "localDate", "createdAt"], ["note", "intensity", "checkIn"]);
+    if (Object.hasOwn(mood, "intensity")) requireValid((INTENSITIES as readonly unknown[]).includes(mood.intensity), "A reflection intensity is invalid.");
+    if (Object.hasOwn(mood, "checkIn")) {
+      const check = object(mood.checkIn, ["answer", "on"]);
+      requireValid((CHECK_IN_ANSWERS as readonly unknown[]).includes(check.answer) && validLocalDate(check.on) && String(check.on) > String(mood.localDate), "A check-in answer is invalid.");
+    }
     id(mood.id); timestamp(mood.createdAt);
     requireValid(validLocalDate(mood.localDate), "A journal date is invalid.");
     requireValid(emotions.find(e => e.id === mood.emotionId)?.specifics.some(s => s.id === mood.specificEmotionId), "A journal feeling is invalid.");
