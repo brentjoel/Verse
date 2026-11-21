@@ -4,7 +4,7 @@ Redesign of 2026-11-20. It replaces the night-and-gold world. Light on a void: p
 
 ## Tokens
 
-All tokens live in [app/styles/tokens.css](../app/styles/tokens.css). Night is the default; Daylight is `[data-theme="light"]` and declares `color-scheme: only light`.
+All tokens live in [app/styles/tokens.css](../app/styles/tokens.css). Night is the default; Daylight is `[data-theme="light"]` and declares `color-scheme: only light`. Bedtime is `[data-theme="bedtime"]`: canvas `#0d0805`, warm dim ink (`#e6d3bc`, `#bba58e`, `#a08b75`), amber spark `#d9a45a`, and a softened lavender action `#9a78b5` with dark `--on-action`. It keeps Night's particle hues and passes the same AA contrast tests.
 
 | Token | Night | Daylight | Role |
 | --- | --- | --- | --- |
@@ -39,7 +39,7 @@ No cards, no shadows, no gradients on components. Gradients appear only in the l
 - **Link (`.quiet-link`):** amber, underlined.
 - **Remove (`.remove-link`):** quiet `--ink-3` text with a veil on hover, for remove and delete triggers. Confirm steps stay ghost buttons.
 - **Chip:** outlined pill; pressed is an inverted fill. Used for wheel options, intensity, translation and settings choices.
-- **Settings sheet:** gear in the header. Translation, Theme (Night, Daylight, System) and Text size. Bottom sheet on phones, side panel on desktop.
+- **Settings sheet:** gear in the header. Translation, Theme (Night, Daylight, Bedtime, System) and Text size. Bottom sheet on phones, side panel on desktop.
 - **Toast:** inverted pill at the bottom, portaled to `body`. "Noted in your journal · Undo".
 - **Navigation:** phone bottom tab bar with a blurred canvas; desktop links float in the header. Active item in `--ink` with a 4px violet dot.
 - **Logo:** four-point star inside an open ring, violet to teal, with a small amber spark.
@@ -65,7 +65,7 @@ Tokens: fast 150ms, base 220ms, slow 420ms, scene 900ms; ease-out `cubic-bezier(
 
 ## Accessibility and verification checklist
 
-- [ ] Night and Daylight pass the token contrast tests; emotion hues reach 3:1 as dots.
+- [ ] Night, Daylight and Bedtime pass the token contrast tests; emotion hues reach 3:1 as dots.
 - [ ] Wheel: keyboard arrows and Enter, live "N of 8" status, chip equivalents, List view always reachable.
 - [ ] Results: reference, first verse lines and pager fit 375 by 812 at Default text size; attribution under every quotation.
 - [ ] No horizontal scroll at 320px with Larger text (enforced by `npm run e2e`).
