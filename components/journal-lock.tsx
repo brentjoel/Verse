@@ -1,7 +1,7 @@
 "use client";
 
 import { LockKeyhole } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getPersonalStore } from "@/lib/browser-storage";
 import { MIN_PASSCODE_LENGTH } from "@/lib/journal-lock";
 
@@ -12,12 +12,17 @@ export function JournalLockGate() {
   const [error, setError] = useState("");
   const [forgot, setForgot] = useState(false);
   const [confirmErase, setConfirmErase] = useState(false);
+  const heading = useRef<HTMLHeadingElement>(null);
+  // After Lock now the pressed button is gone; keep keyboard and screen reader users in place.
+  useEffect(() => { if (!document.activeElement || document.activeElement === document.body) heading.current?.focus(); }, []);
   async function open(event: React.FormEvent) {
     event.preventDefault();
     setBusy(true); setError("");
     const result = await getPersonalStore().unlockJournal(passcode);
     setBusy(false);
-    if (!result.ok) setError(result.error); else setPasscode("");
+    if (!result.ok) { setError(result.error); return; }
+    setPasscode("");
+    requestAnimationFrame(() => document.getElementById("calendar-heading")?.focus());
   }
   async function erase() {
     setBusy(true);
@@ -26,7 +31,7 @@ export function JournalLockGate() {
     if (!result.ok) setError(result.error);
   }
   return <section className="library-section journal-lock" aria-labelledby="lock-heading">
-    <div className="section-heading"><h2 id="lock-heading"><LockKeyhole size={20} aria-hidden="true" /> Your journal is locked</h2></div>
+    <div className="section-heading"><h2 id="lock-heading" ref={heading} tabIndex={-1}><LockKeyhole size={20} aria-hidden="true" /> Your journal is locked</h2></div>
     <p className="local-help">Your notes, letters and prayers are encrypted on this device. Enter your passcode to open them in this tab.</p>
     <form className="local-form" onSubmit={open}>
       <label htmlFor="unlock-passcode">Passcode</label>
