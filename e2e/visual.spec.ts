@@ -1,7 +1,7 @@
 import { test, expect } from "./fixtures";
 
 // Screenshots compare layout and color only. The WebGL canvas and ambient stars are masked or disabled.
-const routes = ["/", "/emotions/anxious", "/emotions/anxious/overwhelmed", "/compare?ref=Psalm%2061%3A2", "/my-verses", "/journal", "/about", "/not-a-page"];
+const routes = ["/", "/emotions/anxious", "/emotions/anxious/overwhelmed", "/compare?ref=Psalm%2061%3A2", "/my-verses", "/journal", "/about", "/craft", "/not-a-page"];
 
 for (const theme of ["dark", "light"] as const) {
   test.describe(`${theme} theme @visual`, () => {
