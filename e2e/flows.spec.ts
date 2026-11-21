@@ -293,3 +293,11 @@ test.describe("keyboard shortcuts", () => {
     await expect(page.locator("#probe")).toHaveValue("f?");
   });
 });
+
+test("How it's built is reachable from the footer and shows the diagram", async ({ page }) => {
+  await page.goto("/about");
+  await page.getByRole("navigation", { name: "About and sources" }).getByRole("link", { name: "How it's built" }).click();
+  await expect(page).toHaveURL(/\/craft$/);
+  await expect(page.getByRole("heading", { name: "How it's built" })).toBeVisible();
+  await expect(page.getByRole("img", { name: "Architecture diagram" })).toBeVisible();
+});

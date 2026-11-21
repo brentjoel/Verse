@@ -399,3 +399,14 @@
 .help-note summary { display: flex; align-items: center; cursor: pointer; width: fit-content; min-height: 44px; }
 .help-note p { max-width: 62ch; margin-top: var(--space-2); line-height: 1.7; }
 .help-note a { color: var(--ink-2); text-decoration: underline; text-underline-offset: 3px; }
+
+/* How it's built: figures and headline numbers. */
+.craft-numbers { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-3); margin: 0; }
+.craft-numbers div { padding: var(--space-4); border: 1px solid var(--hairline); border-radius: var(--radius-panel); }
+.craft-numbers dt { font-size: var(--text-heading-sm); letter-spacing: -0.02em; color: var(--ink); }
+.craft-numbers dd { margin: var(--space-1) 0 0; font-size: 14px; }
+.craft-diagram { margin: 0; color: var(--ink-2); }
+.craft-diagram svg { display: block; width: 100%; height: auto; }
+.craft-diagram { overflow-x: auto; }
+.craft-diagram svg { min-width: 520px; }
+.license-copy ul { display: grid; gap: var(--space-2); padding-left: 1.2em; list-style: disc; }
