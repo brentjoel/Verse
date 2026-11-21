@@ -5,6 +5,7 @@ import { ContentNotice } from "@/components/content-notice";
 import { getAllEmotions } from "@/lib/emotions";
 import { DailyVerse } from "@/components/daily-verse";
 import web from "@/data/verses/web.json";
+import { ReturnCheckIn } from "@/components/return-check-in";
 import { WheelPicker } from "@/components/wheel-picker";
 
 export const metadata = { title: "Verselight | A moment of peace", description: "Choose a feeling and find a quiet moment with Scripture, reflection, and prayer." };
@@ -17,9 +18,10 @@ export default function Home() {
         <div className="home-hero">
           <h1 className="display">How is your heart today?</h1>
           <p className="lede">A quiet moment. A little light. Room for all you carry.</p>
+          <ReturnCheckIn />
           <div className="home-tools"><DailyVerse verses={web} /></div>
         </div>
-        <section aria-label="Choose a feeling">
+        <section id="choose-a-feeling" aria-label="Choose a feeling">
           <WheelPicker emotions={emotions}>
             <ul className="emotion-grid">
               {emotions.map((emotion) => (
