@@ -186,8 +186,8 @@ export class PersonalStore {
       collection.updatedAt = new Date().toISOString();
     });
   }
-  /** Anchor, letters, path and marks. An undefined anchor or path removes it. */
-  setCompanion(patch: Partial<Pick<PersonalData, "anchor" | "letters" | "path" | "marks">>) {
+  /** Anchor, letters, path, marks and prayers. An undefined value removes it. */
+  setCompanion(patch: Partial<Pick<PersonalData, "anchor" | "letters" | "path" | "marks" | "prayers">>) {
     return this.change(data => {
       for (const [key, value] of Object.entries(patch) as [keyof typeof patch, unknown][]) {
         if (value === undefined) delete data[key]; else Object.assign(data, { [key]: structuredClone(value) });
