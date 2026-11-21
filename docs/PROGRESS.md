@@ -40,7 +40,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 **Phase D: storage (one schema migration, version 2)**
 - [x] Schema 2: anchor, letters, path and marks folded into the envelope and backups
 - [x] Saved intensity and the check-in answer
-- [ ] Prayer list with answered dates
+- [x] Prayer list with answered dates
 - [ ] Optional journal passcode (Web Crypto, on-device; warn that a forgotten passcode means the data is lost)
 - [ ] Year in light recap
 
@@ -178,3 +178,6 @@ Storage moves to version 2: anchor, letters, path and marks join the main record
 
 ### Saved intensity and check-in answer (2026-11-21)
 A wheel intensity the visitor actually chose is kept on the reflection; the return check-in answer is kept on the reflection it asked about, dated, and the card stays answered for that day only. Journal shows both ("Felt strongly. Later: lighter."). Optional schema 2 fields, validated and tested.
+
+### Prayer list (2026-11-21)
+Journal gains "Your prayers": add a prayer in your own words, mark it answered (the local day is kept, never before it was added), or move it back. Optional `prayers` in schema 2, in Export and Import, capped at 200; pure `lib/prayers.ts` with tests and an e2e flow.

@@ -82,6 +82,6 @@ export function reloadPersonalStorage() {
 /** Anchor, letters, path and marks from the main record. Not ready while loading or when the data is blocked. */
 export function useCompanion() {
   const snapshot = usePersonalStorage();
-  const { anchor, letters, path, marks } = snapshot.envelope.data;
-  return { ready: snapshot.ready && snapshot.mode !== "blocked", anchor, letters, path, marks, set: getPersonalStore().setCompanion.bind(getPersonalStore()) };
+  const { anchor, letters, path, marks, prayers = [] } = snapshot.envelope.data;
+  return { ready: snapshot.ready && snapshot.mode !== "blocked", anchor, letters, path, marks, prayers, set: getPersonalStore().setCompanion.bind(getPersonalStore()) };
 }

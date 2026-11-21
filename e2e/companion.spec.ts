@@ -48,6 +48,27 @@ test.describe("future letters", () => {
   });
 });
 
+test.describe("prayer list", () => {
+  test.use({ reducedMotion: "reduce" });
+
+  test("add a prayer, mark it answered with today's date, and undo", async ({ page }) => {
+    await page.clock.setFixedTime(new Date("2026-11-21T09:00:00"));
+    await page.goto("/journal");
+    await page.getByLabel("Something to bring to God").fill("Peace for my family");
+    await page.getByRole("button", { name: "Add to my prayers" }).click();
+    const open = page.getByRole("list", { name: "Still praying" });
+    await expect(open).toContainText("Peace for my family");
+    await open.getByRole("button", { name: "Mark answered" }).click();
+    const answered = page.getByRole("list", { name: "Answered prayers" });
+    await expect(answered).toContainText("Answered");
+    await expect(answered.locator("time").first()).toHaveAttribute("datetime", "2026-11-21");
+    await page.reload();
+    await expect(answered).toContainText("Peace for my family");
+    await answered.getByRole("button", { name: "Not yet answered" }).click();
+    await expect(open).toContainText("Peace for my family");
+  });
+});
+
 test.describe("gentle path", () => {
   test.use({ reducedMotion: "reduce" });
 
