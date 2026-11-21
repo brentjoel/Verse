@@ -4,20 +4,14 @@ Live: Steps 1 to 9 (picker, translations, Compare, storage, journal, share cards
 
 ## Now
 
-- Branch `feat/constellation-redesign`, draft PR #8 (Project 1: Constellation redesign).
-- To finish PR #8:
-  1. `npm.cmd run check` and `npm.cmd run e2e`, then commit and push the review fixes.
-  2. Visual baselines are stale (Journal ones missing). Delete `e2e/__screenshots__/`, push, and let the CI "Visual regression" job regenerate them.
-  3. `gh run download <run-id> -n visual-baselines-and-diffs`, copy only `e2e/__screenshots__/`, commit, push.
-  4. Update the PR description and mark it ready. The owner merges.
+- PR #8 (Constellation redesign) merged 2026-11-21. UI polish batch on `feat/ui-polish`.
 
 ## Roadmap (owner order: features and UI first, performance last)
 
-1. Finish PR #8.
-2. UI polish batch: more prominent prayer starter in Reflect; phones default to List with a small constellation above; quieter Remove style; Daylight colors for `.ambient-sky`; undo toast overlaps the action row on phones; highlight the current emotion chip; mobile wheel labels touch the screen edge; lighter settings backdrop; About "Visit Verselight" links to itself; My Verses backup paragraph too wide (about 99 characters per line).
-3. Project 2: night sky journal, Breathe, focus reading mode, sky share card, prayer list, time-of-day sky, saved intensity (needs a storage schema migration).
-4. Project 3: on-device AI feeling finder. A small in-browser embedding model suggests the top 3 feelings and the person confirms. Crisis text shows resources first. Never generates Scripture, never trains on NLT. Hook: `leanWeights()` and the `uLean` uniform.
-5. Performance pass: skip the first ~500 ms in the fps probe; reserve space for the List-to-wheel swap on Home; no-JS fallback for Results and Compare; real-device fps.
+1. UI polish batch (in review).
+2. Project 2: night sky journal, Breathe, focus reading mode, sky share card, prayer list, time-of-day sky, saved intensity (needs a storage schema migration).
+3. Project 3: on-device AI feeling finder. A small in-browser embedding model suggests the top 3 feelings and the person confirms. Crisis text shows resources first. Never generates Scripture, never trains on NLT. Hook: `leanWeights()` and the `uLean` uniform.
+4. Performance pass: skip the first ~500 ms in the fps probe; reserve space for the List-to-wheel swap on Home; no-JS fallback for Results and Compare; real-device fps.
 
 ## Active decisions
 
@@ -54,3 +48,6 @@ Project 1: tokens and stylesheet split, settings sheet, particle wheel with qual
 
 ### Docs cleanup (2026-11-21)
 Removed SPEC, wheel-ui-plan, archive and superpowers docs (in git history). Rewrote ARCHITECTURE as a current-state map, merged HANDOFF into this file, condensed translation terms.
+
+### UI polish batch (2026-11-21)
+Phones start in List under a small constellation ring; quieter Remove; current chip ring; larger prayer starter; phone toast moved under the header; Daylight ambient sky; wheel labels clear the edge; lighter backdrop; backup text at 62ch; About self-link removed. List focus after WebGL loss now moves in an effect (was flaky).

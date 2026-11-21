@@ -16,7 +16,6 @@ export default function AboutPage() {
       <Link href="/" className="back-link">&#8592; Home</Link>
       <h1>About Verselight</h1>
       <p>A quiet place to meet a feeling with Scripture, a reflection question, and a prayer starter. Everyone is welcome as a guest. This is a strictly noncommercial personal and portfolio project, with no ads, payments, subscriptions, donations, or paid features.</p>
-      <p>Visit <a href={siteUrl.href}>Verselight</a>.</p>
       <section aria-labelledby="privacy">
         <h2 id="privacy">Your privacy</h2>
         <p>Your saved references, collections, journal notes, activity, streaks, and badges stay in this browser on this site. Verselight does not upload them or sync them between devices. They are not encrypted by the app; someone with access to your browser or device may read them.</p>
