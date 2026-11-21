@@ -6,11 +6,48 @@ Live: Steps 1 to 9 (picker, translations, Compare, storage, journal, share cards
 
 - Project 2: night sky journal (PR #10), focus reading (PR #11) and Breathe (PR #12) merged. More verses with daily rotation on `feat/more-verses`.
 
-## Roadmap (owner order: features and UI first, performance last)
+## Roadmap (owner decision 2026-11-21: ship all, one session per phase, auto-merge on green CI)
 
-1. Project 2: more verses with daily rotation (in review), then sky share card, prayer list, time-of-day sky, saved intensity (needs a storage schema migration).
-2. Project 3: on-device AI feeling finder. A small in-browser embedding model suggests the top 3 feelings and the person confirms. Crisis text shows resources first. Never generates Scripture, never trains on NLT. Hook: `leanWeights()` and the `uLean` uniform.
-3. Performance pass: skip the first ~500 ms in the fps probe; reserve space for the List-to-wheel swap on Home; no-JS fallback for Results and Compare; real-device fps.
+Each phase runs in its own session, as small PRs merged when every CI check passes. It ends with `/impeccable audit` on the phase's UI, and the material fixes go in a final PR. Check items off here as they merge.
+
+**In flight:** return check-in ("How is your heart now?"), branch `feat/return-check-in`.
+
+**Phase A: quick wins**
+- [ ] Crisis resources: a quiet help link on Sad, Anxious and Doubtful results (international directory, local emergency number first)
+- [ ] README that sells: autoplay demo GIF at the top, CI and Lighthouse badges, Built with
+- [ ] Bedtime mode: extra dim, warm, low-violet theme option in Settings
+- [ ] Remember the last verse you were reading per feeling (session only, no storage schema change)
+- [ ] Keyboard shortcuts sheet on `?`
+
+**Phase B: showcase**
+- [ ] "How it's built" case study page `/craft` with real numbers and a small architecture diagram
+- [ ] Decision records in `docs/decisions/` (accounts, NLT and fallback, local-first storage, WebGL tiers, on-device AI)
+- [ ] Per-feeling Open Graph and Twitter images in the emotion hue (brand copy only, no Scripture)
+- [ ] Live engineering overlay `?debug` (fps, tier, particles, draw calls)
+- [ ] Accessibility checks in CI with `@axe-core/playwright`, plus an Accessibility page
+- [ ] Sky share card: month constellation plus a WEB verse as a client-side PNG
+
+**Phase C: companion**
+- [ ] Anchor verse pinned on Home
+- [ ] Letter to your future self, shown in Journal on a chosen date
+- [ ] Seven-day gentle path for a feeling, built from its curated verses
+- [ ] Readable journal export to print or save as PDF
+- [ ] "This spoke to me" marks that favor a verse in the rotation
+- [ ] Time-of-day sky on Home
+- [ ] "Not sure what I feel?" three-question path
+- [ ] Offline reading: a service worker caching the app shell and public-domain data only, never NLT, no notifications
+
+**Phase D: storage (one schema migration, version 2)**
+- [ ] Saved intensity and the check-in answer
+- [ ] Prayer list with answered dates
+- [ ] Optional journal passcode (Web Crypto, on-device; warn that a forgotten passcode means the data is lost)
+- [ ] Year in light recap
+
+**Phase E**
+- [ ] Project 3: on-device AI feeling finder (suggests feelings, never generates Scripture, never trains on NLT; rules out NIV's no-AI license)
+- [ ] Performance pass: skip the first ~500 ms of the fps probe, reserve space for the List-to-wheel swap, no-JS Results and Compare, real-device fps
+
+**Owner actions:** buy a custom domain if wanted; publish the write-up (drafted in `docs/writeup.md` during Phase B).
 
 ## Active decisions
 
