@@ -33,7 +33,7 @@ No personal record reaches the server. The translation cookie is the one documen
 | `proxy.ts` | Rejects unknown emotion/feeling pairs before streaming so they return HTTP 404 |
 | `instrumentation.ts` | `onRequestError` emits only the fixed `server_error` code |
 
-Key `lib/` modules: `constellation.ts` (hues, tiers, `buildConstellation`, `leanWeights`), `wheel.ts`, `dawn.ts` (one-use dawn and undo intents), `theme.ts` (pre-paint script, text size, `data-js`), `root-preferences.ts`, `translation-client.ts`, `translations.ts`, `translation-preference.ts`, `verse-passage.ts`, `bible-api.ts` (NLT fetch and parse), `nlt-quota.ts`, `storage*.ts`, `browser-storage.ts`, `streaks.ts`, `badges.ts`, `dates.ts`, `daily-verse.ts`, `share-card.ts`, `social-image.tsx`, `operational-monitor.ts`, `site-url.ts`.
+Key `lib/` modules: `night-sky.ts` (pure month-to-stars-and-links builder for the Journal sky), `constellation.ts` (hues, tiers, `buildConstellation`, `leanWeights`), `wheel.ts`, `dawn.ts` (one-use dawn and undo intents), `theme.ts` (pre-paint script, text size, `data-js`), `root-preferences.ts`, `translation-client.ts`, `translations.ts`, `translation-preference.ts`, `verse-passage.ts`, `bible-api.ts` (NLT fetch and parse), `nlt-quota.ts`, `storage*.ts`, `browser-storage.ts`, `streaks.ts`, `badges.ts`, `dates.ts`, `daily-verse.ts`, `share-card.ts`, `social-image.tsx`, `operational-monitor.ts`, `site-url.ts`.
 
 ## Rendering
 

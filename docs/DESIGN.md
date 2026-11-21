@@ -50,6 +50,7 @@ No cards, no shadows, no gradients on components. Gradients appear only in the l
 - **Feeling list:** emotion name beside a still star cluster, then four large rows with hairlines.
 - **Results:** verse first. Back link, feeling name, a small particle burst in the emotion hue, the amber reference line, the verse, attribution directly under it, pager, Save / Compare / Share, Reflect, and an ending block (Try another feeling, Back to the wheel). Tapping the glowing passage finishes the dawn; Skip remains for keyboards.
 - **Compare:** reference in the Scripture face, live translation chips (a GET form remains for no-JavaScript), stacked or columned passages with attribution.
+- **Journal sky:** the month opens as a night sky above the reflections: each visited day is a star in its latest emotion hue (size by reflection count), consecutive days join with hairline strokes, and a grace day bridges with a dashed, dimmer line plus Lamentations 3:22-23 (WEB). A Sky / Calendar switch keeps the calendar one tap away; choosing a star or day filters the reflections below.
 - **My Verses, Journal:** notebooks, not settings. Saved verses with feeling and date; reflections first with readable dates and notes behind Add a note; a borderless calendar whose days glow in the latest reflection's emotion; a gentle "Your rhythm" summary with the rules in a disclosure.
 - **About, Licenses:** reading pages with display headings and a 720px measure.
 - **404, error, empty states:** a still constellation, one heading, one sentence, one pill.

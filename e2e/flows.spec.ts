@@ -130,3 +130,25 @@ test.describe("without JavaScript", () => {
     await expect(page.locator(".specific-link").first()).toHaveAttribute("href", /\/emotions\/[a-z-]+\/[a-z-]+$/);
   });
 });
+
+test.describe("night sky journal", () => {
+  test.use({ reducedMotion: "reduce" });
+
+  test("a chosen feeling becomes a star that opens its day, and the calendar is one tap away", async ({ page }) => {
+    await page.goto("/emotions/sad");
+    await page.getByRole("link", { name: "Lonely" }).click();
+    await expect(page.getByText("Noted in your journal")).toBeVisible();
+    await page.goto("/journal");
+    const star = page.locator(".night-star");
+    await expect(star).toHaveCount(1);
+    await expect(star).toHaveAttribute("data-emotion", "sad");
+    await noHorizontalOverflow(page);
+    await star.click();
+    await expect(page.getByRole("heading", { name: /^Reflections on / })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Read the verses" })).toHaveAttribute("href", "/emotions/sad/lonely");
+    await page.getByRole("button", { name: "Calendar" }).click();
+    await expect(page.locator(".journal-calendar")).toBeVisible();
+    await expect(page.locator(".night-sky")).toHaveCount(0);
+    await noHorizontalOverflow(page);
+  });
+});
