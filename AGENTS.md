@@ -29,11 +29,11 @@ Keep token use low. Work directly; no skill workflows (superpowers), spec or pla
 4. Add or update a `node:test` (`scripts/test-*.mjs`) for logic changes and bug fixes when practical.
 5. Verify with `npm run check`. For UI changes also run `npm run e2e`. CI runs the visual and Lighthouse checks; do not run Lighthouse locally. Check a UI change by eye once, at phone and desktop size.
 6. Add a `docs/PROGRESS.md` log entry of at most 3 lines for features and notable fixes only.
-7. Commit, push, open a PR. The owner approves every merge; never deploy production yourself.
+7. Commit, push, open a PR. Roadmap PRs in `docs/PROGRESS.md` merge with `gh pr merge --merge` once every CI check passes (owner decision 2026-11-21); never skip a failing check. Other PRs wait for the owner. Never deploy production any other way.
 8. Reply in under 10 lines, then stop.
 
 ## Impeccable (UI work)
-Use only when the owner asks for design work, and run only the command asked for (for example `polish` or `audit`). Skip `critique` and its subagents unless requested. `docs/DESIGN.md` is the design authority; keep the calm Constellation world.
+Each roadmap phase ends with `/impeccable audit` on the UI it changed, and the material findings get fixed (owner decision 2026-11-21). Otherwise use it only when the owner asks, and run only the command asked for. Skip `critique` and its subagents unless requested. `docs/DESIGN.md` is the design authority; keep the calm Constellation world.
 
 ## Code and UI
 - Strict TypeScript; no `any` without a comment. Server Components by default; `"use client"` only when needed.
