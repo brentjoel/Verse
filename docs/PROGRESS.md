@@ -28,7 +28,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 - [x] Sky share card: month constellation plus a WEB verse as a client-side PNG
 
 **Phase C: companion**
-- [ ] Anchor verse pinned on Home
+- [x] Anchor verse pinned on Home
 - [ ] Letter to your future self, shown in Journal on a chosen date
 - [ ] Seven-day gentle path for a feeling, built from its curated verses
 - [ ] Readable journal export to print or save as PDF
@@ -65,6 +65,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 
 - Real-device 60fps on mid-range Android and iPhone not measured (needs the owner's devices).
 - Screen-reader pass not done.
+- Phase D to fold into JSON Export/Import: personal keys outside schema 1 (`verselight-anchor`).
 - Results and Compare need JavaScript to show passages.
 
 ## Gotchas
@@ -146,3 +147,6 @@ x
 
 ### Phase B audit (2026-11-21)
 Audit of /craft, /accessibility, footer links, the ?debug overlay and the sky card button: detector clean, footer targets 44px, no horizontal overflow at phone width, axe clean. One material fix: the /craft headline numbers sat 3+1 on desktop, now a balanced 2x2. Not run: a screen-reader pass, and the wheel's draw-call readout on a real GPU (headless uses List view).
+
+### Anchor verse (2026-11-21)
+Pin a verse from Results or the Morning star; Home shows it in WEB under the greeting with Unpin. Stored as a reference only in its own key `verselight-anchor`, validated by `lib/anchor.ts`; shared `lib/local-key.ts` hook for later Phase C keys. Not in Export yet (Phase D).
