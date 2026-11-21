@@ -20,7 +20,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 - [x] Keyboard shortcuts sheet on `?`
 
 **Phase B: showcase**
-- [ ] "How it's built" case study page `/craft` with real numbers and a small architecture diagram
+- [x] "How it's built" case study page `/craft` with real numbers and a small architecture diagram
 - [ ] Decision records in `docs/decisions/` (accounts, NLT and fallback, local-first storage, WebGL tiers, on-device AI)
 - [ ] Per-feeling Open Graph and Twitter images in the emotion hue (brand copy only, no Scripture)
 - [ ] Live engineering overlay `?debug` (fps, tier, particles, draw calls)
@@ -120,3 +120,6 @@ Reopening a feeling's Results in the same browser session returns to the passage
 
 ### Phase A audit (2026-11-21)
 Audit of Results, Settings, shortcuts and footer: help-note summary now meets the 44px touch target. Known and accepted: Bedtime keeps Night's emotion hues, so the particles and dots stay as blue as Night; a warm-shifted hue set is a later option. The automated detector could not launch a browser here, so rendered contrast came from the token tests only.
+
+### How it's built (2026-11-21)
+New `/craft` case study with the real numbers (LCP 3.0s to 0.9s, Journal CLS 0.23 to 0, Lighthouse 90+ gate, 100+ unit tests), an inline SVG architecture diagram, linked from the footer. New e2e flow; `/craft` joins the visual routes.
