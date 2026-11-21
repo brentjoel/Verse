@@ -152,3 +152,18 @@ test.describe("night sky journal", () => {
     await noHorizontalOverflow(page);
   });
 });
+
+test("focus reading keeps only the passage and leaves with Escape", async ({ page }) => {
+  await page.goto("/emotions/anxious/overwhelmed");
+  const focus = page.getByRole("button", { name: "Focus" });
+  await focus.click();
+  await expect(page.getByRole("button", { name: "Exit focus" })).toBeFocused();
+  await expect(page.locator(".site-header")).toBeHidden();
+  await expect(page.locator(".verse-actions").first()).toBeHidden();
+  await expect(page.locator(".verse-text").first()).toBeVisible();
+  await expect(page.locator(".passage-credit").first()).toBeVisible();
+  await noHorizontalOverflow(page);
+  await page.keyboard.press("Escape");
+  await expect(page.locator(".site-header")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Focus" })).toBeVisible();
+});

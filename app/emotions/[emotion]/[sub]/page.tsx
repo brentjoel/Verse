@@ -1,3 +1,4 @@
+import { FocusToggle } from "@/components/focus-toggle";
 import Link from "next/link";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
@@ -47,6 +48,7 @@ async function ResultsContent({ emotion, specific }: { emotion: Emotion; specifi
           <h1><span className="emotion-dot" aria-hidden="true" />{specific.name}</h1>
           <p>Take your time. Let a question or a prayer be a place to begin.</p>
         </div>
+        <FocusToggle />
         <section aria-label={`Verse references for ${specific.name.toLowerCase()}`}>
             <VerseCarousel key={returnTo}>
               {specific.references.map((reference, index) => {
