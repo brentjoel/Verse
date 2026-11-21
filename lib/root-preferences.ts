@@ -1,9 +1,9 @@
 "use client";
 
-import { TEXT_SIZE_KEY, THEME_KEY, type TextSize } from "./theme";
+import { TEXT_SIZE_KEY, THEME_KEY, type TextSize, type ThemeName } from "./theme";
 
 // DOM and storage writes for presentation preferences live outside components.
-export function writeTheme(theme: "dark" | "light", source: "stored" | "system"): void {
+export function writeTheme(theme: ThemeName, source: "stored" | "system"): void {
   const root = document.documentElement;
   root.dataset.themeSource = source;
   root.dataset.theme = theme;

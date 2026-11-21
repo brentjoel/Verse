@@ -100,6 +100,22 @@ test("settings change theme and text size and remember them", async ({ page }) =
   await expect(page.locator("html")).toHaveAttribute("data-text-size", "larger");
 });
 
+test("Bedtime theme dims the page, survives a reload and the stored data load, and can be left", async ({ page }) => {
+  await page.goto("/journal");
+  await page.getByRole("button", { name: "Settings" }).click();
+  await page.getByRole("button", { name: "Bedtime" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "bedtime");
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--canvas").trim())).toBe("#0d0805");
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "bedtime");
+  await page.waitForTimeout(500);
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "bedtime");
+  await page.getByRole("button", { name: "Settings" }).click();
+  await expect(page.getByRole("button", { name: "Bedtime" })).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("button", { name: "Night" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+});
+
 test.describe("narrow phone with the largest text", () => {
   test.use({ viewport: { width: 320, height: 640 }, reducedMotion: "reduce" });
 
