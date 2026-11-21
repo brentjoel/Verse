@@ -196,7 +196,7 @@ export default function ConstellationScene(props: Props) {
     dial?.addEventListener("pointermove", move);
     dial?.addEventListener("pointerleave", leave);
 
-    let outerRot = 0, innerRot = 0, frame = 0, previous = 0, time = 0;
+    let frames = 0, outerRot = 0, innerRot = 0, frame = 0, previous = 0, time = 0;
     let probeStart = 0, probeFrames = 0, probing = true;
     let lockedOuter = 0;
     const render = (now: number) => {
@@ -232,6 +232,7 @@ export default function ConstellationScene(props: Props) {
       points.rotation.x += (tilt.x - points.rotation.x) * ease;
       points.rotation.y += (tilt.y - points.rotation.y) * ease;
       renderer.render(scene, camera);
+      if (++frames % 30 === 0) element.dataset.draws = String(renderer.info.render.calls);
       frame = requestAnimationFrame(render);
     };
     const visibility = () => {

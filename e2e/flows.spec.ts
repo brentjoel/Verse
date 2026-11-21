@@ -310,3 +310,14 @@ test("each feeling page has its own social image, and the image is a PNG", async
   const res = await request.get(new URL(og!).pathname + new URL(og!).search);
   expect(res.headers()["content-type"]).toContain("image/png");
 });
+
+test("the engineering overlay appears only with ?debug and stores nothing", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByLabel("Engineering overlay")).toHaveCount(0);
+  await page.goto("/?debug");
+  const overlay = page.getByLabel("Engineering overlay");
+  await expect(overlay).toBeVisible();
+  await expect(overlay).toContainText("draw calls");
+  await expect(overlay.locator("div").first().locator("dd")).not.toHaveText("-");
+  expect(await page.evaluate(() => JSON.stringify(localStorage).includes("debug"))).toBe(false);
+});
