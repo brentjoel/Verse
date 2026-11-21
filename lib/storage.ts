@@ -1,7 +1,7 @@
 import { foldLegacy, migrateVersioned, type LegacyKey, type LegacyValues } from "./storage-migrations";
 import { clockIsBehind, deriveStreak, localClock, recordActivity, type LocalClock } from "./streaks";
 import { awardBadges } from "./badges";
-import { checkSize, emptyData, parseJson, requireValid, SCHEMA_VERSION, validateBackup, validateEnvelope, validatePersonalData, type Backup, type PersonalData, type Preferences, type SavedVerse, type StorageEnvelope } from "./storage-schema";
+import { checkSize, emptyData, parseJson, requireValid, SCHEMA_VERSION, validateBackup, validateEnvelope, validatePersonalData, type Backup, type CheckInAnswer, type Intensity, type PersonalData, type Preferences, type SavedVerse, type StorageEnvelope } from "./storage-schema";
 
 export interface StoragePort {
   read(): string | null;
@@ -138,11 +138,18 @@ export class PersonalStore {
     });
   }
   // The caller may supply the id so it can offer a one-tap undo for exactly this entry.
-  recordMood(emotionId: string, specificEmotionId: string, id: string = crypto.randomUUID()) {
+  recordMood(emotionId: string, specificEmotionId: string, id: string = crypto.randomUUID(), intensity?: Intensity) {
     return this.change((data, clock) => {
       requireValid(!clockIsBehind(data.streakState, clock), "Your device clock moved back. Your history is safe. New reflections can be recorded when time catches up.");
-      data.moodEntries.push({ id, emotionId, specificEmotionId, localDate: clock.localDate, createdAt: clock.instant });
+      data.moodEntries.push({ id, emotionId, specificEmotionId, localDate: clock.localDate, createdAt: clock.instant, ...(intensity ? { intensity } : {}) });
       recordActivity(data.activityDays, "emotion", clock);
+    });
+  }
+  /** The return check-in answer, kept on the reflection it asked about, dated to the local day it was given. */
+  answerCheckIn(id: string, answer: CheckInAnswer) {
+    return this.change((data, clock) => {
+      const mood = data.moodEntries.find(mood => mood.id === id); requireValid(mood, "This reflection is no longer here.");
+      mood.checkIn = { answer, on: clock.localDate };
     });
   }
   editMood(id: string, note: string) {

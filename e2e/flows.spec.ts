@@ -245,6 +245,11 @@ test.describe("return check-in", () => {
     await expect(page.getByRole("button", { name: "About the same" })).toHaveAttribute("aria-pressed", "true");
     await expect(page.getByRole("link", { name: "Return to Lonely" })).toHaveAttribute("href", "/emotions/sad/lonely");
     await noHorizontalOverflow(page);
+    await page.reload();
+    await expect(page.getByRole("button", { name: "About the same" })).toHaveAttribute("aria-pressed", "true");
+    await page.goto("/journal");
+    await expect(page.getByText("Later: about the same.")).toBeVisible();
+    await page.goto("/");
 
     await page.getByRole("button", { name: "Not now" }).click();
     await expect(page.getByRole("heading", { name: /Last time you felt/ })).toHaveCount(0);

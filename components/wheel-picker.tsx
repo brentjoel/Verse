@@ -28,6 +28,8 @@ export function WheelPicker({ emotions, children }: { emotions: readonly Emotion
   const [turn, setTurn] = useState(0);
   const [broad, setBroad] = useState<number | null>(null);
   const [intensity, setIntensity] = useState<Intensity>("medium");
+  const [intensityChosen, setIntensityChosen] = useState(false);
+  const kept = intensityChosen ? intensity : undefined;
   const drag = useRef<number | null>(null);
   const wheelDelta = useRef(0);
   const wheelTime = useRef(0);
@@ -146,7 +148,7 @@ export function WheelPicker({ emotions, children }: { emotions: readonly Emotion
         }}>
           {broad === null
             ? <button type="button" className="wheel-lock" aria-describedby="wheel-help" onClick={() => choose(selected)}>{choice.name}<span>Press to choose</span></button>
-            : <FeelingLink dawn emotionId={emotion.id} specificId={choice.id} name={choice.name} />}
+            : <FeelingLink dawn emotionId={emotion.id} specificId={choice.id} name={choice.name} intensity={kept} />}
         </div>
       </div>
     </div>
@@ -154,13 +156,13 @@ export function WheelPicker({ emotions, children }: { emotions: readonly Emotion
     <ul className="wheel-options" aria-label={broad === null ? "Feelings" : `Feelings within ${emotion.name}`}>
       {broad === null
         ? emotions.map((option, index) => <li key={option.id}><button type="button" className={index === selected ? "chip is-current" : "chip"} onClick={() => choose(index)}>{option.name}</button></li>)
-        : emotion.specifics.map(option => <li key={option.id}><FeelingLink dawn className={option.id === choice.id ? "chip is-current" : "chip"} emotionId={emotion.id} specificId={option.id} name={option.name} /></li>)}
+        : emotion.specifics.map(option => <li key={option.id}><FeelingLink dawn className={option.id === choice.id ? "chip is-current" : "chip"} emotionId={emotion.id} specificId={option.id} name={option.name} intensity={kept} /></li>)}
     </ul>
     {broad !== null && <>
       <fieldset className="wheel-intensity"><legend>How strong does it feel?</legend>
-        {(["low", "medium", "high"] as const).map(value => <button key={value} type="button" className="chip" aria-pressed={intensity === value} onClick={() => setIntensity(value)}>{value[0].toUpperCase() + value.slice(1)}</button>)}
+        {(["low", "medium", "high"] as const).map(value => <button key={value} type="button" className="chip" aria-pressed={intensity === value} onClick={() => { setIntensity(value); setIntensityChosen(true); }}>{value[0].toUpperCase() + value.slice(1)}</button>)}
       </fieldset>
-      <p className="caption wheel-intensity-note">Intensity shapes the light for this moment. It is not saved.</p>
+      <p className="caption wheel-intensity-note">Intensity shapes the light. When you choose one, it is kept with this reflection in your journal.</p>
     </>}
   </div>;
 }
