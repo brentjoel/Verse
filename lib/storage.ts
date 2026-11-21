@@ -1,4 +1,4 @@
-import { migrateVersioned } from "./storage-migrations";
+import { foldLegacy, migrateVersioned, type LegacyKey, type LegacyValues } from "./storage-migrations";
 import { clockIsBehind, deriveStreak, localClock, recordActivity, type LocalClock } from "./streaks";
 import { awardBadges } from "./badges";
 import { checkSize, emptyData, parseJson, requireValid, SCHEMA_VERSION, validateBackup, validateEnvelope, validatePersonalData, type Backup, type PersonalData, type Preferences, type SavedVerse, type StorageEnvelope } from "./storage-schema";
@@ -25,6 +25,12 @@ export function readBackup(text: string): Backup { return validateBackup(migrate
 function serializeBackup(data: PersonalData) {
   const backup: Backup = { format: "verselight-backup", schemaVersion: SCHEMA_VERSION, exportedAt: new Date().toISOString(), data };
   const text = JSON.stringify(backup, null, 2); checkSize(text); return text;
+}
+
+/** Full replacement: optional records missing from the source (anchor, path) must not survive. */
+function replaceAll(data: PersonalData, source: PersonalData) {
+  for (const key of Object.keys(data) as (keyof PersonalData)[]) delete data[key];
+  Object.assign(data, source);
 }
 
 /** No browser globals or I/O during construction. Injected storage makes failure paths testable. */
@@ -173,14 +179,31 @@ export class PersonalStore {
       collection.updatedAt = new Date().toISOString();
     });
   }
+  /** Anchor, letters, path and marks. An undefined anchor or path removes it. */
+  setCompanion(patch: Partial<Pick<PersonalData, "anchor" | "letters" | "path" | "marks">>) {
+    return this.change(data => {
+      for (const [key, value] of Object.entries(patch) as [keyof typeof patch, unknown][]) {
+        if (value === undefined) delete data[key]; else Object.assign(data, { [key]: structuredClone(value) });
+      }
+    });
+  }
+  /** Folds the pre-version-2 keys in. Returns the keys that are safely saved and may be removed. */
+  async adoptLegacy(legacy: LegacyValues): Promise<LegacyKey[]> {
+    if (!this.state.ready || this.state.mode !== "persistent") return [];
+    const first = foldLegacy(this.state.envelope.data, legacy);
+    if (!first.changed) return first.clear;
+    let clear: LegacyKey[] = [];
+    const result = await this.change(data => { const folded = foldLegacy(data, legacy); Object.assign(data, folded.data); clear = folded.clear; });
+    return result.ok && this.state.mode === "persistent" ? clear : [];
+  }
   setPreferences(preferences: Partial<Preferences>) { return this.change(data => { data.preferences = { ...data.preferences, ...preferences }; }); }
   exportBackup() {
     requireValid(this.state.ready && this.state.mode !== "blocked", "Please use the recovery download for unreadable data.");
     return serializeBackup(validatePersonalData(this.state.envelope.data));
   }
   importBackup(backup: Backup, expected: StorageEnvelope) {
-    return this.change(data => { const validated = validateBackup(backup); Object.assign(data, validated.data); }, { replace: true, expected });
+    return this.change(data => { const validated = validateBackup(backup); replaceAll(data, validated.data); }, { replace: true, expected });
   }
   recoveryText() { return this.raw; }
-  reset() { return this.change(data => { Object.assign(data, emptyData(data.preferences)); }, { reset: true }); }
+  reset() { return this.change(data => { replaceAll(data, emptyData(data.preferences)); }, { reset: true }); }
 }

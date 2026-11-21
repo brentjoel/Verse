@@ -6,8 +6,7 @@ import { flushSync } from "react-dom";
 import { formatDay, formatMonth } from "@/lib/dates";
 import { getSpecificEmotionByIds, getEmotionById } from "@/lib/emotions";
 import { printMonths, printableLetters } from "@/lib/journal-export";
-import { LETTERS_KEY, parseLetters } from "@/lib/letters";
-import { useLocalKey } from "@/lib/local-key";
+import { useCompanion } from "@/lib/browser-storage";
 import { localClock } from "@/lib/streaks";
 import type { MoodEntry } from "@/lib/storage-schema";
 
@@ -26,7 +25,7 @@ export function PrintButton({ disabled }: { disabled: boolean }) {
 
 /** Rendered only while printing; the only thing printed. Plain black on white, no verse text. */
 export function PrintJournal({ moods }: { moods: readonly MoodEntry[] }) {
-  const { raw } = useLocalKey(LETTERS_KEY);
+  const { letters: stored } = useCompanion();
   // Only mounted while the browser is printing (button or Ctrl+P), so it never duplicates text on screen.
   const [printing, setPrinting] = useState(false);
   useEffect(() => {
@@ -39,7 +38,7 @@ export function PrintJournal({ moods }: { moods: readonly MoodEntry[] }) {
   if (!printing) return null;
   const today = localClock().localDate;
   const months = printMonths(moods, describe);
-  const letters = printableLetters(parseLetters(raw), today);
+  const letters = printableLetters(stored, today);
   return <article className="print-journal" aria-hidden="true">
     <h1>My Verselight journal</h1>
     <p>Printed {formatDay(today, undefined, true)}. Kept on my own device.</p>

@@ -133,13 +133,14 @@ test('invalid dates, sources, notes, feelings, offsets, clock metadata and dupli
     d => { delete d.streakState.maxObservedLocalDate; },
   ]) {
     const data = structuredClone(source); edit(data); assert.throws(() => validatePersonalData(data));
-    assert.equal((await store.importBackup({ format: 'verselight-backup', schemaVersion: 1, exportedAt: clock('2026-10-12').instant, data }, store.getSnapshot().envelope)).ok, false);
+    assert.equal((await store.importBackup({ format: 'verselight-backup', schemaVersion: 2, exportedAt: clock('2026-10-12').instant, data }, store.getSnapshot().envelope)).ok, false);
     assert.equal(port.raw, original);
   }
 });
 test('Step 4 empty progress schema remains compatible without synthesizing past activity', () => {
-  const old = { format: 'verselight-backup', schemaVersion: 1, exportedAt: clock('2026-10-12').instant, data: emptyData(prefs) };
-  const loaded = readBackup(JSON.stringify(old)); assert.deepEqual(loaded, old);
+  const { letters, marks, ...v1 } = emptyData(prefs);
+  const old = { format: 'verselight-backup', schemaVersion: 1, exportedAt: clock('2026-10-12').instant, data: v1 };
+  const loaded = readBackup(JSON.stringify(old)); assert.deepEqual(loaded, { ...old, schemaVersion: 2, data: { ...v1, letters, marks } });
 });
 test('note edits add no days; reload expires stale streaks and keeps historical longest', async () => {
   const context = setup(); await context.store.recordMood(emotion.id, feeling.id);
