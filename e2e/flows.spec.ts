@@ -202,6 +202,8 @@ test.describe("help note", () => {
     await page.goto("/emotions/grateful/blessed");
     await expect(page.getByRole("heading", { level: 1, name: "Blessed" })).toBeVisible();
     await expect(page.locator(".help-note")).toHaveCount(0);
+  });
+});
 
 test.describe("return check-in", () => {
   test.use({ reducedMotion: "reduce" });
