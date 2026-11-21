@@ -301,3 +301,12 @@ test("How it's built is reachable from the footer and shows the diagram", async 
   await expect(page.getByRole("heading", { name: "How it's built" })).toBeVisible();
   await expect(page.getByRole("img", { name: "Architecture diagram" })).toBeVisible();
 });
+
+test("each feeling page has its own social image, and the image is a PNG", async ({ page, request }) => {
+  await page.goto("/emotions/grateful");
+  const og = await page.locator('meta[property="og:image"]').getAttribute("content");
+  expect(og).toContain("/emotions/grateful/opengraph-image");
+  await expect(page.locator('meta[name="twitter:image"]')).toHaveCount(1);
+  const res = await request.get(new URL(og!).pathname + new URL(og!).search);
+  expect(res.headers()["content-type"]).toContain("image/png");
+});
