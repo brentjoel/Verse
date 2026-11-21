@@ -1,0 +1,13 @@
+/* Printing the journal: only .print-journal remains, in black on white. */
+@media print {
+  :root, :root[data-theme] { --canvas: #fff; --ink: #000; --ink-2: #000; --ink-3: #333; --hairline: #999; --veil: #fff; }
+  html, body, .site-shell { background: #fff !important; color: #000 !important; }
+  .site-header, .site-nav, .site-footer, .ambient-sky, .toast-region, .storage-notice, .debug-overlay, .back-link { display: none !important; }
+  .library-wrap > :not(.print-journal) { display: none !important; }
+  .print-journal { display: block; font: 12pt/1.5 Georgia, serif; color: #000; }
+  .print-journal h1 { font-size: 20pt; margin: 0 0 4pt; }
+  .print-journal h2 { font-size: 14pt; margin: 16pt 0 6pt; break-after: avoid; }
+  .print-journal ul { list-style: none; padding: 0; margin: 0; }
+  .print-journal li, .print-journal section > div { break-inside: avoid; margin: 0 0 8pt; }
+  .print-journal p { margin: 2pt 0; white-space: pre-wrap; }
+}
