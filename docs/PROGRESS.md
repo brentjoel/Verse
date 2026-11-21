@@ -14,7 +14,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 
 **Phase A: quick wins**
 - [x] Crisis resources: a quiet help link on Sad, Anxious, Doubtful and Tired results (international directory, local emergency number first)
-- [ ] README that sells: autoplay demo GIF at the top, CI and Lighthouse badges, Built with
+- [x] README that sells: autoplay demo GIF at the top, CI and Lighthouse badges, Built with
 - [ ] Bedtime mode: extra dim, warm, low-violet theme option in Settings
 - [ ] Remember the last verse you were reading per feeling (session only, no storage schema change)
 - [ ] Keyboard shortcuts sheet on `?`
@@ -105,3 +105,6 @@ Results for Sad, Anxious, Doubtful and Tired gain a quiet "If you are struggling
 
 ### Return check-in (2026-11-21)
 Home greets a returning visitor whose latest reflection is from an earlier local day: "Last time you felt X. How is your heart now?" with Lighter, About the same and Heavier, each pointing onward; Not now hides it for the day in its own localStorage key (schema stays 1). Pure `lib/check-in.ts` with tests. The answer is not saved: a candidate for the saved intensity migration.
+
+### README that sells (2026-11-21)
+README opens with CI, Lighthouse and privacy badges, an inline 1.4 MB demo GIF (made from `demo.webm` with ffmpeg via the `imageio-ffmpeg` Python package) and a Built with line.
