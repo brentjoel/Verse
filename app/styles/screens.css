@@ -416,3 +416,11 @@
 .license-copy kbd { padding: 1px 6px; border: 1px solid var(--hairline); border-radius: 6px; font: inherit; font-size: 0.9em; }
 .sky-card-action { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); margin-top: var(--space-3); }
 .sky-card-action .quiet-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
+
+.path-days { display: grid; gap: var(--space-3); list-style: none; padding: 0; margin: var(--space-3) 0; }
+.path-day { display: grid; gap: var(--space-1); padding: var(--space-3); border: 1px solid var(--hairline); border-radius: var(--radius-panel); background: var(--veil); }
+.path-day[data-today] { border-color: var(--spark); }
+.path-day[data-locked] { opacity: .75; }
+.path-day > h2 { font-size: 17px; font-weight: 500; color: var(--ink); }
+.path-status { color: var(--ink-2); }
+.path-intro { display: grid; justify-items: start; gap: var(--space-1); margin-top: var(--space-3); }
