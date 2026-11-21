@@ -85,7 +85,7 @@ Known limitation: without JavaScript, Results and Compare show only their loadin
 | `ActivityDay` | `localDate`, `firstActivityAt`, `utcOffsetMinutes`, `sources` (`emotion`, `save`) |
 | `StreakState` | `currentStreak`, `longestStreak`, `lastActiveDate?`, `graceDates`, `maxObservedLocalDate?`, `maxObservedAt?` |
 | `Badge` | `key`, `earnedAt` |
-| Companion (v2) | `anchor?` (reference), `letters` (`id`, `writtenOn`, `openOn`, `text`), `path?` (`emotionId`, `specificId`, `startedOn`), `marks` (references) |
+| Companion (v2) | `anchor?` (reference), `letters` (`id`, `writtenOn`, `openOn`, `text`), `path?` (`emotionId`, `specificId`, `startedOn`), `marks` (references), optional `prayers` (`id`, `text` up to 500 characters, `addedOn`, `answeredOn?`) |
 
 Saves deduplicate by reference plus translation. Deleting a save removes its memberships; deleting a collection keeps its saves.
 
