@@ -196,3 +196,6 @@ The fps probe skips its first 500 ms (pure `stepProbe`). The pre-paint script ma
 
 ### Phase E audit (2026-11-21)
 Audit of /not-sure (both result states), Home first paint and no-JS Results and Compare: axe clean in dark and light at default and larger text, no overflow at 320px, Home CLS 0. Fixed: without JavaScript, Save, mark, Pin, Share and Focus no longer show as dead buttons; the word finder drops a live region that doubled the focused heading. Not run: the detector (browser would not launch here), a screen-reader pass.
+
+### Vercel builds main only (2026-11-21)
+The free plan's daily build limit stalled Phase E, so `vercel.json` turns off branch previews; GitHub Actions stays the PR gate and Vercel builds production from `main` only.
