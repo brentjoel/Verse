@@ -12,6 +12,7 @@ import { getPreferredTranslation } from "@/lib/translation-preference";
 import { getVersePassage } from "@/lib/verse-passage";
 import { PassageAttribution } from "@/components/passage-attribution";
 import { SaveVerseButton } from "@/components/save-verse-button";
+import { AnchorButton } from "@/components/anchor-verse";
 import { ShareCardControls } from "@/components/share-card-controls";
 import { DawnReveal } from "@/components/dawn-reveal";
 import { HelpNote } from "@/components/help-note";
@@ -71,6 +72,7 @@ async function ResultsContent({ emotion, specific, searchParams }: { emotion: Em
                     <VersePager />
                     <div className="verse-actions">
                       <SaveVerseButton reference={reference} translationId={passage.translationId} emotionId={emotion.id} specificEmotionId={specific.id} />
+                      <AnchorButton reference={reference} />
                       <Link className="compare-link" data-tooltip="Compare translations" href={`/compare?${new URLSearchParams({ ref: reference, from: returnTo })}`} aria-label={`Compare translations of ${reference}`}><ArrowUpRight size={17} aria-hidden="true" />Compare</Link>
                       <ShareCardControls reference={reference} />
                     </div>
