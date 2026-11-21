@@ -24,7 +24,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 - [x] Decision records in `docs/decisions/` (accounts, NLT and fallback, local-first storage, WebGL tiers, on-device AI)
 - [x] Per-feeling Open Graph and Twitter images in the emotion hue (brand copy only, no Scripture)
 - [x] Live engineering overlay `?debug` (fps, tier, particles, draw calls)
-- [ ] Accessibility checks in CI with `@axe-core/playwright`, plus an Accessibility page
+- [x] Accessibility checks in CI with `@axe-core/playwright`, plus an Accessibility page
 - [ ] Sky share card: month constellation plus a WEB verse as a client-side PNG
 
 **Phase C: companion**
@@ -132,3 +132,6 @@ Each feeling page now has its own Open Graph and Twitter image in its hue (name,
 
 ### Engineering overlay (2026-11-21)
 `?debug` shows a small readout of fps, quality tier, particle count and draw calls (the wheel publishes draw calls in a data attribute every 30 frames). Client-only, read per page load, never stored; pure `lib/debug.ts` with tests and an e2e flow.
+
+### Accessibility (2026-11-21)
+`e2e/a11y.spec.ts` runs `@axe-core/playwright` (WCAG 2.1 A and AA) over ten pages in dark and light on phone and desktop, inside the normal e2e job. New `/accessibility` page states supported features, the checks and the known gaps, linked from the footer. Dependency added so CI can catch regressions automatically.
