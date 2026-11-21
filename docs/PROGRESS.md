@@ -17,7 +17,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 - [x] README that sells: autoplay demo GIF at the top, CI and Lighthouse badges, Built with
 - [x] Bedtime mode: extra dim, warm, low-violet theme option in Settings
 - [x] Remember the last verse you were reading per feeling (session only, no storage schema change)
-- [ ] Keyboard shortcuts sheet on `?`
+- [x] Keyboard shortcuts sheet on `?`
 
 **Phase B: showcase**
 - [ ] "How it's built" case study page `/craft` with real numbers and a small architecture diagram
@@ -114,3 +114,6 @@ Third theme in Settings: warm, extra-dim `[data-theme="bedtime"]` tokens with a 
 
 ### Remember the last verse (2026-11-21)
 Reopening a feeling's Results in the same browser session returns to the passage last viewed (per feeling and Read 4 more page). `sessionStorage`, validated in `lib/last-verse.ts` with tests; first paint and no-JS still show the first verse; no storage schema change.
+
+### Keyboard shortcuts (2026-11-21)
+`?` (or the footer link on non-touch devices) opens a shortcuts dialog; F toggles Focus on Results. Single keys never fire while typing, with a modifier, or over an open dialog. Pure `lib/shortcuts.ts` with tests; new e2e flow.

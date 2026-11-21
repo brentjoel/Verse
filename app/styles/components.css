@@ -142,3 +142,13 @@ input[type="checkbox"], input[type="radio"] { width: 18px; height: 18px; accent-
 .quiet-details summary::-webkit-details-marker, .reflect-section summary::-webkit-details-marker { display: none; }
 .quiet-details summary::after, .reflect-section summary::after { content: ""; width: 7px; height: 7px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform var(--motion-base) var(--ease-out); }
 .quiet-details[open] summary::after, .reflect-section[open] summary::after { transform: translateY(2px) rotate(-135deg); }
+
+/* Keyboard shortcuts dialog and its footer trigger */
+.shortcuts-trigger { display: inline-flex; align-items: center; min-height: 44px; color: inherit; font: inherit; }
+.shortcuts-trigger:hover, .shortcuts-trigger:focus-visible { color: var(--ink); }
+@media (pointer: coarse) { .shortcuts-trigger { display: none; } }
+.shortcut-list { display: grid; gap: var(--space-2); margin-top: var(--space-3); }
+.shortcut-list > div { display: grid; grid-template-columns: 7.5rem 1fr; gap: var(--space-3); align-items: baseline; }
+.shortcut-list dt { display: flex; gap: var(--space-1); }
+.shortcut-list dd { color: var(--ink-2); font-size: 15px; line-height: 1.5; }
+.shortcut-list kbd { min-width: 2rem; padding: 2px 8px; text-align: center; font: inherit; font-size: 14px; color: var(--ink); border: 1px solid var(--hairline); border-radius: var(--radius-control); background: var(--veil); }
