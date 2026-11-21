@@ -10,10 +10,10 @@ web
 Primary audience (owner confirmed, 2026-11-20): recruiters and portfolio reviewers judging the owner's craft, usually in a short first visit on desktop or phone. The product must also work for real people who open it in a hard or quiet moment, mostly on a phone, and want a fitting passage, a reflection question and a prayer starter. Everyone is a guest; there are no accounts.
 
 ## Product Purpose
-Help someone meet what they feel with real Scripture: choose a broad emotion, then a specific feeling, and read four curated passages with reflection and prayer prompts. Save verses, keep a private mood journal with streaks and badges, compare translations and share public-domain verse cards. Success: a first-time visitor reaches a fitting verse within seconds, and a reviewer sees calm, careful, production-grade craft.
+Help someone meet what they feel with real Scripture: choose a broad emotion, then a specific feeling, and read four curated passages a day (from eight per feeling) with reflection and prayer prompts. Save verses, keep a private mood journal with streaks and badges, compare translations and share public-domain verse cards. Success: a first-time visitor reaches a fitting verse within seconds, and a reviewer sees calm, careful, production-grade craft.
 
 ## Positioning
-Emotion-first Scripture with a curated mapping (8 emotions, 32 feelings, 4 passages each), a wheel-within-a-wheel picker and a dawn verse reveal, built with strict privacy: personal records never leave the browser. Real and portfolio at once: it must genuinely help users while showing the owner's engineering and design craft.
+Emotion-first Scripture with a curated mapping (8 emotions, 32 feelings, 8 passages each, four shown a day on a rolling window), a wheel-within-a-wheel picker and a dawn verse reveal, built with strict privacy: personal records never leave the browser. Real and portfolio at once: it must genuinely help users while showing the owner's engineering and design craft.
 
 ## Operating Context
 Mobile-first web app on Vercel (https://verselight-app.vercel.app). Visits are short and often emotional. Reviewers may skim several screens quickly. Data lives in browser storage with local JSON Export and Import backups.
