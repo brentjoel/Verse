@@ -267,3 +267,29 @@ test.describe("reading memory", () => {
   await expect(page.locator(".verse-list > li:not([hidden]) .verse-reference").first()).toHaveText("Psalm 61:2");
 });
 });
+
+test.describe("keyboard shortcuts", () => {
+  test.skip(({ isMobile }) => isMobile, "Shortcuts are for keyboards.");
+  test.use({ reducedMotion: "reduce" });
+
+  test("? lists the shortcuts, F focuses the passage, and typing in a field is left alone", async ({ page }) => {
+    await page.goto("/emotions/anxious/overwhelmed");
+    await expect(page.getByRole("button", { name: "Focus" })).toBeVisible();
+    const dialog = page.getByRole("dialog", { name: "Keyboard shortcuts" });
+    // The listener attaches after hydration, so retry the key until it lands.
+    await expect(async () => { await page.keyboard.press("?"); await expect(dialog).toBeVisible({ timeout: 500 }); }).toPass();
+    await expect(dialog).toContainText("Focus on the passage");
+    await page.keyboard.press("Escape");
+    await expect(dialog).toBeHidden();
+    await page.keyboard.press("f");
+    await expect(page.locator("html")).toHaveAttribute("data-focus", "true");
+    await page.keyboard.press("Escape");
+    await expect(page.locator("html")).not.toHaveAttribute("data-focus", "true");
+    // Not while typing: the journal search or any field must swallow the keys.
+    await page.evaluate(() => { const input = document.createElement("input"); input.id = "probe"; document.body.append(input); input.focus(); });
+    await page.keyboard.type("f?");
+    await expect(page.locator("html")).not.toHaveAttribute("data-focus", "true");
+    await expect(dialog).toBeHidden();
+    await expect(page.locator("#probe")).toHaveValue("f?");
+  });
+});

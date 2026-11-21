@@ -1,13 +1,23 @@
 "use client";
 
-import { useId, useRef, type ReactNode } from "react";
+import { useEffect, useId, useRef, type ReactNode } from "react";
+import { isShortcut, toShortcutEvent } from "@/lib/shortcuts";
 import { X } from "lucide-react";
 
-export function QuietDialog({ label, title, icon, className = "compare-link", onOpen, children }: {
-  label: string; title: string; icon?: ReactNode; className?: string; onOpen?: () => void; children: ReactNode;
+export function QuietDialog({ label, title, icon, className = "compare-link", onOpen, openKey, children }: {
+  label: string; title: string; icon?: ReactNode; className?: string; onOpen?: () => void; openKey?: string; children: ReactNode;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const heading = useId();
+  useEffect(() => {
+    if (!openKey) return;
+    const open = (event: KeyboardEvent) => {
+      if (!isShortcut(toShortcutEvent(event), openKey)) return;
+      event.preventDefault(); dialog.current?.showModal(); onOpen?.();
+    };
+    addEventListener("keydown", open);
+    return () => removeEventListener("keydown", open);
+  }, [openKey, onOpen]);
   return <>
     <button type="button" className={className} data-tooltip={label} aria-haspopup="dialog" onClick={() => { dialog.current?.showModal(); onOpen?.(); }}>{icon}<span className="trigger-label">{label}</span></button>
     <dialog ref={dialog} className="quiet-dialog" aria-labelledby={heading} onClick={event => {
