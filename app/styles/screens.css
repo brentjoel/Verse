@@ -346,3 +346,26 @@
 .share-preview-loading { display: grid; place-items: center; aspect-ratio: 1200 / 630; color: var(--ink-3); font-size: 13px; }
 .wheel-context { display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--space-3); }
 .wheel-context .heading-sm { display: inline-flex; align-items: center; gap: 10px; }
+
+/* Night sky journal: one month of visits as stars; the calendar stays one tap away. */
+.night-sky { position: relative; width: 100%; height: clamp(240px, 56vw, 400px); border-radius: var(--radius-panel); background: radial-gradient(120% 90% at 50% 0%, color-mix(in srgb, var(--action) 10%, transparent), transparent 70%); overflow: hidden; }
+.night-dust i { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: var(--ink-3); opacity: .35; }
+@media (prefers-reduced-motion: no-preference) { .night-dust i { animation: sky-twinkle 6s ease-in-out var(--d) infinite; } }
+.night-lines { position: absolute; inset: 0; width: 100%; height: 100%; }
+.night-lines line { stroke: color-mix(in srgb, var(--ink) 45%, transparent); stroke-width: 1.25; stroke-linecap: round; }
+.night-lines line[data-grace] { stroke: color-mix(in srgb, var(--ink) 20%, transparent); stroke-dasharray: 3 5; }
+.night-stars { position: absolute; inset: 0; margin: 0; padding: 0; list-style: none; }
+.night-stars li { position: absolute; transform: translate(-50%, -50%); }
+.night-star { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; }
+.night-star:not([data-emotion]) { --emotion: var(--ink-2); }
+.night-star > span { width: 6px; height: 6px; border-radius: 50%; background: var(--emotion); box-shadow: 0 0 10px 2px color-mix(in srgb, var(--emotion) 55%, transparent); transition: transform var(--motion-fast) var(--ease-out); }
+.night-star[data-level="2"] > span { width: 9px; height: 9px; }
+.night-star[data-level="3"] > span { width: 12px; height: 12px; box-shadow: 0 0 16px 4px color-mix(in srgb, var(--emotion) 60%, transparent); }
+.night-star:hover > span { transform: scale(1.35); }
+.night-star[aria-pressed="true"] { box-shadow: inset 0 0 0 1.5px var(--ink); }
+.night-empty { position: absolute; inset: auto var(--space-3) var(--space-3); color: var(--ink-3); font-size: 14px; text-align: center; }
+.night-grace { margin: var(--space-3) 0; max-width: 62ch; padding-left: var(--space-2); border-left: 1px solid var(--hairline); }
+.night-grace blockquote p { font-family: var(--font-scripture); font-size: 16px; line-height: 1.6; color: var(--ink-3); white-space: pre-line; }
+.night-grace figcaption { margin-top: 6px; font-size: var(--text-caption); color: var(--ink-3); }
+.calendar-heading { flex-wrap: wrap; row-gap: var(--space-1); }
+.calendar-heading .local-actions { flex-wrap: wrap; justify-content: flex-end; margin-top: 0; min-width: 0; }
