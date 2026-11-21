@@ -32,7 +32,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 - [x] Letter to your future self, shown in Journal on a chosen date
 - [x] Seven-day gentle path for a feeling, built from its curated verses
 - [x] Readable journal export to print or save as PDF
-- [ ] "This spoke to me" marks that favor a verse in the rotation
+- [x] "This spoke to me" marks that favor a verse in the rotation
 - [ ] Time-of-day sky on Home
 - [ ] "Not sure what I feel?" three-question path
 - [ ] Offline reading: a service worker caching the app shell and public-domain data only, never NLT, no notifications
@@ -65,7 +65,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 
 - Real-device 60fps on mid-range Android and iPhone not measured (needs the owner's devices).
 - Screen-reader pass not done.
-- Phase D to fold into JSON Export/Import: personal keys outside schema 1 (`verselight-anchor`, `verselight-letters`, `verselight-path`).
+- Phase D to fold into JSON Export/Import: personal keys outside schema 1 (`verselight-anchor`, `verselight-letters`, `verselight-path`, `verselight-spoke`).
 - Results and Compare need JavaScript to show passages.
 
 ## Gotchas
@@ -159,3 +159,6 @@ Results gains "Walk a seven-day path": `/path/[emotion]/[sub]` (16 prebuilt page
 
 ### Printable journal (2026-11-21)
 Journal gains "Print or save as PDF": `window.print()` with a print stylesheet that hides the app and prints only a plain black-on-white list of reflections, notes and opened letters (no verse text, sealed letters excluded). Pure `lib/journal-export.ts` with tests; no dependency.
+
+### This spoke to me (2026-11-21)
+Results and the Morning star gain a private mark. Every third local day the daily verse is a marked one; Results notes a marked verse sitting in the other four. Client-side only (the server never learns marks); pure `favorFirst` and `dailyWithMarks` in `lib/rotation.ts` with tests; own key `verselight-spoke`.
