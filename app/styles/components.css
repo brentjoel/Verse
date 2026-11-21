@@ -152,3 +152,8 @@ input[type="checkbox"], input[type="radio"] { width: 18px; height: 18px; accent-
 .shortcut-list dt { display: flex; gap: var(--space-1); }
 .shortcut-list dd { color: var(--ink-2); font-size: 15px; line-height: 1.5; }
 .shortcut-list kbd { min-width: 2rem; padding: 2px 8px; text-align: center; font: inherit; font-size: 14px; color: var(--ink); border: 1px solid var(--hairline); border-radius: var(--radius-control); background: var(--veil); }
+
+/* ?debug engineering overlay: opt-in, never shown otherwise. */
+.debug-overlay { position: fixed; z-index: 50; left: 8px; bottom: calc(76px + env(safe-area-inset-bottom)); margin: 0; padding: 6px 10px; display: grid; gap: 2px; border-radius: 10px; background: color-mix(in srgb, var(--canvas) 85%, transparent); border: 1px solid var(--hairline); font: 500 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--ink-2); pointer-events: none; }
+.debug-overlay div { display: flex; justify-content: space-between; gap: 16px; }
+.debug-overlay dd { margin: 0; color: var(--ink); }

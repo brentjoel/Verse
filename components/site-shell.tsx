@@ -5,6 +5,7 @@ import { BrandMark } from "@/components/brand-mark";
 import { StorageNotice } from "@/components/storage-notice";
 import { SettingsSheet } from "@/components/settings-sheet";
 import { ThemeSync } from "@/components/theme-sync";
+import { DebugOverlay } from "@/components/debug-overlay";
 import { ShortcutsDialog } from "@/components/shortcuts-dialog";
 import { AmbientSky } from "@/components/ambient-sky";
 
@@ -22,6 +23,7 @@ export function SiteShell({ children, ambient = true }: Readonly<{ children: Rea
         </div>
       </header>
       <ThemeSync />
+      <DebugOverlay />
       <Suspense><SiteNav /></Suspense>
       <StorageNotice />
       <ViewTransition default="none" enter="page-arrival" exit="page-arrival"><main id="main-content" className="site-main" tabIndex={-1}>{children}</main></ViewTransition>
