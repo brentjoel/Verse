@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
-import { buildConstellation, emotionHues, nextTier, tierSettings, type QualityTier, type RenderTier } from "@/lib/constellation";
+import { buildConstellation, emotionHues, freshProbe, nextTier, stepProbe, tierSettings, type QualityTier, type RenderTier } from "@/lib/constellation";
 
 type Props = {
   order: readonly string[];
@@ -197,17 +197,17 @@ export default function ConstellationScene(props: Props) {
     dial?.addEventListener("pointerleave", leave);
 
     let frames = 0, outerRot = 0, innerRot = 0, frame = 0, previous = 0, time = 0;
-    let probeStart = 0, probeFrames = 0, probing = true;
+    let probe = freshProbe, probing = true;
     let lockedOuter = 0;
     const render = (now: number) => {
       const delta = previous ? Math.min((now - previous) / 1000, 0.05) : 0;
       previous = now; time += delta;
       if (probing) {
-        if (!probeStart) probeStart = now;
-        probeFrames++;
-        if (now - probeStart >= 2000) {
+        const step = stepProbe(probe, now);
+        probe = step.probe;
+        if (step.fps !== null) {
           probing = false;
-          const next = nextTier(tier, probeFrames / ((now - probeStart) / 1000));
+          const next = nextTier(tier, step.fps);
           if (next !== tier) { onTierChange(next); return; }
         }
       }
@@ -237,7 +237,7 @@ export default function ConstellationScene(props: Props) {
     };
     const visibility = () => {
       cancelAnimationFrame(frame); previous = 0;
-      if (probing) { probeStart = 0; probeFrames = 0; }
+      if (probing) probe = freshProbe;
       if (!document.hidden) frame = requestAnimationFrame(render);
     };
     const lost = (event: Event) => { event.preventDefault(); onTierChange("list"); };

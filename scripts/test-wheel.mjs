@@ -66,3 +66,18 @@ test('constellation geometry is deterministic, banded by sector and bounded', as
   const spread = [...a.sector].map((s, i) => s >= 0 ? Math.hypot(a.positions[i * 3], a.positions[i * 3 + 1]) : null).filter(r => r !== null);
   assert.ok(Math.max(...spread) - Math.min(...spread) > 0.55, 'band is thick enough to read as a cloud');
 });
+
+test('the fps probe skips the warm-up, then averages a full window', async () => {
+  const { stepProbe, freshProbe, PROBE_WARMUP_MS, PROBE_WINDOW_MS } = await import('../lib/constellation.ts');
+  let probe = freshProbe, fps = null, now = 1000;
+  // A janky warm-up (one 400 ms frame) must not count.
+  ({ probe, fps } = stepProbe(probe, now)); assert.equal(fps, null);
+  now += 400; ({ probe, fps } = stepProbe(probe, now)); assert.equal(fps, null);
+  now += 150; ({ probe, fps } = stepProbe(probe, now)); assert.equal(fps, null);
+  assert.ok(now - 1000 >= PROBE_WARMUP_MS && probe.from === now);
+  const results = [];
+  for (let i = 0; i < 200 && fps === null; i++) { now += 1000 / 60; ({ probe, fps } = stepProbe(probe, now)); results.push(fps); }
+  assert.ok(fps !== null && Math.abs(fps - 60) < 0.5, `fps ${fps}`);
+  assert.ok(now - probe.from >= PROBE_WINDOW_MS);
+  assert.equal(results.filter(value => value !== null).length, 1);
+});

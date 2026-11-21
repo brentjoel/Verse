@@ -5,7 +5,7 @@ import { Component, useCallback, useEffect, useRef, useState, type CSSProperties
 import { FeelingLink } from "@/components/feeling-link";
 import type { Emotion } from "@/lib/emotions";
 import { wrapIndex } from "@/lib/wheel";
-import { initialTier, type QualityTier, type RenderTier } from "@/lib/constellation";
+import { initialTier, wheelStart, type QualityTier, type RenderTier } from "@/lib/constellation";
 
 const Scene = dynamic(() => import("@/components/constellation-scene"), { ssr: false, loading: () => <span className="wheel-loading">Gathering the stars...</span> });
 
@@ -23,6 +23,8 @@ export function WheelPicker({ emotions, children }: { emotions: readonly Emotion
   const [tier, setTier] = useState<QualityTier>("list");
   // Capable devices keep the Wheel option even after a runtime fallback, so the wow is one tap away.
   const [capable, setCapable] = useState(false);
+  // False until the effect below decides; until then CSS holds the room the pre-paint script predicted.
+  const [decided, setDecided] = useState(false);
   const returning = useRef(false);
   const [idle, setIdle] = useState(false);
   const [turn, setTurn] = useState(0);
@@ -55,7 +57,11 @@ export function WheelPicker({ emotions, children }: { emotions: readonly Emotion
       setTier(start);
       setCapable(start !== "list");
       // Phones start in the quick List with a small constellation above; the full wheel is one tap away.
-      setMode(start === "list" || innerWidth < 640 ? "list" : "wheel");
+      const opening = wheelStart(start, innerWidth);
+      // The pre-paint script set this already; keep it true if reduced motion changes later.
+      document.documentElement.dataset.wheel = opening;
+      setMode(opening === "wheel" ? "wheel" : "list");
+      setDecided(true);
     };
     decide();
     motion.addEventListener("change", decide);
@@ -106,12 +112,13 @@ export function WheelPicker({ emotions, children }: { emotions: readonly Emotion
     <button type="button" className="chip" aria-pressed={mode === "list"} onClick={() => setMode("list")}>List</button>
   </div> : null;
 
-  if (!emotion || mode === "list") return <div className="wheel-picker">
-    {capable && <button type="button" className="wheel-peek" onClick={openWheel}>
+  if (!emotion || mode === "list") return <div className="wheel-picker" data-decided={decided || undefined}>
+    {/* Always rendered so its room exists at first paint; CSS shows it when data-wheel says the device can turn the wheel. */}
+    <button key="peek" type="button" className="wheel-peek" onClick={openWheel}>
       <span className="wheel-peek-ring" aria-hidden="true">{emotions.map((item, index) => <i key={item.id} data-emotion={item.id} style={{ "--i": index } as CSSProperties} />)}</span>
       <span>Turn the constellation</span>
-    </button>}
-    <div className="wheel-topbar"><h2 ref={listHeading} tabIndex={-1} className="caption">All feelings</h2>{toggle}</div>
+    </button>
+    <div key="topbar" className="wheel-topbar"><h2 ref={listHeading} tabIndex={-1} className="caption">All feelings</h2>{toggle}</div>
     {children}
   </div>;
 
@@ -121,12 +128,13 @@ export function WheelPicker({ emotions, children }: { emotions: readonly Emotion
   const choose = (index: number) => { setBroad(index); setTurn(0); };
 
   return <div className="wheel-picker" data-emotion={emotion.id}>
-    <div className="wheel-topbar">
+    {/* Keys keep React from reusing the List's nodes as the stage, which would count as a layout shift. */}
+    <div key="topbar" className="wheel-topbar">
       {broad === null ? <p id="wheel-help" className="wheel-help">Turn the dial, then press the center.</p>
         : <div className="wheel-context"><button type="button" className="back-link wheel-back" onClick={() => { returning.current = true; setBroad(null); setTurn(broad); }}>&#8592; All feelings</button><span className="heading-sm"><span className="emotion-dot" aria-hidden="true" /> {emotion.name}</span></div>}
       {toggle}
     </div>
-    <div className="wheel-stage">
+    <div key="stage" className="wheel-stage">
       <div ref={dial} className={`wheel-dial${broad !== null ? " wheel-inner" : ""}`} onPointerDown={event => {
         if (event.target instanceof Element && event.target.closest("button, a")) return;
         drag.current = event.clientX; event.currentTarget.dataset.dragging = "true"; event.currentTarget.setPointerCapture(event.pointerId);
