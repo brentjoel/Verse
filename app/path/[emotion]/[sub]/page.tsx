@@ -24,7 +24,7 @@ export default async function PathPage({ params }: { params: Promise<{ emotion: 
   const verses = web as Record<string, string | undefined>;
   const days = pathReferences(specific.references).map(reference => ({ reference, text: verses[reference] ?? "", ...getPromptForReference(reference) }));
   return <SiteShell><div className="library-wrap">
-    <Link href={`/emotions/${emotion.id}/${specific.id}`} className="back-link">&#8592; {specific.name} verses</Link>
+    <Link href={`/emotions/${emotion.id}/${specific.id}`} className="back-link" transitionTypes={["nav-back"]}>&#8592; {specific.name} verses</Link>
     <div className="results-heading"><h1>{specific.name}: a gentle path</h1><p>One verse, one question and one prayer a day for seven days. Go at your own pace; nothing is scored.</p></div>
     <GentlePath emotionId={emotion.id} specificId={specific.id} name={specific.name} days={days} />
   </div></SiteShell>;

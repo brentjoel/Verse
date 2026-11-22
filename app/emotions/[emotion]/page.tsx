@@ -27,7 +27,7 @@ export default async function EmotionPage({ params }: { params: Promise<{ emotio
   return (
     <SiteShell>
       <div data-emotion={emotion.id} className="detail-wrap">
-        <Link href="/" className="back-link">&#8592; All feelings</Link>
+        <Link href="/" className="back-link" transitionTypes={["nav-back"]}>&#8592; All feelings</Link>
         <div className="detail-heading">
           <h1><span className="cluster" aria-hidden="true">{cluster.map(([x, y, size], index) => <i key={index} style={{ left: `${x}%`, top: `${y}%`, width: size, height: size }} />)}</span>{emotion.name}</h1>
           <p className="lede">{emotion.description}.</p>
@@ -37,7 +37,7 @@ export default async function EmotionPage({ params }: { params: Promise<{ emotio
           <ul className="specific-grid">
             {emotion.specifics.map((specific) => (
               <li key={specific.id}>
-                <FeelingLink emotionId={emotion.id} specificId={specific.id} name={specific.name} />
+                <FeelingLink morph emotionId={emotion.id} specificId={specific.id} name={specific.name} />
               </li>
             ))}
           </ul>

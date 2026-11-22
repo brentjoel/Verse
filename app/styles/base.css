@@ -58,7 +58,7 @@
 :root[data-js="true"] .js-hidden { display: none; }
 :root:not([data-js="true"]) .js-only { display: none; }
 /* Save, mark, pin, share and Focus act on the device, so without JavaScript only links and Reflect remain. */
-:root:not([data-js="true"]) :is(.verse-actions > :not(a), .focus-toggle, button[aria-haspopup="dialog"]) { display: none; }
+:root:not([data-js="true"]) :is(.verse-actions button, .save-control, .focus-toggle, button[aria-haspopup="dialog"]) { display: none; }
 
 @keyframes arrive { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 @keyframes soft-fade { from { opacity: 0; } to { opacity: 1; } }
@@ -68,17 +68,37 @@
 @keyframes verse-out-previous { to { opacity: 0; transform: translateX(16px); } }
 @keyframes verse-in-previous { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: none; } }
 
+@keyframes settle { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+
+/* Route changes: <main> is its own snapshot ("page"), so the header and tab bar hold still.
+   The old page dims away fast; the new one rises into place (deeper) or settles down from above (back links). */
+.site-main { view-transition-name: page; }
 ::view-transition { pointer-events: none; }
-::view-transition-group(.page-arrival), ::view-transition-group(.verse-next), ::view-transition-group(.verse-previous) { animation: none; }
-::view-transition-old(.page-arrival) { animation: soft-fade var(--motion-fast) reverse both; }
-::view-transition-new(.page-arrival) { animation: arrive var(--motion-slow) var(--ease-out) both; }
+::view-transition-group(page), ::view-transition-group(.verse-next), ::view-transition-group(.verse-previous) { animation: none; }
+::view-transition-old(page) { animation: soft-fade var(--motion-fast) ease-in reverse both; }
+::view-transition-new(page) { animation: arrive var(--motion-slow) var(--ease-out) both; }
+:root:active-view-transition-type(nav-back)::view-transition-new(page) { animation-name: settle; }
+/* Moving between verses or toggling Compare is not a new page: only the changed part moves. */
+:root:active-view-transition-type(verse-next, verse-previous, same-page)::view-transition-old(page) { display: none; }
+:root:active-view-transition-type(verse-next, verse-previous, same-page)::view-transition-new(page) { animation: none; }
+/* The chosen feeling's name travels from its row to the Results heading. */
+::view-transition-group(.feeling-title) { animation-duration: var(--motion-slow); animation-timing-function: var(--ease-out); }
+::view-transition-old(.feeling-title) { animation: soft-fade var(--motion-fast) reverse both; }
+::view-transition-new(.feeling-title) { animation: soft-fade var(--motion-base) both; }
+/* A theme change is the sky itself changing: one slow crossfade of the whole page. */
+:root[data-theme-shift] * { transition: none !important; }
+/* One snapshot for the whole page, so the open settings sheet stays on top while the sky changes. */
+:root[data-theme-shift] .site-main { view-transition-name: none; }
+:root[data-theme-shift]::view-transition-old(root) { animation: soft-fade var(--motion-scene) var(--ease-move) reverse both; mix-blend-mode: plus-lighter; }
+:root[data-theme-shift]::view-transition-new(root) { animation: soft-fade var(--motion-scene) var(--ease-move) both; mix-blend-mode: plus-lighter; }
 ::view-transition-old(.verse-next) { animation: verse-out-next var(--motion-fast) var(--ease-out) both; }
 ::view-transition-new(.verse-next) { animation: verse-in-next var(--motion-slow) var(--ease-out) both; }
 ::view-transition-old(.verse-previous) { animation: verse-out-previous var(--motion-fast) var(--ease-out) both; }
 ::view-transition-new(.verse-previous) { animation: verse-in-previous var(--motion-slow) var(--ease-out) both; }
-::view-transition-group(active-nav) { animation-duration: var(--motion-base); animation-timing-function: var(--ease-move); }
+::view-transition-group(active-nav) { animation-duration: var(--motion-spring); animation-timing-function: var(--ease-spring); }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; scroll-behavior: auto !important; }
+  /* Calm and static: entrances land at once (no staggered waits), state changes still show. */
+  *, *::before, *::after { animation-duration: 1ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; scroll-behavior: auto !important; }
   ::view-transition-old(*), ::view-transition-new(*), ::view-transition-group(*) { animation: none !important; }
 }

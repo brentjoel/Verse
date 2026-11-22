@@ -1,4 +1,4 @@
-import { Suspense, ViewTransition, type ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 import Link from "next/link";
 import { SiteNav } from "@/components/site-nav";
 import { BrandMark } from "@/components/brand-mark";
@@ -26,7 +26,7 @@ export function SiteShell({ children, ambient = true }: Readonly<{ children: Rea
       <DebugOverlay />
       <Suspense><SiteNav /></Suspense>
       <StorageNotice />
-      <ViewTransition default="none" enter="page-arrival" exit="page-arrival"><main id="main-content" className="site-main" tabIndex={-1}>{children}</main></ViewTransition>
+      <main id="main-content" className="site-main" tabIndex={-1}>{children}</main>
       <footer className="site-footer">
         <span>Come as you are. Take your time.</span>
         <nav aria-label="About and sources"><Link href="/about">About and privacy</Link><Link href="/craft">How it&apos;s built</Link><Link href="/accessibility">Accessibility</Link><Link href="/licenses">Sources and copyright notices</Link><ShortcutsDialog /></nav>

@@ -1,5 +1,6 @@
 "use client";
 
+import { MoreActions } from "@/components/more-actions";
 import { Sparkle } from "lucide-react";
 import { QuietDialog } from "@/components/quiet-dialog";
 import Link from "next/link";
@@ -35,6 +36,6 @@ export function DailyVerse({ verses }: { verses: Readonly<Record<string, string>
     <div className="verse-heading-row"><h3 className="verse-reference">{reference}</h3><span className="translation-tag">WEB</span></div>
     <p className="verse-text">{verses[reference]}</p>
     <p className="local-help">World English Bible, public domain. A new passage each local day. <Link href={`/compare?${new URLSearchParams({ ref: reference })}`} className="quiet-link" prefetch={false}>Read in other translations</Link></p>
-    <div className="verse-actions"><SaveVerseButton reference={reference} translationId="web" /><SpokeButton reference={reference} /><AnchorButton reference={reference} /><ShareCardControls reference={reference} /></div>
+    <div className="verse-actions"><SaveVerseButton reference={reference} translationId="web" /><SpokeButton reference={reference} /><MoreActions><AnchorButton reference={reference} /><ShareCardControls reference={reference} /></MoreActions></div>
   </div></QuietDialog></>;
 }
