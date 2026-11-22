@@ -66,7 +66,7 @@ Server logs emit only `[verselight] nlt_fallback` and `[verselight] server_error
 Launch verification is complete per owner confirmation. Keep this checklist for future deployment reviews; the historical audit evidence is in [SECURITY.md](SECURITY.md).
 
 - [ ] In project `verselight`, confirm Git repository `brentjoel/verselight`, production branch `main`, Next.js preset, repository-root directory, Node.js 24, lockfile install, and `npm run build`.
-- [ ] Confirm Git previews are enabled and find the branch deployment. Confirm its commit matches the branch under review. Keep production unchanged until approval.
+- [ ] Branch previews are off (`vercel.json` deploys `main` only, to save the free build quota). For a one-off preview, run `npx vercel` from the branch. Keep production unchanged until approval.
 - [ ] In **both Preview and Production scopes**, confirm server-only `NLT_API_KEY`, the issued-key license, and `NEXT_PUBLIC_SITE_URL` for the intended public origin. Redeploy the preview after environment changes. Never expose the NLT key through a `NEXT_PUBLIC_` name.
 - [ ] Check Domains and deployment status: confirm whether the supplied URL is stable or deployment-specific; set the intended production origin in `NEXT_PUBLIC_SITE_URL`. Check HTTPS, About's site link, and its canonical/OG URL after a build. Preview About links intentionally use the configured origin.
 - [ ] On the preview, verify NLT text, attribution, cookie persistence, Compare, and WEB. With a deliberately absent/invalid **preview-only** key, verify labeled WEB fallback and fixed warnings; restore it and redeploy. Do not load-test Tyndale or alter the production key. Automated tests cover quota/timeout/Retry-After failures.
@@ -76,4 +76,4 @@ Launch verification is complete per owner confirmation. Keep this checklist for 
 
 ## Delivery workflow
 
-Follow [AGENTS.md](../AGENTS.md). Push each branch for a Vercel preview and wait for owner approval before merging. No independent production deployment.
+Follow [AGENTS.md](../AGENTS.md). GitHub Actions is the gate for each PR; Vercel builds only `main` (production). No independent production deployment.
