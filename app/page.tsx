@@ -7,6 +7,7 @@ import { DailyVerse } from "@/components/daily-verse";
 import web from "@/data/verses/web.json";
 import { ReturnCheckIn } from "@/components/return-check-in";
 import { TimeSky } from "@/components/time-sky";
+import { FirstVisit } from "@/components/first-visit";
 import { WheelPicker } from "@/components/wheel-picker";
 
 export const metadata = { title: "Selah Sky | A moment of peace", description: "Choose a feeling and find a quiet moment with Scripture, reflection, and prayer." };
@@ -16,6 +17,7 @@ export default function Home() {
   return (
     <SiteShell ambient={false}>
       <TimeSky />
+      <FirstVisit />
       <div className="home-stage">
         <div className="home-hero">
           <h1 className="display">How is your heart today?</h1>

@@ -1,4 +1,5 @@
 import { initialTier, wheelStart } from "./constellation";
+import { INTRO_KEY, introShouldPlay } from "./motion";
 
 export type ThemeName = "dark" | "light" | "bedtime";
 export type ThemeChoice = ThemeName | "system";
@@ -26,5 +27,6 @@ export function applyThemeChoice(choice: ThemeChoice, systemLight: boolean): { t
 
 // Shared pre-paint resolution; explicit choices win over the system preference.
 // Also marks that JavaScript runs, so no-JS fallbacks can hide themselves, and how Home's
-// picker will open (data-wheel), so the List-to-wheel swap has its room before first paint.
-export const themeScript = `(function(){var d=document.documentElement.dataset,t=null,s=null;try{t=localStorage.getItem('${THEME_KEY}');s=localStorage.getItem('${TEXT_SIZE_KEY}')}catch(e){}d.theme=(${resolveTheme.toString()})(t,matchMedia('(prefers-color-scheme: light)').matches);d.themeSource=t==='light'||t==='dark'||t==='bedtime'?'stored':'system';d.textSize=(${resolveTextSize.toString()})(s);d.js='true';try{var m=matchMedia('(prefers-reduced-motion: reduce)').matches,n=navigator;d.wheel=(${wheelStart.toString()})((${initialTier.toString()})({reducedMotion:m,cores:n.hardwareConcurrency,memory:n.deviceMemory,width:innerWidth}),innerWidth)}catch(e){}})();`;
+// picker will open (data-wheel), so the List-to-wheel swap has its room before first paint,
+// and whether Home plays its one-time first-visit intro (data-intro), so nothing flashes before it.
+export const themeScript = `(function(){var d=document.documentElement.dataset,t=null,s=null;try{t=localStorage.getItem('${THEME_KEY}');s=localStorage.getItem('${TEXT_SIZE_KEY}')}catch(e){}d.theme=(${resolveTheme.toString()})(t,matchMedia('(prefers-color-scheme: light)').matches);d.themeSource=t==='light'||t==='dark'||t==='bedtime'?'stored':'system';d.textSize=(${resolveTextSize.toString()})(s);d.js='true';try{var m=matchMedia('(prefers-reduced-motion: reduce)').matches,n=navigator;d.wheel=(${wheelStart.toString()})((${initialTier.toString()})({reducedMotion:m,cores:n.hardwareConcurrency,memory:n.deviceMemory,width:innerWidth}),innerWidth)}catch(e){}try{if((${introShouldPlay.toString()})(localStorage.getItem('${INTRO_KEY}'),location.pathname,matchMedia('(prefers-reduced-motion: reduce)').matches))d.intro='play'}catch(e){}})();`;

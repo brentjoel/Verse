@@ -219,3 +219,7 @@ Loading and empty states share one shape: the constellation mark (softly twinkli
 ### UI pass 2a: Night-sky motion system (2026-11-23)
 Shared tokens (fast, base, slow, scene, stagger, a damped spring); `<main>` is its own view-transition snapshot that rises on forward routes and settles on back links, and a feeling's title travels from its row or the wheel to Results. The wheel gathers toward the chosen light, Results settles in around a readable verse, the Journal sky twinkles in and draws its lines, sheets spring, themes crossfade.
 Results: Save and This spoke to me lead with Pin, Compare and Share behind More; the ending aligns to the text edge; the dawn glow has no visible edge. Reduced motion drops every stagger and transition.
+
+### UI pass 2b: Delight and first visit (2026-11-23)
+Presses dip and spring back everywhere; the pill gathers a soft glow, one star spark and a 3px magnetic lean (mouse only); Save and This spoke to me release a small star burst in the emotion hue. A once-only first-visit intro on Home (`verselight-intro`, its own key) fades the sky in around the headline, then the picker; any input skips it, reduced motion and tests never see it.
+Motion review fixes: route pages no longer overlap or go blank, reduced-motion transitions paint one page, the journal toast waits for the dawn, the Morning star placeholder ends a Home layout shift, header tooltips sit below their button.

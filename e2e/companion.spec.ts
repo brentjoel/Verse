@@ -258,3 +258,31 @@ test.describe("verse actions", () => {
     await expect(verse.getByRole("button", { name: "Share" })).toBeVisible();
   });
 });
+
+test.describe("first visit", () => {
+  test("the sky and one line arrive first, any key skips, and the flag keeps it to once", async ({ page }) => {
+    // Opt this page back in: clear the pinned flag before the pre-paint script reads it.
+    await page.addInitScript(() => { if (!sessionStorage.getItem("intro-reset")) { localStorage.removeItem("verselight-intro"); sessionStorage.setItem("intro-reset", "1"); } });
+    await page.goto("/");
+    const root = page.locator("html");
+    await expect(root).toHaveAttribute("data-intro", "play");
+    // Never blocking: the headline is there at once and the picker is already in the page.
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect(page.getByRole("region", { name: "Choose a feeling" })).toBeAttached();
+    expect(await page.evaluate(() => localStorage.getItem("verselight-intro"))).toBe("seen");
+    await page.keyboard.press("Shift");
+    await expect(root).not.toHaveAttribute("data-intro", /.*/);
+    await page.reload();
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect(root).not.toHaveAttribute("data-intro", /.*/);
+  });
+
+  test("reduced motion never plays the intro", async ({ browser, baseURL }) => {
+    const context = await browser.newContext({ reducedMotion: "reduce", baseURL });
+    const page = await context.newPage();
+    await page.goto("/");
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect(page.locator("html")).not.toHaveAttribute("data-intro", /.*/);
+    await context.close();
+  });
+});
