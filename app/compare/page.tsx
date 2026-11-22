@@ -15,7 +15,7 @@ type Query = Record<string, string | string[] | undefined>;
 // Blocking on purpose: the passages arrive in the first HTML, so Compare reads without JavaScript.
 export const instant = false;
 
-export const metadata = { title: "Compare Scripture | Verselight", description: "Read Scripture side by side in two to four translations, with source credits and room to reflect." };
+export const metadata = { title: "Compare Scripture | Selah Sky", description: "Read Scripture side by side in two to four translations, with source credits and room to reflect." };
 
 export default function ComparePage({ searchParams }: { searchParams: Promise<Query> }) {
   return <SiteShell><Comparison searchParams={searchParams} /></SiteShell>;

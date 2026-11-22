@@ -1,4 +1,4 @@
-/* Verselight offline reading. Caches the app shell and public-domain pages only.
+/* Selah Sky offline reading. Caches the app shell and public-domain pages only.
  * Never caches Results (/emotions/<feeling>/<sub>), Compare or Share, which can carry NLT text.
  * No notifications, no push, no analytics. */
 "use strict";

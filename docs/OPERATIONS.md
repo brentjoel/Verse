@@ -1,6 +1,6 @@
 # Operations
 
-Deployment, maintenance and delivery reference for Verselight. See the [project overview](../README.md).
+Deployment, maintenance and delivery reference for Selah Sky. See the [project overview](../README.md).
 
 ## Local setup
 

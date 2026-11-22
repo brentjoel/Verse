@@ -2,8 +2,8 @@ import Link from "next/link";
 import { SiteShell } from "@/components/site-shell";
 import { siteUrl } from "@/lib/site-url";
 
-const title = "How it's built | Verselight";
-const description = "The engineering behind Verselight: local-first data, a WebGL wheel with quality tiers, licensed Scripture handled server-side, and the checks that keep it fast.";
+const title = "How it's built | Selah Sky";
+const description = "The engineering behind Selah Sky: local-first data, a WebGL wheel with quality tiers, licensed Scripture handled server-side, and the checks that keep it fast.";
 
 export const metadata = {
   title,
@@ -24,7 +24,7 @@ export default function CraftPage() {
     <div className="results-wrap license-copy">
       <Link href="/" className="back-link">&#8592; Home</Link>
       <h1>How it&apos;s built</h1>
-      <p>Verselight is a small app with a few hard rules: your notes never leave your browser, licensed Scripture is never stored, and the page stays fast on a modest phone. This is how those rules shaped the code.</p>
+      <p>Selah Sky is a small app with a few hard rules: your notes never leave your browser, licensed Scripture is never stored, and the page stays fast on a modest phone. This is how those rules shaped the code.</p>
 
       <section aria-labelledby="numbers">
         <h2 id="numbers">Real numbers</h2>

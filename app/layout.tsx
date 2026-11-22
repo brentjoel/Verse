@@ -10,15 +10,15 @@ const lora = Lora({ subsets: ["latin"], variable: "--font-lora", display: "swap"
 
 export const metadata: Metadata = {
   metadataBase: siteUrl,
-  title: "Verselight | A moment of peace",
+  title: "Selah Sky | A moment of peace",
   description: "A quiet place for Scripture, reflection, and prayer, wherever your day finds you.",
   openGraph: {
-    siteName: "Verselight",
-    title: "Verselight | A moment of peace",
+    siteName: "Selah Sky",
+    title: "Selah Sky | A moment of peace",
     description: "A quiet place for Scripture, reflection, and prayer.",
     type: "website",
   },
-  twitter: { card: "summary_large_image", title: "Verselight | A moment of peace", description: "A little light for wherever you are." },
+  twitter: { card: "summary_large_image", title: "Selah Sky | A moment of peace", description: "A little light for wherever you are." },
 };
 
 export const viewport: Viewport = {

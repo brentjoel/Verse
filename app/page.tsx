@@ -9,7 +9,7 @@ import { ReturnCheckIn } from "@/components/return-check-in";
 import { TimeSky } from "@/components/time-sky";
 import { WheelPicker } from "@/components/wheel-picker";
 
-export const metadata = { title: "Verselight | A moment of peace", description: "Choose a feeling and find a quiet moment with Scripture, reflection, and prayer." };
+export const metadata = { title: "Selah Sky | A moment of peace", description: "Choose a feeling and find a quiet moment with Scripture, reflection, and prayer." };
 
 export default function Home() {
   const emotions = getAllEmotions();

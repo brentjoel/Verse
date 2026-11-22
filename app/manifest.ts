@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Verselight", short_name: "Verselight",
+    name: "Selah Sky", short_name: "Selah Sky",
     description: "A quiet place for Scripture, reflection, and prayer.",
     start_url: "/", display: "browser", background_color: "#000000", theme_color: "#000000",
     icons: [

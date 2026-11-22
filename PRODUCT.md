@@ -27,7 +27,7 @@ Mobile-first web app on Vercel (https://verselight-app.vercel.app). Visits are s
 - Project 2 (planned): night sky journal, Breathe, focus reading mode, sky share card, prayer list, time-of-day sky, saved intensity. It absorbs the old optional Steps 10 and 11.
 
 ## Brand Commitments
-- Name: Verselight. Mark: a four-point star inside an open ring, violet to teal, with an amber spark (Constellation redesign, 2026-11-20).
+- Name: Selah Sky (renamed from Verselight on 2026-11-23; "selah" is the Psalms' pause, "sky" the constellation world). Internal `verselight-*` storage keys, the translation cookie and the backup format keep the old name so visitors keep their data; the repository and the Vercel URL are unchanged. Mark: a four-point star inside an open ring, violet to teal, with an amber spark (Constellation redesign, 2026-11-20).
 - Voice: warm, plain, gentle copy. No em dashes in app text. Never guilt or pressure (for example about streaks or time away).
 - Imagery limited to light, stars and wheels; no faces, angels, figures or denomination-specific symbols.
 - Visual system lives in `docs/DESIGN.md`: the Constellation world (void canvas, light display type, violet actions, amber spark, emotion-colored particles).
