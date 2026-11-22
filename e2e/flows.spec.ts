@@ -142,6 +142,9 @@ test.describe("without JavaScript", () => {
     await expect(page.locator(".verse-text").first()).toBeVisible();
     await expect(page.locator(".verse-text")).toHaveCount(4);
     await expect(page.getByText("Finding your verses")).toHaveCount(0);
+    // Controls that need the device stay out of the way; links and Reflect still work.
+    await expect(page.getByRole("button", { name: /Pin|Share|This spoke to me|Focus|Save|Opening/ })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: /Compare translations/ }).first()).toBeVisible();
     await page.goto("/compare?ref=Psalm%2061%3A2");
     await expect(page.locator(".compare-card .verse-text").first()).toBeVisible();
     await expect(page.getByRole("button", { name: "Update comparison" })).toBeVisible();
