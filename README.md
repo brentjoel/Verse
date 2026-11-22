@@ -16,7 +16,8 @@ Built with Next.js 16, React 19, strict TypeScript, Tailwind CSS 4, Three.js and
 - **Verse first:** the passage, its attribution and the pager fit the first phone screen, with a small particle dawn in the emotion's hue. Tap to finish the reveal.
 - **Five translations:** NLT, KJV, WEB, ASV and BSB, with live side-by-side comparison.
 - **Private by design:** saved verses, collections and a mood journal live in your browser, with local JSON backups and a one-tap Undo.
-- **Night and Daylight** themes, adjustable text size, and WEB share cards through your phone's share sheet.
+- **Companion:** an anchor verse, letters to your future self, seven-day paths, a prayer list, an optional journal passcode, a Year in light recap, a breathing guide and an on-device feeling finder.
+- **Night, Daylight and Bedtime** themes, adjustable text size, offline reading of public-domain text, and WEB share cards through your phone's share sheet.
 
 ![Constellation wheel in Night](docs/screenshots/wheel-dark.png)
 

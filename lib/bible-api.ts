@@ -24,7 +24,7 @@ function text(node: Node): string {
   return "childNodes" in node ? node.childNodes.map(text).join("") : "";
 }
 
-export function referenceParts(reference: string) {
+function referenceParts(reference: string) {
   const match = reference.match(/^(.+) ([1-9]\d*):([1-9]\d*)(?:-([1-9]\d*))?$/);
   if (!match) throw new Error("Invalid passage reference.");
   const first = Number(match[3]);
