@@ -4,7 +4,7 @@ Redesign of 2026-11-20. It replaces the night-and-gold world. Light on a void: p
 
 ## Tokens
 
-All tokens live in [app/styles/tokens.css](../app/styles/tokens.css). Night is the default; Daylight is `[data-theme="light"]` and declares `color-scheme: only light`. Bedtime is `[data-theme="bedtime"]`: canvas `#0d0805`, warm dim ink (`#e6d3bc`, `#bba58e`, `#a08b75`), amber spark `#d9a45a`, and a softened lavender action `#9a78b5` with dark `--on-action`. It keeps Night's particle hues and passes the same AA contrast tests.
+All tokens live in [app/styles/tokens.css](../app/styles/tokens.css). Night is the default; Daylight is `[data-theme="light"]` and declares `color-scheme: only light`. Bedtime is `[data-theme="bedtime"]`: canvas `#0d0805`, warm dim ink (`#e6d3bc`, `#bba58e`, `#a08b75`), amber spark `#d9a45a`, and a softened lavender action `#9a78b5` with dark `--on-action`. It has its own warm-shifted emotion hues (low blue, still distinct) and passes the same AA contrast tests.
 
 | Token | Night | Daylight | Role |
 | --- | --- | --- | --- |
