@@ -1,4 +1,4 @@
-# Verselight
+# Selah Sky
 
 Emotion-based Scripture, reflection, and prayer for the feeling you bring today.
 

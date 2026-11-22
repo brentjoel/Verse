@@ -45,7 +45,7 @@ export interface Backup { format: "verselight-backup"; schemaVersion: 2; exporte
 
 export const KNOWN_REFERENCES: ReadonlySet<string> = new Set(emotions.flatMap(e => e.specifics.flatMap(s => s.references)));
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-export function requireValid(condition: unknown, message = "This data is not a supported Verselight backup."): asserts condition {
+export function requireValid(condition: unknown, message = "This data is not a supported Selah Sky backup."): asserts condition {
   if (!condition) throw new Error(message);
 }
 export function object(value: unknown, required: string[], optional: string[] = []): Record<string, unknown> {

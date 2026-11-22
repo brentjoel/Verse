@@ -28,7 +28,7 @@ export const instant = false;
 export async function generateMetadata({ params }: { params: Promise<{ emotion: string; sub: string }> }) {
   const { emotion, sub } = await params;
   const feeling = getSpecificEmotionByIds(emotion, sub);
-  return { title: `${feeling?.name ?? "A moment to reflect"} | Verselight`, description: "Take your time with four curated Scripture passages, a reflection question and a prayer starter." };
+  return { title: `${feeling?.name ?? "A moment to reflect"} | Selah Sky`, description: "Take your time with four curated Scripture passages, a reflection question and a prayer starter." };
 }
 
 export function generateStaticParams() {

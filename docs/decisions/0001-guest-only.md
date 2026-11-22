@@ -3,7 +3,7 @@
 Status: accepted (2026-11)
 
 ## Decision
-Everyone uses Verselight as a guest. There is no sign-up, no sign-in and no server-side user record.
+Everyone uses Selah Sky as a guest. There is no sign-up, no sign-in and no server-side user record.
 
 ## Why
 - Journal notes and feelings are some of the most private things a person writes. The safest copy is the one that does not exist on a server.

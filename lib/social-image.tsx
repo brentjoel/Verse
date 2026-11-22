@@ -17,9 +17,9 @@ export async function socialImage(feeling?: { id: string; name: string; descript
         return <div key={n} style={{ display: "flex", position: "absolute", left: 600 + Math.sin(angle) * radius, top: 315 - Math.cos(angle) * radius, width: 4 + index % 3, height: 4 + index % 3, borderRadius: 99, background: color, opacity: .45 + (index % 4) * .15 }} />;
       })}
       <div style={{ display: "flex", marginBottom: 28 }}><BrandMark size={96} /></div>
-      <div style={{ display: "flex", fontSize: 96, letterSpacing: -4, color: hue ?? "#ffffff" }}>{feeling ? feeling.name : "Verselight"}</div>
+      <div style={{ display: "flex", fontSize: 96, letterSpacing: -4, color: hue ?? "#ffffff" }}>{feeling ? feeling.name : "Selah Sky"}</div>
       <div style={{ display: "flex", fontSize: 30, color: "#bdbdbd", marginTop: 20 }}>{feeling ? `${feeling.description}.` : "A little light for wherever you are."}</div>
-      {feeling && <div style={{ display: "flex", fontSize: 24, color: "#8a8a8a", marginTop: 18 }}>Verselight</div>}
+      {feeling && <div style={{ display: "flex", fontSize: 24, color: "#8a8a8a", marginTop: 18 }}>Selah Sky</div>}
     </div>,
     { width: 1200, height: 630, fonts: [await brandFont()] },
   );

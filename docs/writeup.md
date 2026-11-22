@@ -1,10 +1,10 @@
-# Building Verselight: a quiet app with hard rules
+# Building Selah Sky: a quiet app with hard rules
 
 Draft for the owner. Not published anywhere. Edit freely; every number below comes from the repo.
 
 ## The idea
 
-Verselight is a small web app for the moment you do not know what to say to God. You pick a feeling, and it offers Scripture, a reflection question and a short prayer starter. Everyone is a guest. There are no accounts, no ads and no tracking, and it is strictly noncommercial.
+Selah Sky is a small web app for the moment you do not know what to say to God. You pick a feeling, and it offers Scripture, a reflection question and a short prayer starter. Everyone is a guest. There are no accounts, no ads and no tracking, and it is strictly noncommercial.
 
 Those constraints turned out to be the interesting part. Most of the engineering is about what the app refuses to do.
 

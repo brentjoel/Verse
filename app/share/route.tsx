@@ -33,7 +33,7 @@ async function renderCard(reference: string) {
       <div style={{ display: "flex", position: "absolute", top: -36, right: -36, width: 220, height: 220 }}>
         {ring.map((dot, index) => <div key={index} style={{ display: "flex", position: "absolute", left: dot.x, top: dot.y, width: dot.size, height: dot.size, borderRadius: 99, background: hue, opacity: dot.alpha }} />)}
       </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 14, fontSize: 26, fontFamily: "sans-serif", color: "#ffffff" }}><BrandMark size={40} />Verselight</div>
+      <div style={{ display: "flex", alignItems: "center", gap: 14, fontSize: 26, fontFamily: "sans-serif", color: "#ffffff" }}><BrandMark size={40} />Selah Sky</div>
       <div style={{ display: "flex", flexDirection: "column", marginTop: 40, marginBottom: 40 }}>
         <div style={{ display: "flex", fontSize: 24, letterSpacing: 4, color: "#ffb829", fontFamily: "sans-serif", marginBottom: 28 }}>{reference.toUpperCase()}</div>
         <div style={{ display: "flex", fontSize: 40, lineHeight: 1.45, whiteSpace: "pre-wrap" }}>{text}</div>
@@ -48,13 +48,13 @@ async function renderCard(reference: string) {
 
 export async function GET(request: Request) {
   const reference = parseShareReference(new URL(request.url).searchParams, Object.keys(verses));
-  if (!reference) return new Response("Choose a known reference and WEB translation. Return to Verselight to try again.", { status: 400, headers });
+  if (!reference) return new Response("Choose a known reference and WEB translation. Return to Selah Sky to try again.", { status: 400, headers });
   try {
     return new Response(await renderCard(reference), { headers: {
       ...headers, "Content-Type": "image/png",
       "Cache-Control": "public, max-age=86400, s-maxage=2592000, stale-while-revalidate=86400",
     } });
   } catch {
-    return new Response("The card could not be prepared. Please return to Verselight and try again.", { status: 503, headers });
+    return new Response("The card could not be prepared. Please return to Selah Sky and try again.", { status: 503, headers });
   }
 }

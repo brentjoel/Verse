@@ -49,7 +49,7 @@ async function drawCard(sky: NightSky, month: string, verse: GraceVerse): Promis
   for (const line of verseLines) { ctx.fillText(line, pad, y); y += 50; }
   ctx.fillStyle = "#bdbdbd"; ctx.font = `26px ${serif}`;
   ctx.fillText(`${verse.reference} (World English Bible, public domain)`, pad, y + 20);
-  ctx.fillStyle = "#8a8a8a"; ctx.fillText("Verselight", pad, height - 50);
+  ctx.fillStyle = "#8a8a8a"; ctx.fillText("Selah Sky", pad, height - 50);
   return new Promise((resolve, reject) => canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error("No image.")), "image/png"));
 }
 
@@ -62,7 +62,7 @@ export function SkyCardButton({ sky, month, verse }: { sky: NightSky; month: str
       const blob = await drawCard(sky, month, verse);
       const name = `verselight-sky-${month.replace(/\s+/g, "-").toLowerCase()}.png`;
       const file = new File([blob], name, { type: "image/png" });
-      if (navigator.canShare?.({ files: [file] })) { await navigator.share({ files: [file], title: `Verselight sky, ${month}` }); setMessage("Shared."); }
+      if (navigator.canShare?.({ files: [file] })) { await navigator.share({ files: [file], title: `Selah Sky, ${month}` }); setMessage("Shared."); }
       else {
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
