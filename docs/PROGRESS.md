@@ -197,6 +197,9 @@ Audit of /not-sure (both result states), Home first paint and no-JS Results and 
 ### Vercel builds main only (2026-11-21)
 The free plan's daily build limit stalled Phase E, so `vercel.json` turns off branch previews; GitHub Actions stays the PR gate and Vercel builds production from `main` only.
 
+### Bedtime emotion hues (2026-11-23)
+Bedtime now has its own warm-shifted emotion hues for the particles and dots (sage, plum, coral, copper, teal-green, yellow, amber, rose), lower in blue than Night. Tests check 4.5:1 on the Bedtime canvas, low blue, and a minimum distance between every pair; violet stays the only action color.
+
 ### Docs and code health (2026-11-23)
 AGENTS, ARCHITECTURE (new pages, schema 2, offline, finder), README and this file brought current. Removed unused CSS selectors, `EmotionIcon`, `lib/utils.ts`, the `cn` dependency and a few needless exports. Build output: JS 1,551,142 to 1,551,131 bytes, CSS 78,426 to 77,735.
 

@@ -99,6 +99,26 @@ test('emotion hues are visible as dots and particles in both themes', () => {
   }
 });
 
+test('bedtime hues are warm, readable, distinct, and follow the stylesheet', () => {
+  const entries = Object.entries(emotionHues);
+  const lab = (c) => { const [r, g, b] = c.map(v => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; });
+    const f = (t) => t > .008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116;
+    const x = f((.4124 * r + .3576 * g + .1805 * b) / .95047), y = f(.2126 * r + .7152 * g + .0722 * b), z = f((.0193 * r + .1192 * g + .9505 * b) / 1.08883);
+    return [116 * y - 16, 500 * (x - y), 200 * (y - z)]; };
+  let blueNight = 0, blueBed = 0;
+  for (const [id, { night: n, bedtime: b }] of entries) {
+    aa(rgb(b), rgb(bedtime['--canvas']), 4.5, `bedtime ${id}`);
+    assert.match(css, new RegExp(`\\[data-theme="bedtime"\\] \\[data-emotion="${id}"\\], :root\\[data-theme="bedtime"\\]\\[data-emotion="${id}"\\] \\{ --emotion: ${b}; \\}`));
+    assert.ok(rgb(b)[2] <= 180, `bedtime ${id} stays low in blue`);
+    blueNight += rgb(n)[2]; blueBed += rgb(b)[2];
+  }
+  assert.ok(blueBed < blueNight * .8, 'bedtime hues carry clearly less blue than Night');
+  for (let i = 0; i < entries.length; i++) for (let j = i + 1; j < entries.length; j++) {
+    const d = Math.hypot(...lab(rgb(entries[i][1].bedtime)).map((v, k) => v - lab(rgb(entries[j][1].bedtime))[k]));
+    assert.ok(d >= 15, `${entries[i][0]} and ${entries[j][0]} stay distinct at bedtime (${d.toFixed(1)})`);
+  }
+});
+
 test('animated components only read color tokens the stylesheet defines', () => {
   const source = readFileSync(new URL('../components/dawn-reveal.tsx', import.meta.url), 'utf8');
   const used = [...source.matchAll(/getPropertyValue\("(--[\w-]+)"\)/g)].map(m => m[1]);

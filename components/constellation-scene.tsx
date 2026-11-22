@@ -158,10 +158,13 @@ export default function ConstellationScene(props: Props) {
     scene.add(points);
 
     let daylight = false;
+    let tone: "night" | "day" | "bedtime" = "night";
     const syncTheme = () => {
-      daylight = document.documentElement.dataset.theme === "light";
+      const theme = document.documentElement.dataset.theme;
+      daylight = theme === "light";
+      tone = daylight ? "day" : theme === "bedtime" ? "bedtime" : "night";
       const order = target.current.order;
-      for (let i = 0; i < SECTORS; i++) colors[i].set(emotionHues[order[i]]?.[daylight ? "day" : "night"] ?? "#ffffff");
+      for (let i = 0; i < SECTORS; i++) colors[i].set(emotionHues[order[i]]?.[tone] ?? "#ffffff");
       material.blending = daylight ? THREE.NormalBlending : THREE.AdditiveBlending;
       uniforms.uDaylight.value = daylight ? 1 : 0;
       material.needsUpdate = true;
@@ -227,7 +230,7 @@ export default function ConstellationScene(props: Props) {
         uniforms.uSelect.value[i] += ((i === t.selected ? 1 : 0) - uniforms.uSelect.value[i]) * ease;
         uniforms.uLean.value[i] += ((t.lean?.[i] ?? 0) - uniforms.uLean.value[i]) * ease;
       }
-      const hue = emotionHues[t.order[t.selected]]?.[daylight ? "day" : "night"];
+      const hue = emotionHues[t.order[t.selected]]?.[tone];
       if (hue) uniforms.uInnerColor.value.set(hue);
       points.rotation.x += (tilt.x - points.rotation.x) * ease;
       points.rotation.y += (tilt.y - points.rotation.y) * ease;
