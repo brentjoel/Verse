@@ -122,3 +122,11 @@
 [data-theme="light"] [data-emotion="grateful"], :root[data-theme="light"][data-emotion="grateful"] { --emotion: #9a7a00; }
 [data-theme="light"] [data-emotion="hopeful"], :root[data-theme="light"][data-emotion="hopeful"] { --emotion: #a35f00; }
 [data-theme="light"] [data-emotion="doubtful"], :root[data-theme="light"][data-emotion="doubtful"] { --emotion: #b8357a; }
+[data-theme="bedtime"] [data-emotion="anxious"], :root[data-theme="bedtime"][data-emotion="anxious"] { --emotion: #8fbf7a; }
+[data-theme="bedtime"] [data-emotion="sad"], :root[data-theme="bedtime"][data-emotion="sad"] { --emotion: #9c76b0; }
+[data-theme="bedtime"] [data-emotion="angry"], :root[data-theme="bedtime"][data-emotion="angry"] { --emotion: #ec6a5c; }
+[data-theme="bedtime"] [data-emotion="tired"], :root[data-theme="bedtime"][data-emotion="tired"] { --emotion: #c0825a; }
+[data-theme="bedtime"] [data-emotion="guilty"], :root[data-theme="bedtime"][data-emotion="guilty"] { --emotion: #5fb59a; }
+[data-theme="bedtime"] [data-emotion="grateful"], :root[data-theme="bedtime"][data-emotion="grateful"] { --emotion: #e0cf5a; }
+[data-theme="bedtime"] [data-emotion="hopeful"], :root[data-theme="bedtime"][data-emotion="hopeful"] { --emotion: #f2b84a; }
+[data-theme="bedtime"] [data-emotion="doubtful"], :root[data-theme="bedtime"][data-emotion="doubtful"] { --emotion: #eb98a4; }

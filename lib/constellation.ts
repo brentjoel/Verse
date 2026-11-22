@@ -1,15 +1,15 @@
 // Visual identity and rendering decisions for the constellation wheel. Pure, so it stays testable.
 // Labels, order and routes always come from data/emotions.json.
 
-export const emotionHues: Readonly<Record<string, { night: string; day: string }>> = {
-  anxious: { night: "#2dd4bf", day: "#0f8f80" },
-  sad: { night: "#4f8cff", day: "#2457c5" },
-  angry: { night: "#ff5a5f", day: "#c62f35" },
-  tired: { night: "#a78bfa", day: "#6d4fd6" },
-  guilty: { night: "#22d3ee", day: "#0e7f93" },
-  grateful: { night: "#facc15", day: "#9a7a00" },
-  hopeful: { night: "#ffb829", day: "#a35f00" },
-  doubtful: { night: "#f472b6", day: "#b8357a" },
+export const emotionHues: Readonly<Record<string, { night: string; day: string; bedtime: string }>> = {
+  anxious: { night: "#2dd4bf", day: "#0f8f80", bedtime: "#8fbf7a" },
+  sad: { night: "#4f8cff", day: "#2457c5", bedtime: "#9c76b0" },
+  angry: { night: "#ff5a5f", day: "#c62f35", bedtime: "#ec6a5c" },
+  tired: { night: "#a78bfa", day: "#6d4fd6", bedtime: "#c0825a" },
+  guilty: { night: "#22d3ee", day: "#0e7f93", bedtime: "#5fb59a" },
+  grateful: { night: "#facc15", day: "#9a7a00", bedtime: "#e0cf5a" },
+  hopeful: { night: "#ffb829", day: "#a35f00", bedtime: "#f2b84a" },
+  doubtful: { night: "#f472b6", day: "#b8357a", bedtime: "#eb98a4" },
 };
 
 export type QualityTier = "high" | "medium" | "low" | "list";
