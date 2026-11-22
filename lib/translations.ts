@@ -8,7 +8,7 @@ export const translations = [
 
 export type Translation = (typeof translations)[number];
 export type TranslationId = Translation["id"];
-export const defaultTranslation: TranslationId = "nlt";
+const defaultTranslation: TranslationId = "nlt";
 export const fallbackTranslation = "web";
 export type StaticTranslationId = "kjv" | "web" | "asv" | "bsb";
 

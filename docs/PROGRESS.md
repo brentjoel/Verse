@@ -1,14 +1,12 @@
 # Progress
 
-Live: Steps 1 to 9 (picker, translations, Compare, storage, journal, share cards, launch checks, wheel, dawn), motion polish, security audit and CI checks. Older detail is in git history.
+Live: Steps 1 to 9, the Constellation redesign and roadmap Phases A to E. Older detail is in git history.
 
 ## Now
 
-- The roadmap (Phases A to E) is complete and merged. What is left is for the owner: real-device fps on their phones, a screen-reader pass, a custom domain if wanted, and publishing the write-up.
+- The roadmap (Phases A to E) is complete and merged. Nothing is queued; open items below are the owner's.
 
-## Roadmap (owner decision 2026-11-21: ship all, one session per phase, auto-merge on green CI)
-
-Each phase runs in its own session, as small PRs merged when every CI check passes. It ends with `/impeccable audit` on the phase's UI, and the material fixes go in a final PR. Check items off here as they merge.
+## Roadmap (complete; owner decision 2026-11-21)
 
 **Phase A: quick wins**
 - [x] Crisis resources: a quiet help link on Sad, Anxious, Doubtful and Tired results (international directory, local emergency number first)
@@ -46,8 +44,6 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 - [x] Project 3: on-device AI feeling finder (suggests feelings, never generates Scripture, never trains on NLT; rules out NIV's no-AI license)
 - [x] Performance pass (real-device fps stays an open item): skip the first ~500 ms of the fps probe, reserve space for the List-to-wheel swap, no-JS Results and Compare, real-device fps
 
-**Owner actions:** buy a custom domain if wanted; publish the write-up (drafted in `docs/writeup.md` during Phase B).
-
 ## Active decisions
 
 - Everyone is a guest; personal data stays in the browser. The translation cookie is the only documented exception. Strictly noncommercial.
@@ -64,6 +60,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 
 - Real-device 60fps on mid-range Android and iPhone not measured (needs the owner's devices).
 - Screen-reader pass not done.
+- Owner actions: a custom domain if wanted; publish the write-up (`docs/writeup.md`).
 
 ## Gotchas
 
@@ -199,6 +196,9 @@ Audit of /not-sure (both result states), Home first paint and no-JS Results and 
 
 ### Vercel builds main only (2026-11-21)
 The free plan's daily build limit stalled Phase E, so `vercel.json` turns off branch previews; GitHub Actions stays the PR gate and Vercel builds production from `main` only.
+
+### Docs and code health (2026-11-23)
+AGENTS, ARCHITECTURE (new pages, schema 2, offline, finder), README and this file brought current. Removed unused CSS selectors, `EmotionIcon`, `lib/utils.ts`, the `cn` dependency and a few needless exports. Build output: JS 1,551,142 to 1,551,131 bytes, CSS 78,426 to 77,735.
 
 ### Prompt review (2026-11-23)
 Reviewed the 127 drafted prompts for the passages added in "More verses with daily rotation" against their WEB text and feeling. Rewrote 46 (mostly prayers that recited the verse, plus a few that pressed or over-promised); the table and a short "consider swapping" list are in `docs/prompt-review.md`.

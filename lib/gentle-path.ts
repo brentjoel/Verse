@@ -1,7 +1,7 @@
 import { shiftDate, validLocalDate } from "./streaks";
 
 export const PATH_KEY = "verselight-path";
-export const PATH_DAYS = 7;
+const PATH_DAYS = 7;
 
 export interface ActivePath { emotionId: string; specificId: string; startedOn: string }
 

@@ -7,9 +7,9 @@ import { parsePrayers, type Prayer } from "./prayers";
  * (reflection notes, letters, prayers) is sealed into `lock.data`. Nothing is sent anywhere.
  * There is no recovery: without the passcode the sealed text cannot be read.
  */
-export const LOCK_ITERATIONS = 600_000;
+const LOCK_ITERATIONS = 600_000;
 export const MIN_PASSCODE_LENGTH = 6;
-export const MAX_SEALED_LENGTH = 7_000_000; // Base64 of the 5 MiB data limit, with room to spare.
+const MAX_SEALED_LENGTH = 7_000_000; // Base64 of the 5 MiB data limit, with room to spare.
 
 export interface JournalLock { version: 1; salt: string; iterations: number; iv: string; data: string }
 /** The private text held inside the lock. Notes are keyed by reflection id. */
@@ -42,7 +42,7 @@ export function validLock(value: unknown): value is JournalLock {
     && typeof data === "string" && data.length > 0 && data.length <= MAX_SEALED_LENGTH && BASE64.test(data);
 }
 
-export async function deriveKey(passcode: string, salt: string, iterations: number): Promise<CryptoKey> {
+async function deriveKey(passcode: string, salt: string, iterations: number): Promise<CryptoKey> {
   const material = await crypto.subtle.importKey("raw", new TextEncoder().encode(passcode), "PBKDF2", false, ["deriveKey"]);
   return crypto.subtle.deriveKey({ name: "PBKDF2", hash: "SHA-256", salt: fromBase64(salt), iterations }, material, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]);
 }
@@ -63,7 +63,7 @@ export async function seal(secret: JournalSecret, lockKey: LockKey): Promise<Jou
 }
 
 /** Opens with a key already held. Throws when the key does not fit or the content is not a valid secret. */
-export async function openWithKey(lock: JournalLock, lockKey: LockKey): Promise<JournalSecret> {
+async function openWithKey(lock: JournalLock, lockKey: LockKey): Promise<JournalSecret> {
   const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: fromBase64(lock.iv) }, lockKey.key, fromBase64(lock.data));
   return parseSecret(JSON.parse(new TextDecoder().decode(plain)) as unknown);
 }
