@@ -85,7 +85,7 @@ async function ResultsContent({ emotion, specific, searchParams }: { emotion: Em
                       {prompt ? <>
                         <div><h3 className="prompt-label">A question to sit with</h3><p className="reflect-copy">{prompt.reflect}</p></div>
                         <div className="prayer-block"><h3 className="prompt-label">A prayer to begin</h3><p className="prayer-copy">{prompt.prayer}</p></div>
-                      </> : <p className="text-sm leading-7 text-muted-foreground">The reflection for this reference is unavailable right now. You can still bring what is on your heart to God.</p>}
+                      </> : <p className="reflect-copy">The reflection for this reference is unavailable right now. You can still bring what is on your heart to God.</p>}
                     </details>
                   </article></DawnReveal>
                 );
