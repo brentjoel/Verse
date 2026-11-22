@@ -415,7 +415,7 @@
 .night-star > span { width: 6px; height: 6px; border-radius: 50%; background: var(--emotion); box-shadow: 0 0 10px 2px color-mix(in srgb, var(--emotion) 55%, transparent); transition: transform var(--motion-fast) var(--ease-out); }
 .night-star[data-level="2"] > span { width: 9px; height: 9px; }
 .night-star[data-level="3"] > span { width: 12px; height: 12px; box-shadow: 0 0 16px 4px color-mix(in srgb, var(--emotion) 60%, transparent); }
-.night-star:hover > span { transform: scale(1.35); }
+@media (hover: hover) and (pointer: fine) { .night-star:hover > span { transform: scale(1.35); } }
 .night-star[aria-pressed="true"] { box-shadow: inset 0 0 0 1.5px var(--ink); }
 .night-empty { position: absolute; inset: auto var(--space-3) var(--space-3); color: var(--ink-3); font-size: var(--text-callout); text-align: center; }
 .night-grace { margin: var(--space-3) 0; max-width: 62ch; padding-left: var(--space-2); border-left: 1px solid var(--hairline); }

@@ -223,3 +223,6 @@ Results: Save and This spoke to me lead with Pin, Compare and Share behind More;
 ### UI pass 2b: Delight and first visit (2026-11-23)
 Presses dip and spring back everywhere; the pill gathers a soft glow, one star spark and a 3px magnetic lean (mouse only); Save and This spoke to me release a small star burst in the emotion hue. A once-only first-visit intro on Home (`verselight-intro`, its own key) fades the sky in around the headline, then the picker; any input skips it, reduced motion and tests never see it.
 Motion review fixes: route pages no longer overlap or go blank, reduced-motion transitions paint one page, the journal toast waits for the dawn, the Morning star placeholder ends a Home layout shift, header tooltips sit below their button.
+
+### UI pass 2c: Final audit and motion docs (2026-11-23)
+Impeccable audit 19/20: the phone toast floats over the header instead of the back link, wheel turns no longer vibrate (haptics are out of scope), Journal star hover is fine-pointer only. `docs/DESIGN.md` documents the motion system; after-pass-2 shots are in `docs/screenshots/ui-pass/after2-*`.
