@@ -4,13 +4,11 @@ Live: Steps 1 to 9 (picker, translations, Compare, storage, journal, share cards
 
 ## Now
 
-- Project 2: night sky journal (PR #10), focus reading (PR #11) and Breathe (PR #12) merged. More verses with daily rotation on `feat/more-verses`.
+- The roadmap (Phases A to E) is complete and merged. What is left is for the owner: real-device fps on their phones, a screen-reader pass, a custom domain if wanted, and publishing the write-up.
 
 ## Roadmap (owner decision 2026-11-21: ship all, one session per phase, auto-merge on green CI)
 
 Each phase runs in its own session, as small PRs merged when every CI check passes. It ends with `/impeccable audit` on the phase's UI, and the material fixes go in a final PR. Check items off here as they merge.
-
-**In flight:** return check-in ("How is your heart now?"), branch `feat/return-check-in`.
 
 **Phase A: quick wins**
 - [x] Crisis resources: a quiet help link on Sad, Anxious, Doubtful and Tired results (international directory, local emergency number first)
@@ -195,3 +193,6 @@ Audit of Journal (prayers, passcode, lock screen, reflection line), Home check-i
 
 ### Performance pass (2026-11-21)
 The fps probe skips its first 500 ms (pure `stepProbe`). The pre-paint script marks how Home's picker opens (`data-wheel`), so CSS holds the wheel's footprint and the phone peek from first paint; Home CLS is now 0 at phone and desktop. Results and Compare render passages in the first HTML (`instant = false`, no Suspense), so they read without JavaScript.
+
+### Phase E audit (2026-11-21)
+Audit of /not-sure (both result states), Home first paint and no-JS Results and Compare: axe clean in dark and light at default and larger text, no overflow at 320px, Home CLS 0. Fixed: without JavaScript, Save, mark, Pin, Share and Focus no longer show as dead buttons; the word finder drops a live region that doubled the focused heading. Not run: the detector (browser would not launch here), a screen-reader pass.
