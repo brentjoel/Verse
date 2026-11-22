@@ -1,6 +1,6 @@
 # Progress
 
-Live: Steps 1 to 9, the Constellation redesign and roadmap Phases A to E. Older detail is in git history.
+Name: Selah Sky (formerly Verselight; internal keys keep `verselight-*`). Live: Steps 1 to 9, the Constellation redesign and roadmap Phases A to E. Older detail is in git history.
 
 ## Now
 
@@ -209,3 +209,6 @@ Reviewed the 127 drafted prompts for the passages added in "More verses with dai
 ### UI pass 1: Tighten Constellation (2026-11-23)
 One token type scale (iOS steps) and two weights, body at 400; amber only on the Scripture reference; hairline rows replace the cards on path, finder, check-in, anchor and craft.
 Home: Morning star and Not sure share one quiet row, a compact constellation row puts feelings above the fold on phones, wheel chips sit 4 by 4. New theme tests enforce the scale and the amber rule.
+
+### Rename to Selah Sky (2026-11-23)
+Every user-facing name (titles, metadata, manifest, wordmark, OG images, share and sky cards, print journal, README, docs) now says Selah Sky. Storage keys, the cookie, the backup format, repo and Vercel URL keep `verselight`.

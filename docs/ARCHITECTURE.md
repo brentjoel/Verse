@@ -1,4 +1,4 @@
-# Verselight architecture
+# Selah Sky architecture
 
 Current-state map. History lives in git; this file says how things work now.
 

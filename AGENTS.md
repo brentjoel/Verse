@@ -1,4 +1,6 @@
-# Verselight
+# Selah Sky
+
+Renamed from Verselight (2026-11-23). Keep the internal `verselight-*` storage keys, cookie names and backup format: renaming them would wipe visitors' data. The repo and Vercel URL keep the old name.
 
 Emotion-based Scripture, reflection, and prayer. Stack: Next.js App Router, strict TypeScript, Tailwind CSS, shadcn/ui, npm, Vercel. Production: https://verselight-app.vercel.app. Everyone uses the app as a guest. Personal data stays in the visitor's browser with JSON Export and Import backups. No server persistence for personal data.
 

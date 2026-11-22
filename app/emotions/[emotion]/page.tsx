@@ -12,7 +12,7 @@ const cluster: [number, number, number][] = [[10, 30, 4], [34, 12, 3], [52, 44, 
 
 export async function generateMetadata({ params }: { params: Promise<{ emotion: string }> }) {
   const emotion = getEmotionById((await params).emotion);
-  return { title: `${emotion?.name ?? "Find a feeling"} | Verselight`, description: `Find a feeling that fits and take a quiet moment with Scripture, reflection, and prayer.` };
+  return { title: `${emotion?.name ?? "Find a feeling"} | Selah Sky`, description: `Find a feeling that fits and take a quiet moment with Scripture, reflection, and prayer.` };
 }
 
 export function generateStaticParams() {

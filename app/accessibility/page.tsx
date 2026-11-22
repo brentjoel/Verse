@@ -2,8 +2,8 @@ import Link from "next/link";
 import { SiteShell } from "@/components/site-shell";
 import { siteUrl } from "@/lib/site-url";
 
-const title = "Accessibility | Verselight";
-const description = "What Verselight supports for keyboard, screen reader, low vision, motion and touch users, how it is checked, and what is not verified yet.";
+const title = "Accessibility | Selah Sky";
+const description = "What Selah Sky supports for keyboard, screen reader, low vision, motion and touch users, how it is checked, and what is not verified yet.";
 
 export const metadata = {
   title,
@@ -17,7 +17,7 @@ export default function AccessibilityPage() {
     <div className="results-wrap license-copy">
       <Link href="/" className="back-link">&#8592; Home</Link>
       <h1>Accessibility</h1>
-      <p>Verselight aims to meet WCAG 2.1 level AA. This page says what is supported, how it is checked, and what has not been verified yet.</p>
+      <p>Selah Sky aims to meet WCAG 2.1 level AA. This page says what is supported, how it is checked, and what has not been verified yet.</p>
       <section aria-labelledby="supported">
         <h2 id="supported">What is supported</h2>
         <ul>

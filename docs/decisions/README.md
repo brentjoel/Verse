@@ -1,6 +1,6 @@
 # Decision records
 
-Short records of choices that shape Verselight. Each says what was decided, why, and what it costs. History of changes lives in git.
+Short records of choices that shape Selah Sky. Each says what was decided, why, and what it costs. History of changes lives in git.
 
 - [0001 Guest-only, no accounts](0001-guest-only.md)
 - [0002 NLT by default, WEB as the fallback](0002-nlt-with-web-fallback.md)
