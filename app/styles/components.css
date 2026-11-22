@@ -162,10 +162,10 @@ input[type="checkbox"], input[type="radio"] { width: 18px; height: 18px; accent-
 .toast-region { position: fixed; z-index: 40; left: 50%; bottom: calc(84px + env(safe-area-inset-bottom)); transform: translateX(-50%); width: max-content; max-width: calc(100% - 32px); }
 .toast { display: flex; align-items: center; gap: var(--space-2); min-height: 48px; padding: 4px 6px 4px var(--space-3); border-radius: var(--radius-pill); background: var(--ink); color: var(--canvas); font-size: var(--text-callout); font-weight: var(--weight-regular); animation: arrive var(--motion-slow) var(--ease-out) both; }
 .toast .compare-link { min-height: 40px; color: var(--canvas); }
-/* Phones: sit just under the header so the toast never covers the Save, Compare and Share row. */
 /* "Noted in your journal" waits until the dawn has settled, so Results keeps one focal moment. */
 @media (prefers-reduced-motion: no-preference) { .toast-after-dawn { animation-delay: 1200ms; } }
-@media (max-width: 899px) { .toast-region { top: calc(76px + env(safe-area-inset-top)); bottom: auto; } }
+/* Phones: float over the header bar, so the toast covers neither the back link nor the Save row. */
+@media (max-width: 899px) { .toast-region { top: calc(12px + env(safe-area-inset-top)); bottom: auto; } }
 @media (min-width: 900px) { .toast-region { bottom: var(--space-5); } }
 
 /* Disclosures. */

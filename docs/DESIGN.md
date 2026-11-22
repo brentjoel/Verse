@@ -45,7 +45,8 @@ One accent per view. Violet is the only action color (pill, current dot, focus).
 - **Remove (`.remove-link`):** quiet `--ink-3` text with a veil on hover, for remove and delete triggers. Confirm steps stay ghost buttons.
 - **Chip:** outlined pill; pressed is an inverted fill. Used for wheel options, intensity, translation and settings choices.
 - **Settings sheet:** gear in the header. Translation, Theme (Night, Daylight, Bedtime, System) and Text size. Bottom sheet on phones, side panel on desktop.
-- **Toast:** inverted pill at the bottom, portaled to `body`. "Noted in your journal · Undo".
+- **Toast:** inverted pill, portaled to `body`: at the bottom on desktop, floating over the header bar on phones so it covers neither the back link nor the actions. "Noted in your journal · Undo" waits for the Results dawn to settle.
+- **More:** an ellipsis ghost (44px) that reveals secondary actions inline; on Results it holds Pin, Compare and Share. Without JavaScript the group simply shows.
 - **Navigation:** phone bottom tab bar with a blurred canvas; desktop links float in the header. Active item in `--ink` with a 4px violet dot.
 - **Logo:** four-point star inside an open ring, violet to teal, with a small amber spark.
 
@@ -54,7 +55,7 @@ One accent per view. Violet is the only action color (pill, current dot, focus).
 - **Home:** split hero on desktop (huge left-aligned headline, light line, then one quiet row of ink-2 ghost text: Morning star and Not sure what I feel?, optically aligned to the headline; constellation wheel on the right). The eight wheel chips sit as two even rows of four, stacked on phones. The wheel is thousands of particles in eight emotion clouds; drag, scroll, arrows or a chip turn it, the center chooses, and the inner ring blooms in that emotion's hue with intensity chips. Phones start in List with a compact row above it, a 72px rotating ring of eight emotion dots beside "Turn the constellation", which opens the wheel, so the first feelings show above the fold; desktop starts in the wheel. The current emotion chip has an inset ink ring. A Wheel / List switch; List is also the server, no-JavaScript, no-WebGL, reduced-motion and slow-device picker.
 - **Return check-in:** on Home, a block under the light line set off by a hairline above it (no card) for a returning visitor ("Last time you felt X. How is your heart now?"), three chips, a polite reply with onward links, and a quiet Not now that hides it for the local day. Never shown on first visits, same-day reflections or blocked storage.
 - **Feeling list:** emotion name beside a still star cluster, then four large rows with hairlines.
-- **Results:** verse first. Back link, feeling name, a small particle burst in the emotion hue, the amber reference line, the verse, attribution directly under it, pager, Save / Compare / Share, Reflect, and an ending block (Read 4 more verses or Back to today's verses, Try another feeling, Back to the wheel). Four passages show per day from eight per feeling, shifting by one each day. Tapping the glowing passage finishes the dawn; Skip remains for keyboards. A Focus ghost button hides everything but the passage, attribution and pager, centers the verse at a larger size, and leaves with Exit focus or Escape; it is never stored.
+- **Results:** verse first. Back link, feeling name, a small particle burst in the emotion hue, the amber reference line, the verse, attribution directly under it, pager, Save and This spoke to me with a quiet More (Pin, Compare, Share), Reflect, and an ending block: a quiet line, a row of ghost links whose text sits on the column edge (Read 4 more verses or Back to today's verses, Walk a seven-day path, Try another feeling), then the Back to the wheel pill on its own line. Four passages show per day from eight per feeling, shifting by one each day. Tapping the glowing passage finishes the dawn; Skip remains for keyboards. A Focus ghost button hides everything but the passage, attribution and pager, centers the verse at a larger size, and leaves with Exit focus or Escape; it is never stored.
 - **Compare:** reference in the Scripture face, live translation chips (a GET form remains for no-JavaScript), stacked or columned passages with attribution.
 - **Journal sky:** the month opens as a night sky above the reflections: each visited day is a star in its latest emotion hue (size by reflection count), consecutive days join with hairline strokes, and a grace day bridges with a dashed, dimmer line plus Lamentations 3:22-23 (WEB). A Sky / Calendar switch keeps the calendar one tap away; choosing a star or day filters the reflections below.
 - **Breathe:** a quiet page with a violet-ringed orb that grows and shrinks with the cue (Breathe in, Hold, Breathe out) and a seconds count. Calm and Steady chips, one Begin / Stop pill. Transient and never stored; reduced motion removes the orb animation and keeps the text cue.
@@ -66,7 +67,29 @@ One accent per view. Violet is the only action color (pill, current dot, focus).
 
 ## Motion
 
-Tokens: fast 150ms, base 220ms, slow 420ms, scene 900ms; ease-out `cubic-bezier(.16, 1, .3, 1)`, moves `cubic-bezier(.65, 0, .35, 1)`. One authored moment per screen: the wheel on Home, the dawn on Results. Route changes animate through View Transitions; the first page load does not fade, so the headline counts for LCP. Reduced motion shows the List view, removes drift and parallax, and shows Scripture instantly.
+One night-sky language: light arrives quickly and settles slowly; nothing bounces. Every motion explains a change, acknowledges a touch, or is the one authored moment of its screen. Only `transform` and `opacity` animate (plus `scale`, `translate` and `rotate`), and Scripture is never hidden, faded in or delayed by motion.
+
+**Tokens** ([tokens.css](../app/styles/tokens.css)): `--motion-fast` 150ms (feedback, exits), `--motion-base` 220ms (state), `--motion-slow` 420ms (arrivals), `--motion-scene` 900ms (the sky itself changing), `--stagger` 70ms, `--motion-spring` 520ms. Easings: `--ease-out` `cubic-bezier(.16, 1, .3, 1)` for arrivals, `--ease-move` `cubic-bezier(.65, 0, .35, 1)` for things that travel, and `--ease-spring`, a `linear()` damped spring with one 2% overshoot, for things the hand moves. Exits run faster than entrances.
+
+**Routes.** `<main>` is its own view-transition snapshot (`page`), so the header and tab bar hold still. Forward routes rise 10px into place; back links (`transitionTypes={["nav-back"]}`) settle 8px down from above; verse switching and Compare toggles (`verse-next`, `verse-previous`, `same-page`) leave the page still. A feeling's title travels from its row on the feeling list, or the wheel's center, to the Results heading (`feelingTitleName`, `share="feeling-title"`). The first page load never fades, so the headline counts for LCP.
+
+**Authored moments.** One per screen.
+- Home, wheel: choosing a feeling gathers the particles toward the chosen light (`uDawn` in the shader) while Results loads; the surrounding labels and chips step back. It runs only while the page is loading and never delays navigation, and every quality tier draws it.
+- Results, dawn: the verse is readable at once; the burst of stars rises behind the reference and the words warm from ink-3 to ink. Attribution, pager, actions and Reflect settle in after it in reading order (160ms plus a 70ms stagger), only on arrival, never when moving between verses.
+- Journal sky: stars twinkle in by date (the whole month within about a second) and the lines between consecutive days draw themselves from their earlier star.
+- First visit to Home: the sky fades in around the headline (painted at once), a scatter of stars twinkles and fades, then the light line, tools and picker rise. Shown once (`verselight-intro` in localStorage, its own key, never in backups), only on `/`, never under reduced motion. Any key, tap, scroll or wheel fast-forwards it; it is gone within three seconds. The pre-paint script decides (`data-intro`), so it never flashes; e2e and visual runs pin the flag as seen.
+
+**Feedback.**
+- Press: pills, ghosts, chips, icon buttons and Home's quiet links dip to 96% in 90ms and return on the spring; list rows flash the veil on touch; tab icons dip to 86%.
+- Hover (fine pointers): the pill gathers a soft violet glow (a shadow on a same-size layer, opacity only) and one small four-point star spark at its corner; it leans up to 3px toward the cursor (MagneticPills, mouse only). Ghost icons lift 1px. Rows nudge their arrow. Chips brighten their outline.
+- Save and This spoke to me: a ring of seven tiny stars in the emotion hue (violet outside Results) and a spring pop of the icon, only when saving or marking, never when undoing.
+- More: Pin, Compare and Share slide in from behind the ellipsis in turn.
+- Sheets and dialogs open on the spring (the settings sheet rises from the bottom on phones and slides from the side on wider screens) and close faster with `--ease-out`; the scrim fades.
+- Theme: Night, Daylight and Bedtime crossfade the whole page over `--motion-scene`, like the sky changing (`crossfadeTheme`). Skipped for reduced motion and unsupported browsers.
+
+**Reduced motion** is calm and static: the List picker, no wheel, no ambient drift, no intro, no theme crossfade, no stagger delays (the global rule zeroes `animation-delay`), no star bursts or magnetic lean. State still shows: fills, pressed colors, the toast and the Saved label.
+
+**Performance.** No animation library. Loops pause when the page is hidden. The wheel keeps its quality tiers and fps probe; all CSS motion is compositor-only.
 
 ## Accessibility and verification checklist
 
@@ -78,5 +101,6 @@ Tokens: fast 150ms, base 220ms, slow 420ms, scene 900ms; ease-out `cubic-bezier(
 - [ ] Loading, empty, error, conflict and no-WebGL states designed and reachable.
 - [ ] Lighthouse 90+ in all four categories on Home and Results (enforced in CI).
 - [ ] No new runtime dependencies, analytics, NLT text in images, or production deploy without approval.
+- [ ] Every new motion has a reduced-motion path, animates only transform and opacity, and never hides or delays Scripture.
 
 Warm, plain copy. No em dashes in app text.
