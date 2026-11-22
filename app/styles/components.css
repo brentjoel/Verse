@@ -1,15 +1,21 @@
 /* Components: one vocabulary for every screen. No cards, no shadows. */
 
-/* Primary action: the only filled violet element in a view. */
+/* Primary action: the only filled violet element in a view.
+   Hover: a soft violet glow gathers behind it and one small star spark appears at its corner.
+   Fine pointers: it leans a few pixels toward the cursor (--mx/--my, set by MagneticPills). */
 .pill {
+  position: relative; isolation: isolate;
   display: inline-flex; align-items: center; justify-content: center; gap: var(--space-1);
   min-height: 48px; padding: 0 var(--space-4);
   border-radius: var(--radius-pill);
   background: var(--action); color: var(--on-action);
   font-size: var(--text-callout); font-weight: var(--weight-strong); letter-spacing: -0.005em;
-  transition: transform var(--motion-fast) var(--ease-out), filter var(--motion-fast);
+  translate: var(--mx, 0) var(--my, 0);
+  transition: translate var(--motion-slow) var(--ease-out), scale var(--motion-spring) var(--ease-spring), filter var(--motion-fast);
 }
-.pill:active { transform: scale(.98); }
+/* The glow is a shadow on a same-size layer, so it never widens the page; only its opacity animates. */
+.pill::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; box-shadow: 0 6px 28px 2px color-mix(in srgb, var(--action) 55%, transparent); opacity: 0; transition: opacity var(--motion-base) var(--ease-out); pointer-events: none; }
+.pill::after { content: ""; position: absolute; top: -5px; right: 10px; width: 10px; height: 10px; background: var(--ink); clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%); opacity: 0; scale: .2; rotate: -45deg; transition: opacity var(--motion-fast) var(--ease-out), scale var(--motion-spring) var(--ease-spring), rotate var(--motion-spring) var(--ease-spring); pointer-events: none; }
 .pill:disabled { opacity: .45; }
 
 /* Ghost button: text with a soft veil on hover. Historical class name kept. */
@@ -19,11 +25,15 @@
   border: 0; border-radius: var(--radius-pill);
   background: transparent; color: var(--ink);
   font-size: var(--text-callout); font-weight: var(--weight-regular);
-  transition: background-color var(--motion-fast), color var(--motion-fast), transform var(--motion-fast) var(--ease-out);
+  transition: background-color var(--motion-fast), color var(--motion-fast), scale var(--motion-spring) var(--ease-spring);
 }
-.compare-link:active { transform: scale(.98); }
+.compare-link svg { transition: translate var(--motion-base) var(--ease-out), scale var(--motion-spring) var(--ease-spring); }
 .compare-link:disabled { color: var(--ink-3); }
 .compare-link:focus-visible { background: var(--veil); }
+
+/* Presses: down quickly, back up on the spring. Touch gets the same, so a tap feels answered. */
+:is(.pill, .compare-link, .chip, .icon-button, .morning-star, .home-link, .wheel-peek):active:not(:disabled) { scale: .96; transition-duration: 90ms; transition-timing-function: var(--ease-out); }
+:is(.emotion-link, .specific-link, .finder-option, .calendar-day):active { background-color: var(--veil); }
 
 .quiet-link { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; width: fit-content; color: var(--ink); font-size: var(--text-callout); font-weight: var(--weight-regular); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; text-decoration-color: color-mix(in srgb, var(--ink) 35%, transparent); transition: text-decoration-color var(--motion-fast); }
 .quiet-link:disabled { color: var(--ink-3); text-decoration: none; }
@@ -34,11 +44,12 @@
 .back-link:focus-visible { color: var(--ink); }
 
 .chip {
+  position: relative;
   display: inline-flex; align-items: center; justify-content: center; gap: var(--space-1);
   min-height: 44px; padding: 0 var(--space-3);
   border: 1px solid var(--hairline); border-radius: var(--radius-pill);
   color: var(--ink-2); font-size: var(--text-callout); font-weight: var(--weight-regular);
-  transition: background-color var(--motion-fast), border-color var(--motion-fast), color var(--motion-fast);
+  transition: background-color var(--motion-fast), border-color var(--motion-fast), color var(--motion-fast), scale var(--motion-spring) var(--ease-spring);
 }
 .chip[aria-pressed="true"], .chip[aria-checked="true"] { background: var(--ink); border-color: var(--ink); color: var(--canvas); }
 .chip:disabled { opacity: .5; }
@@ -46,13 +57,16 @@
 .segmented { display: inline-flex; gap: 2px; padding: 3px; border: 1px solid var(--hairline); border-radius: var(--radius-pill); }
 .segmented .chip { min-height: 38px; border: 0; padding: 0 var(--space-3); }
 
-.icon-button { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: var(--ink-2); transition: background-color var(--motion-fast), color var(--motion-fast); }
+.icon-button { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: var(--ink-2); transition: background-color var(--motion-fast), color var(--motion-fast), scale var(--motion-spring) var(--ease-spring); }
 .icon-button:focus-visible { background: var(--veil); color: var(--ink); }
 .icon-button:disabled { opacity: .4; }
 
 @media (hover: hover) and (pointer: fine) {
-  .pill:hover { filter: brightness(1.1); }
+  .pill:hover { filter: brightness(1.08); }
+  .pill:hover::before { opacity: 1; }
+  .pill:hover::after { opacity: .9; scale: 1; rotate: 0deg; }
   .compare-link:hover { background: var(--veil); }
+  .compare-link:hover svg { translate: 0 -1px; scale: 1.08; }
   .quiet-link:hover { text-decoration-color: var(--ink); }
   .back-link:hover { color: var(--ink); }
   .chip:hover { border-color: color-mix(in srgb, var(--ink) 35%, transparent); color: var(--ink); }
@@ -71,7 +85,7 @@
 }
 [data-tooltip]:focus-visible::after { opacity: 1; }
 @media (hover: hover) and (pointer: fine) { [data-tooltip]:hover::after { opacity: 1; } }
-.header-controls [data-tooltip]::after { left: auto; right: 0; transform: none; }
+.header-controls [data-tooltip]::after { left: auto; right: 0; top: calc(100% + 8px); bottom: auto; transform: none; }
 
 /* Dialogs and the settings sheet. */
 .quiet-dialog, .sheet {
@@ -149,10 +163,10 @@ input[type="checkbox"], input[type="radio"] { width: 18px; height: 18px; accent-
 .toast { display: flex; align-items: center; gap: var(--space-2); min-height: 48px; padding: 4px 6px 4px var(--space-3); border-radius: var(--radius-pill); background: var(--ink); color: var(--canvas); font-size: var(--text-callout); font-weight: var(--weight-regular); animation: arrive var(--motion-slow) var(--ease-out) both; }
 .toast .compare-link { min-height: 40px; color: var(--canvas); }
 /* Phones: sit just under the header so the toast never covers the Save, Compare and Share row. */
+/* "Noted in your journal" waits until the dawn has settled, so Results keeps one focal moment. */
+@media (prefers-reduced-motion: no-preference) { .toast-after-dawn { animation-delay: 1200ms; } }
 @media (max-width: 899px) { .toast-region { top: calc(76px + env(safe-area-inset-top)); bottom: auto; } }
 @media (min-width: 900px) { .toast-region { bottom: var(--space-5); } }
-.save-toast-region { position: absolute; left: 50%; bottom: calc(100% + 6px); transform: translateX(-50%); pointer-events: none; }
-.save-toast { display: block; padding: 4px 10px; border-radius: 99px; background: var(--ink); color: var(--canvas); font-size: var(--text-caption); font-weight: var(--weight-strong); animation: saved-toast 1.6s var(--ease-out) both; }
 
 /* Disclosures. */
 .quiet-details summary, .reflect-section summary { display: inline-flex; align-items: center; gap: var(--space-1); min-height: 44px; cursor: pointer; list-style: none; font-size: var(--text-callout); font-weight: var(--weight-regular); color: var(--ink); }
@@ -194,3 +208,24 @@ input[type="checkbox"], input[type="radio"] { width: 18px; height: 18px; accent-
 .year-months li[data-empty] .year-star { background: transparent; border: 1px dashed var(--ink-2); opacity: 0.6; box-shadow: none; }
 @media (min-width: 720px) { .year-numbers { grid-template-columns: repeat(4, minmax(0, 1fr)); } .year-months { grid-template-columns: repeat(12, minmax(0, 1fr)); } }
 .journal-lock h2:focus:not(:focus-visible), #calendar-heading:focus:not(:focus-visible) { outline: none; }
+
+/* Star burst: a small, honest acknowledgement when a verse is saved or marked. Particles take the emotion hue. */
+.save-button, .spoke-button { position: relative; }
+.burst-icon { display: inline-flex; }
+.star-burst { --burst: var(--action); position: absolute; left: 26px; top: 50%; width: 0; height: 0; pointer-events: none; }
+[data-emotion] .save-button, .spoke-button { position: relative; }
+.burst-icon { display: inline-flex; }
+.star-burst { --burst: var(--emotion); }
+.star-burst i { position: absolute; left: calc(var(--size) / -2); top: calc(var(--size) / -2); width: var(--size); height: var(--size); border-radius: 50%; background: var(--burst); box-shadow: 0 0 6px 1px color-mix(in srgb, var(--burst) 70%, transparent); opacity: 0; }
+@keyframes burst-ray {
+  0% { opacity: 0; transform: rotate(var(--angle)) translateY(-6px) scale(.6); }
+  15% { opacity: 1; transform: rotate(var(--angle)) translateY(-10px) scale(1.15); }
+  65% { opacity: .85; }
+  100% { opacity: 0; transform: rotate(var(--angle)) translateY(calc(var(--distance) * -1)) scale(.45); }
+}
+@keyframes burst-pop { 0% { scale: 1; } 35% { scale: 1.28; } 100% { scale: 1; } }
+@media (prefers-reduced-motion: no-preference) {
+  .star-burst i { animation: burst-ray 680ms var(--ease-out) backwards; }
+  .burst-icon[data-pop] { animation: burst-pop var(--motion-spring) var(--ease-spring); }
+}
+@media (prefers-reduced-motion: reduce) { .star-burst { display: none; } }

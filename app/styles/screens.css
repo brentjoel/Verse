@@ -486,7 +486,8 @@
 .finder-words-result h3:focus { outline: none; }
 .finder-or { margin: var(--space-4) 0 var(--space-2); padding-top: var(--space-3); border-top: 1px solid var(--hairline); color: var(--ink-2); max-width: 520px; }
 .path-day :is(.prompt-label, .quiet-link, .translation-tag) { color: var(--ink-2); }
-.home-tools > div > [role="status"] { padding-inline: var(--space-2); font-size: var(--text-callout); color: var(--ink-3); }
+/* Before the local date is known, the Morning star holds its exact place and size, so nothing shifts. */
+.morning-star-pending { margin: 0; cursor: default; }
 /* The passage leads; its actions stay one step quieter until hovered or focused. */
 .verse-actions .compare-link:not(:hover, :focus-visible) { color: var(--ink-2); }
 /* Rows that start with a ghost button line its text up with the column edge, not its hover veil. */
@@ -504,4 +505,18 @@
 @media (prefers-reduced-motion: no-preference) {
   .night-star > span { animation: star-in 700ms var(--ease-out) backwards; animation-delay: calc(120ms + var(--d, 0ms)); }
   .night-lines line { transform-box: view-box; animation: line-draw 560ms var(--ease-move) backwards; animation-delay: calc(320ms + var(--d, 0ms)); }
+}
+
+/* First visit (data-intro from the pre-paint script): the sky fades in around the headline, then the rest rises.
+   Everything here only delays opacity and position; the headline paints at once and nothing waits on it. */
+.intro-sky { display: none; }
+@keyframes intro-star { 0% { opacity: 0; transform: scale(.2); } 28% { opacity: .9; transform: scale(1); } 72% { opacity: .55; } 100% { opacity: 0; transform: scale(.7); } }
+@keyframes intro-fade { from { opacity: 0; } }
+@keyframes intro-rise { from { opacity: 0; transform: translateY(14px); } }
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-intro] .intro-sky { display: block; position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+  .intro-sky i { position: absolute; left: var(--x); top: var(--y); width: var(--s); height: var(--s); border-radius: 50%; background: var(--c, var(--ink)); box-shadow: 0 0 8px color-mix(in srgb, var(--c, var(--ink)) 70%, transparent); opacity: 0; animation: intro-star 2000ms var(--ease-move) var(--d) backwards; }
+  :root[data-intro] .time-sky { animation: intro-fade 1600ms var(--ease-move) both; }
+  :root[data-intro] .home-hero > :not(h1) { animation: intro-rise 720ms var(--ease-out) 900ms backwards; }
+  :root[data-intro] #choose-a-feeling { animation: intro-rise 720ms var(--ease-out) 1150ms backwards; }
 }
