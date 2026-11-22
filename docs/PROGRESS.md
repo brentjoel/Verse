@@ -199,3 +199,6 @@ The free plan's daily build limit stalled Phase E, so `vercel.json` turns off br
 
 ### Docs and code health (2026-11-23)
 AGENTS, ARCHITECTURE (new pages, schema 2, offline, finder), README and this file brought current. Removed unused CSS selectors, `EmotionIcon`, `lib/utils.ts`, the `cn` dependency and a few needless exports. Build output: JS 1,551,142 to 1,551,131 bytes, CSS 78,426 to 77,735.
+
+### Prompt review (2026-11-23)
+Reviewed the 127 drafted prompts for the passages added in "More verses with daily rotation" against their WEB text and feeling. Rewrote 46 (mostly prayers that recited the verse, plus a few that pressed or over-promised); the table and a short "consider swapping" list are in `docs/prompt-review.md`.
