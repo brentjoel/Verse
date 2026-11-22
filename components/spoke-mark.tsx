@@ -4,6 +4,8 @@ import Link from "next/link";
 import { Heart } from "lucide-react";
 import { useCompanion } from "@/lib/browser-storage";
 import { toggleMark } from "@/lib/spoke";
+import { useState } from "react";
+import { StarBurst } from "@/components/star-burst";
 
 export function useMarks() {
   const { ready, marks, set } = useCompanion();
@@ -14,8 +16,10 @@ export function useMarks() {
 export function SpokeButton({ reference }: { reference: string }) {
   const { ready, marks, set } = useMarks();
   const marked = marks.includes(reference);
-  return <button type="button" className="compare-link" data-tooltip={marked ? "Marked. Tap to unmark" : "This spoke to me"} disabled={!ready} aria-pressed={marked} onClick={() => set(toggleMark(marks, reference))}>
-    <Heart size={17} aria-hidden="true" fill={marked ? "currentColor" : "none"} />{marked ? "It spoke to me" : "This spoke to me"}<span className="sr-only"> {reference}</span>
+  // Only marking plays the burst; unmarking stays quiet.
+  const [burst, setBurst] = useState(0);
+  return <button type="button" className="compare-link spoke-button" data-tooltip={marked ? "Marked. Tap to unmark" : "This spoke to me"} disabled={!ready} aria-pressed={marked} onClick={() => { if (!marked) setBurst(value => value + 1); set(toggleMark(marks, reference)); }}>
+    {burst > 0 && marked && <StarBurst key={burst} />}<span key={`icon-${burst}`} className="burst-icon" data-pop={(burst > 0 && marked) || undefined}><Heart size={17} aria-hidden="true" fill={marked ? "currentColor" : "none"} /></span>{marked ? "It spoke to me" : "This spoke to me"}<span className="sr-only"> {reference}</span>
   </button>;
 }
 

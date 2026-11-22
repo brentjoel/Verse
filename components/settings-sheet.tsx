@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { useRouter } from "next/navigation";
 import { Settings2, X } from "lucide-react";
 import { getPersonalStore, usePersonalStorage } from "@/lib/browser-storage";
@@ -22,9 +23,12 @@ export function SettingsSheet() {
 
   function open() {
     const root = document.documentElement;
-    setTranslation(readTranslationCookie());
-    setTheme(root.dataset.themeSource === "stored" ? resolveTheme(root.dataset.theme, false) : "system");
-    setSize(resolveTextSize(root.dataset.textSize));
+    // Settle the chips before the sheet appears, so only the sheet moves while it opens.
+    flushSync(() => {
+      setTranslation(readTranslationCookie());
+      setTheme(root.dataset.themeSource === "stored" ? resolveTheme(root.dataset.theme, false) : "system");
+      setSize(resolveTextSize(root.dataset.textSize));
+    });
     dialog.current?.showModal();
   }
   function chooseTranslation(id: TranslationId) {
