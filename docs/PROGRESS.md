@@ -199,3 +199,6 @@ Audit of /not-sure (both result states), Home first paint and no-JS Results and 
 
 ### Vercel builds main only (2026-11-21)
 The free plan's daily build limit stalled Phase E, so `vercel.json` turns off branch previews; GitHub Actions stays the PR gate and Vercel builds production from `main` only.
+
+### Prompt review (2026-11-23)
+Reviewed the 127 drafted prompts for the passages added in "More verses with daily rotation" against their WEB text and feeling. Rewrote 46 (mostly prayers that recited the verse, plus a few that pressed or over-promised); the table and a short "consider swapping" list are in `docs/prompt-review.md`.
