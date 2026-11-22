@@ -142,3 +142,21 @@ test('bedtime is dimmer and warmer than night, and low in blue', () => {
   const [ar, ag, ab] = rgb(bedtime['--action']);
   assert.ok(Math.max(ar, ag, ab) < 0xc0 && ab - ar < 0x40, 'violet is toned down');
 });
+
+test('type uses one token scale and two weights', () => {
+  const sheets = ['base', 'components', 'layout', 'screens'].map(name => readFileSync(new URL(`../app/styles/${name}.css`, import.meta.url), 'utf8')).join('\n');
+  const sizes = [...sheets.matchAll(/font-size:\s*([^;}]+)/g)].map(m => m[1].trim());
+  const raw = sizes.filter(value => /\d(px|rem)\b/.test(value.replace(/clamp\([^)]*\)/g, value => value.replace(/var\([^)]*\)/g, ''))) && !/var\(--text-/.test(value));
+  assert.deepEqual(raw, [], 'font sizes come from --text-* tokens');
+  const weights = new Set([...sheets.matchAll(/font-weight:\s*([^;}]+)/g)].map(m => m[1].trim()));
+  assert.deepEqual([...weights].sort(), ['var(--weight-regular)', 'var(--weight-strong)']);
+  assert.equal(night['--weight-regular'], '400');
+  assert.equal(night['--weight-strong'], '600');
+});
+
+test('amber marks Scripture only: the spark color appears once, on the reference line', () => {
+  const sheets = ['base', 'components', 'layout', 'screens'].map(name => readFileSync(new URL(`../app/styles/${name}.css`, import.meta.url), 'utf8')).join('\n');
+  const uses = sheets.split('\n').filter(line => line.includes('var(--spark)'));
+  assert.equal(uses.length, 1);
+  assert.match(uses[0], /^\.verse-reference/);
+});

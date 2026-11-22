@@ -19,17 +19,23 @@
   --font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", var(--font-geist), system-ui, sans-serif;
   --font-scripture: "New York", ui-serif, var(--font-lora), Georgia, serif;
 
-  /* Phone scale; desktop overrides below. */
-  --text-display: 52px;
-  --text-heading-lg: 40px;
-  --text-heading: 32px;
-  --text-heading-sm: 26px;
-  --text-body: 17px;
-  --text-ui: 15px;
-  --text-caption: 13px;
+  /* One type scale, built on the iOS text-style steps. Phone values; desktop raises only the display roles.
+     Every font-size in the app is one of these tokens. Two weights: 400 (--weight-regular) and 600 (--weight-strong). */
+  --text-display: 52px;        /* Home headline */
+  --text-display-2: 40px;      /* Page titles */
+  --text-title-1: 34px;        /* Section titles (desktop grows) */
+  --text-title-2: 28px;        /* Feeling names, list rows, sub-sections */
+  --text-title-3: 22px;        /* Small headings, prayer starter, questions */
+  --text-body: 17px;           /* Body, ledes, reflections */
+  --text-callout: 15px;        /* Buttons, chips, links, secondary lines */
+  --text-footnote: 13px;       /* Captions, the Scripture reference line, dates */
+  --text-caption: 12px;        /* Tab labels, tooltips, weekday heads */
   --text-scripture: 26px;
-  --text-scripture-compare: 24px;
+  --text-scripture-compare: 22px;
+  --text-scripture-focus: 30px;
   --scripture-scale: 1;
+  --weight-regular: 400;
+  --weight-strong: 600;
 
   --space-1: 6px;
   --space-2: 12px;
@@ -95,11 +101,12 @@
 @media (min-width: 900px) {
   :root {
     --text-display: 104px;
-    --text-heading-lg: 72px;
-    --text-heading: 48px;
-    --text-heading-sm: 32px;
-    --text-body: 18px;
+    --text-display-2: 72px;
+    --text-title-1: 48px;
+    --text-title-2: 34px;
     --text-scripture: 32px;
+    --text-scripture-compare: 26px;
+    --text-scripture-focus: 38px;
   }
 }
 
