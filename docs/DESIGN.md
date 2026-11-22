@@ -1,4 +1,4 @@
-# Verselight design: Constellation
+# Selah Sky design: Constellation
 
 Redesign of 2026-11-20. It replaces the night-and-gold world. Light on a void: pure black, huge light type, one violet action color, an amber spark, and eight emotion colors that live only in particles. One primary task per screen. Data, routes, storage, providers and features are unchanged.
 

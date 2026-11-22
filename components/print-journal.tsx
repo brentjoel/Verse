@@ -40,7 +40,7 @@ export function PrintJournal({ moods }: { moods: readonly MoodEntry[] }) {
   const months = printMonths(moods, describe);
   const letters = printableLetters(stored, today);
   return <article className="print-journal" aria-hidden="true">
-    <h1>My Verselight journal</h1>
+    <h1>My Selah Sky journal</h1>
     <p>Printed {formatDay(today, undefined, true)}. Kept on my own device.</p>
     {months.map(group => <section key={group.month}>
       <h2>{formatMonth(group.month)}</h2>

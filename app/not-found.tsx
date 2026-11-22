@@ -2,7 +2,7 @@ import Link from "next/link";
 import { SiteShell } from "@/components/site-shell";
 import { Constellation } from "@/components/constellation";
 
-export const metadata = { title: "Find your way back | Verselight", description: "This page is resting out of sight. Return to Verselight and choose a feeling." };
+export const metadata = { title: "Find your way back | Selah Sky", description: "This page is resting out of sight. Return to Selah Sky and choose a feeling." };
 
 export default function NotFound() {
   return (

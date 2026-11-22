@@ -3,7 +3,7 @@
 Status: accepted (2026-11), built in Phase E as an on-device word scorer
 
 ## Decision
-AI in Verselight is a feeling finder that runs on the device. It may suggest feelings and point to curated verses. It never writes or paraphrases Scripture, and nothing a person types is sent to a server, logged or stored.
+AI in Selah Sky is a feeling finder that runs on the device. It may suggest feelings and point to curated verses. It never writes or paraphrases Scripture, and nothing a person types is sent to a server, logged or stored.
 
 The first version is a lexical scorer (`lib/feeling-words.ts`), not a neural model: a hand-written lexicon of plain phrases built from the feeling names, their descriptions and everyday words, with light stemming, negation ("not hopeful") and intensifiers. It lives on `/not-sure`, loads only when the visitor focuses or uses the text box (a few kB), and suggests one to three feelings with their closest specific. If the code cannot load, the three-question path on the same page still works.
 

@@ -14,9 +14,9 @@ export function SiteShell({ children, ambient = true }: Readonly<{ children: Rea
     <div className="site-shell">
       {ambient && <AmbientSky />}
       <header className="site-header">
-        <Link href="/" aria-label="Verselight home" className="brand">
+        <Link href="/" aria-label="Selah Sky home" className="brand">
           <BrandMark />
-          <span>Verselight</span>
+          <span>Selah Sky</span>
         </Link>
         <div className="header-controls">
           <SettingsSheet />

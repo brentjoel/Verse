@@ -3,7 +3,7 @@ import { FeelingFinder } from "@/components/feeling-finder";
 import { FeelingWords } from "@/components/feeling-words";
 import { getAllEmotions } from "@/lib/emotions";
 
-export const metadata = { title: "Not sure what I feel? | Verselight", description: "Describe it in a few words or answer three gentle questions to find a feeling. Everything stays on your device." };
+export const metadata = { title: "Not sure what I feel? | Selah Sky", description: "Describe it in a few words or answer three gentle questions to find a feeling. Everything stays on your device." };
 export default function NotSurePage() {
   const all = getAllEmotions();
   const emotions = all.map(({ id, name, description }) => ({ id, name, description }));

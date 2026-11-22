@@ -9,7 +9,7 @@ import web from "@/data/verses/web.json";
 export async function generateMetadata({ params }: { params: Promise<{ emotion: string; sub: string }> }) {
   const { emotion, sub } = await params;
   const feeling = getSpecificEmotionByIds(emotion, sub);
-  return { title: `${feeling?.name ?? "A gentle path"}: seven days | Verselight`, description: "One verse, one question and one prayer a day for seven days. Your progress stays on your device." };
+  return { title: `${feeling?.name ?? "A gentle path"}: seven days | Selah Sky`, description: "One verse, one question and one prayer a day for seven days. Your progress stays on your device." };
 }
 
 export function generateStaticParams() {

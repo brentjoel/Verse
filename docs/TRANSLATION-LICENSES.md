@@ -7,7 +7,7 @@ Strictly noncommercial: no ads, subscriptions, donations or paid features. Re-ch
 Sources: [API terms](https://api.nlt.to/), [API docs](https://api.nlt.to/Documentation), [Tyndale permissions](https://www.tyndale.com/permissions).
 
 - Registered key: at most 500 verses per request and 5,000 requests per day, noncommercial. Your issued license may differ; check it in the Tyndale account.
-- No published cache TTL or storage allowance, so Verselight never persists NLT text: not in browser storage, backups, images, files, framework caches or the repo. Requests are server-only and `no-store`.
+- No published cache TTL or storage allowance, so Selah Sky never persists NLT text: not in browser storage, backups, images, files, framework caches or the repo. Requests are server-only and `no-store`.
 - Mark each quotation (NLT) and show the mixed-translation notice from `data/translation-notices.json` under every NLT passage and at `/licenses#nlt`.
 - No NLT in generated or downloadable images: Tyndale artwork use needs a permissions request, and API access is not treated as that permission.
 - The API returns HTML; only verses matching the requested reference and range are parsed. Remote HTML is never injected.
