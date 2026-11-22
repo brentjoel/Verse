@@ -205,3 +205,7 @@ AGENTS, ARCHITECTURE (new pages, schema 2, offline, finder), README and this fil
 
 ### Prompt review (2026-11-23)
 Reviewed the 127 drafted prompts for the passages added in "More verses with daily rotation" against their WEB text and feeling. Rewrote 46 (mostly prayers that recited the verse, plus a few that pressed or over-promised); the table and a short "consider swapping" list are in `docs/prompt-review.md`.
+
+### UI pass 1: Tighten Constellation (2026-11-23)
+One token type scale (iOS steps) and two weights, body at 400; amber only on the Scripture reference; hairline rows replace the cards on path, finder, check-in, anchor and craft.
+Home: Morning star and Not sure share one quiet row, a compact constellation row puts feelings above the fold on phones, wheel chips sit 4 by 4. New theme tests enforce the scale and the amber rule.

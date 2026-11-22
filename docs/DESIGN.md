@@ -13,30 +13,35 @@ All tokens live in [app/styles/tokens.css](../app/styles/tokens.css). Night is t
 | `--ink-2` | `#bdbdbd` | `#3d3d45` | Body copy |
 | `--ink-3` | `#9a9a9a` | `#5c5c66` | Labels, inactive nav, captions |
 | `--action` | `#8052ff` | `#6a3cf0` | Filled pill, current dot, active nav dot, focus ring |
-| `--spark` | `#ffb829` | `#9a5b00` | Links, reference lines, small highlights |
+| `--spark` | `#ffb829` | `#9a5b00` | The Scripture reference line only |
 | `--hairline` | white 10% | ink 12% | The only divider |
 | `--veil` | white 6% | ink 5% | Hover, pressed and field fills |
 
 Emotion hues (`--emotion` under `[data-emotion]`, and `emotionHues` in `lib/constellation.ts`): anxious `#2dd4bf`/`#0f8f80`, sad `#4f8cff`/`#2457c5`, angry `#ff5a5f`/`#c62f35`, tired `#a78bfa`/`#6d4fd6`, guilty `#22d3ee`/`#0e7f93`, grateful `#facc15`/`#9a7a00`, hopeful `#ffb829`/`#a35f00`, doubtful `#f472b6`/`#b8357a`. They color particles, dots and glows only, never body text. Contrast for every token pair is enforced in `scripts/test-theme.mjs`.
 
-No cards, no shadows, no gradients on components. Gradients appear only in the logo and particles.
+No cards, no shadows, no gradients on components. Gradients appear only in the logo and particles. Lists of choices or days (feelings, the finder questions, the seven-day path, the anchor verse, the craft numbers) are hairline rows, never filled boxes.
 
 ## Typography
 
 - UI and display: `-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text"`, then Geist (`next/font`). Apple devices render SF Pro; others render Geist. Apple fonts are never self-hosted.
 - Scripture: `"New York", ui-serif`, then Lora, weight 400. 26px phone, 32px desktop, 24px in Compare columns, multiplied by the Text size setting (1, 1.15, 1.3).
-- Scale (phone / desktop): display 52 / 104, heading-lg 40 / 72, heading 32 / 48, heading-sm 26 / 32, body 17 / 18 at weight 300, caption 13. Headlines weight 400 with -0.04em tracking at 40px and up. Hierarchy comes from scale, never weight.
+- One token scale on the iOS text-style steps, and every `font-size` uses it (enforced in `scripts/test-theme.mjs`). Phone / desktop: `--text-display` 52 / 104, `--text-display-2` 40 / 72, `--text-title-1` 34 / 48, `--text-title-2` 28 / 34, `--text-title-3` 22, `--text-body` 17, `--text-callout` 15 (buttons, chips, links), `--text-footnote` 13 (captions, reference line, dates), `--text-caption` 12 (tab labels, tooltips). Scripture: 26 / 32, Compare 22 / 26, Focus 30 / 38.
+- Two weights: `--weight-regular` 400 for everything, including body on dark (300 was too thin to read in a hard moment), and `--weight-strong` 600 for the pill, the brand, small uppercase labels and toasts. Headlines stay 400 with -0.04em tracking at 40px and up; hierarchy comes from scale and ink level.
 - No eyebrow or kicker labels above headings. Dates and counts use tabular numbers.
 
 ## Space and shape
 
-6px base: 6, 12, 18, 24, 30, 36, 60, 96, 120. Pills and chips are fully round; panels, sheets and dialogs 24px; fields 14px. Shell 1280px, reading column 720px. Targets at least 44px.
+6px base: 6, 12, 18, 24, 30, 36, 60, 96, 120. Pills and chips are fully round; panels, sheets and dialogs 24px; fields 14px. Shell 1280px, reading column 720px. Targets at least 44px. Spacing uses the 6px steps only; 2 to 4px is reserved for optical nudges inside a control.
+
+## Color discipline
+
+One accent per view. Violet is the only action color (pill, current dot, focus). Amber appears only on the Scripture reference line. Emotion hues stay in particles, dots and glows. Secondary actions sit one ink step down (`--ink-2`) until hovered or focused, so the passage leads.
 
 ## Components
 
 - **Pill:** the one filled violet button per view (Back to the wheel, Share card, Try again, empty-state actions).
 - **Ghost (`.compare-link`):** text button with a veil on hover; Save, Compare, Share, Try another feeling.
-- **Link (`.quiet-link`):** amber, underlined.
+- **Link (`.quiet-link`):** ink, underlined with a 35% ink rule. Amber never marks a link.
 - **Remove (`.remove-link`):** quiet `--ink-3` text with a veil on hover, for remove and delete triggers. Confirm steps stay ghost buttons.
 - **Chip:** outlined pill; pressed is an inverted fill. Used for wheel options, intensity, translation and settings choices.
 - **Settings sheet:** gear in the header. Translation, Theme (Night, Daylight, Bedtime, System) and Text size. Bottom sheet on phones, side panel on desktop.
@@ -46,8 +51,8 @@ No cards, no shadows, no gradients on components. Gradients appear only in the l
 
 ## Screens
 
-- **Home:** split hero on desktop (huge left-aligned headline, light line, Morning star; constellation wheel on the right), stacked on phones. The wheel is thousands of particles in eight emotion clouds; drag, scroll, arrows or a chip turn it, the center chooses, and the inner ring blooms in that emotion's hue with intensity chips. Phones start in List with a small rotating ring of eight emotion dots above it ("Turn the constellation") that opens the wheel; desktop starts in the wheel. The current emotion chip has an inset ink ring. A Wheel / List switch; List is also the server, no-JavaScript, no-WebGL, reduced-motion and slow-device picker.
-- **Return check-in:** on Home, a small bordered card under the light line for a returning visitor ("Last time you felt X. How is your heart now?"), three chips, a polite reply with onward links, and a quiet Not now that hides it for the local day. Never shown on first visits, same-day reflections or blocked storage.
+- **Home:** split hero on desktop (huge left-aligned headline, light line, then one quiet row of ink-2 ghost text: Morning star and Not sure what I feel?, optically aligned to the headline; constellation wheel on the right). The eight wheel chips sit as two even rows of four, stacked on phones. The wheel is thousands of particles in eight emotion clouds; drag, scroll, arrows or a chip turn it, the center chooses, and the inner ring blooms in that emotion's hue with intensity chips. Phones start in List with a compact row above it, a 72px rotating ring of eight emotion dots beside "Turn the constellation", which opens the wheel, so the first feelings show above the fold; desktop starts in the wheel. The current emotion chip has an inset ink ring. A Wheel / List switch; List is also the server, no-JavaScript, no-WebGL, reduced-motion and slow-device picker.
+- **Return check-in:** on Home, a block under the light line set off by a hairline above it (no card) for a returning visitor ("Last time you felt X. How is your heart now?"), three chips, a polite reply with onward links, and a quiet Not now that hides it for the local day. Never shown on first visits, same-day reflections or blocked storage.
 - **Feeling list:** emotion name beside a still star cluster, then four large rows with hairlines.
 - **Results:** verse first. Back link, feeling name, a small particle burst in the emotion hue, the amber reference line, the verse, attribution directly under it, pager, Save / Compare / Share, Reflect, and an ending block (Read 4 more verses or Back to today's verses, Try another feeling, Back to the wheel). Four passages show per day from eight per feeling, shifting by one each day. Tapping the glowing passage finishes the dawn; Skip remains for keyboards. A Focus ghost button hides everything but the passage, attribution and pager, centers the verse at a larger size, and leaves with Exit focus or Escape; it is never stored.
 - **Compare:** reference in the Scripture face, live translation chips (a GET form remains for no-JavaScript), stacked or columned passages with attribution.
