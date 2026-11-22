@@ -1,6 +1,5 @@
 import { FocusToggle } from "@/components/focus-toggle";
 import Link from "next/link";
-import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { ArrowUpRight } from "lucide-react";
@@ -22,6 +21,10 @@ import { UndoToast } from "@/components/undo-toast";
 import { passageTokens } from "@/lib/dawn";
 import { dayNumber, serverToday, todaysReferences } from "@/lib/rotation";
 
+// Blocking on purpose: the passages arrive in the first HTML, so Results reads without JavaScript.
+// The data is a local WEB file or one NLT request, so the wait is short.
+export const instant = false;
+
 export async function generateMetadata({ params }: { params: Promise<{ emotion: string; sub: string }> }) {
   const { emotion, sub } = await params;
   const feeling = getSpecificEmotionByIds(emotion, sub);
@@ -37,7 +40,7 @@ export default async function ResultsPage({ params, searchParams }: { params: Pr
   const emotion = getEmotionById(emotionId);
   const specific = getSpecificEmotionByIds(emotionId, sub);
   if (!emotion || !specific) notFound();
-  return <SiteShell><Suspense fallback={<ContentNotice loading>Finding your verses...</ContentNotice>}><ResultsContent emotion={emotion} specific={specific} searchParams={searchParams} /></Suspense></SiteShell>;
+  return <SiteShell><ResultsContent emotion={emotion} specific={specific} searchParams={searchParams} /></SiteShell>;
 }
 
 async function ResultsContent({ emotion, specific, searchParams }: { emotion: Emotion; specific: SpecificEmotion; searchParams: Promise<{ more?: string | string[] }> }) {

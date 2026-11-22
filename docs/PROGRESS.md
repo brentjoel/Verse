@@ -46,7 +46,7 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 
 **Phase E**
 - [x] Project 3: on-device AI feeling finder (suggests feelings, never generates Scripture, never trains on NLT; rules out NIV's no-AI license)
-- [ ] Performance pass: skip the first ~500 ms of the fps probe, reserve space for the List-to-wheel swap, no-JS Results and Compare, real-device fps
+- [x] Performance pass (real-device fps stays an open item): skip the first ~500 ms of the fps probe, reserve space for the List-to-wheel swap, no-JS Results and Compare, real-device fps
 
 **Owner actions:** buy a custom domain if wanted; publish the write-up (drafted in `docs/writeup.md` during Phase B).
 
@@ -66,7 +66,6 @@ Each phase runs in its own session, as small PRs merged when every CI check pass
 
 - Real-device 60fps on mid-range Android and iPhone not measured (needs the owner's devices).
 - Screen-reader pass not done.
-- Results and Compare need JavaScript to show passages.
 
 ## Gotchas
 
@@ -193,3 +192,6 @@ Audit of Journal (prayers, passcode, lock screen, reflection line), Home check-i
 
 ### On-device feeling finder (2026-11-21)
 `/not-sure` gains "In your own words": a few typed words are scored on the device by pure `lib/feeling-words.ts` (a plain-phrase lexicon with stemming and negation, no Bible text, no model download) into one to three feelings with their closest specific. Loads only on use; nothing sent or stored; the three questions stay as the fallback. Tests reach every feeling and specific; ADR 0005 updated.
+
+### Performance pass (2026-11-21)
+The fps probe skips its first 500 ms (pure `stepProbe`). The pre-paint script marks how Home's picker opens (`data-wheel`), so CSS holds the wheel's footprint and the phone peek from first paint; Home CLS is now 0 at phone and desktop. Results and Compare render passages in the first HTML (`instant = false`, no Suspense), so they read without JavaScript.

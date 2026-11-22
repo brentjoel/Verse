@@ -49,7 +49,7 @@ Daily rotation: each feeling has 8 curated references. `lib/rotation.ts` shows a
 | `/my-verses`, `/journal` | Static shell; client reads storage after hydration with loading, empty and error states |
 | `/share` | WEB-only `ImageResponse`, strict inputs, cached by canonical reference |
 
-Known limitation: without JavaScript, Results and Compare show only their loading line.
+Results and Compare set `instant = false` and render without a Suspense boundary, so their passages arrive in the first HTML and read without JavaScript (NLT still comes only from the server provider, never cached).
 
 ## Constellation wheel
 
