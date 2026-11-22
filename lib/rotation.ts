@@ -1,4 +1,4 @@
-export const SHOWN_PER_DAY = 4;
+const SHOWN_PER_DAY = 4;
 
 /** Whole days since 1970-01-01 for a YYYY-MM-DD date. */
 export function dayNumber(date: string): number {

@@ -6,13 +6,13 @@ Current-state map. History lives in git; this file says how things work now.
 
 ```text
 Browser -> Home (constellation wheel or server-rendered List) -> feeling page -> Results
-Results / Compare -> Server Components inside Suspense (read the translation cookie)
+Results / Compare -> Server Components (read the translation cookie)
   -> data/emotions.json + data/prompts.json (curated references and prompts)
   -> lib/verse-passage.ts (server-only dispatcher)
        -> KJV / WEB / ASV / BSB: data/verses/*.json
        -> NLT: official Tyndale API with NLT_API_KEY
             -> any failure or quota: local WEB with a visible fallback note
-Browser -> lib/storage.ts -> localStorage "verselight-data" (saves, collections, journal, streaks, badges)
+Browser -> lib/storage.ts -> localStorage "verselight-data" (schema 2: saves, collections, journal, streaks, badges, anchor, letters, path, marks, prayers, lock)
 Browser <-> local JSON Export / Import (never uploaded)
 ```
 
@@ -24,7 +24,7 @@ No personal record reaches the server. The translation cookie is the one documen
 | --- | --- |
 | `app/` | Routes, root layout, error and not-found screens. `app/styles/` holds `tokens`, `base`, `layout`, `components`, `screens` CSS; `globals.css` only imports them |
 | `app/emotions/[emotion]/[sub]/` | Results: carousel, dawn reveal, Save, Compare, Share, Reflect |
-| `app/compare/`, `app/my-verses/`, `app/journal/`, `app/about/`, `app/licenses/`, `app/share/` | Compare, personal notebooks, credits, WEB share-card route |
+| `app/compare/`, `app/my-verses/`, `app/journal/`, `app/year/`, `app/path/`, `app/not-sure/`, `app/breathe/`, `app/offline/`, `app/about/`, `app/craft/`, `app/accessibility/`, `app/licenses/`, `app/share/` | Compare, notebooks, recap, seven-day path, feeling finder, breathing guide, offline reader, credits, case study, WEB share-card route |
 | `components/` | Client and server UI; `ui/` is shadcn |
 | `lib/` | Pure logic and services (see below) |
 | `data/` | Emotions, prompts, public-domain verses, translation notices |
@@ -33,7 +33,7 @@ No personal record reaches the server. The translation cookie is the one documen
 | `proxy.ts` | Rejects unknown emotion/feeling pairs before streaming so they return HTTP 404 |
 | `instrumentation.ts` | `onRequestError` emits only the fixed `server_error` code |
 
-Key `lib/` modules: `night-sky.ts` (pure month-to-stars-and-links builder for the Journal sky), `constellation.ts` (hues, tiers, `buildConstellation`, `leanWeights`), `wheel.ts`, `dawn.ts` (one-use dawn and undo intents), `theme.ts` (pre-paint script, text size, `data-js`), `root-preferences.ts`, `translation-client.ts`, `translations.ts`, `translation-preference.ts`, `verse-passage.ts`, `bible-api.ts` (NLT fetch and parse), `nlt-quota.ts`, `storage*.ts`, `browser-storage.ts`, `streaks.ts`, `badges.ts`, `dates.ts`, `daily-verse.ts`, `share-card.ts`, `social-image.tsx`, `operational-monitor.ts`, `site-url.ts`.
+Key `lib/` modules: `feeling-finder.ts` and `feeling-words.ts` (the on-device finder), `journal-lock.ts`, `year-recap.ts`, `rotation.ts`, `gentle-path.ts`, `night-sky.ts` (pure month-to-stars-and-links builder for the Journal sky), `constellation.ts` (hues, tiers, `buildConstellation`, `leanWeights`), `wheel.ts`, `dawn.ts` (one-use dawn and undo intents), `theme.ts` (pre-paint script, text size, `data-js`), `root-preferences.ts`, `translation-client.ts`, `translations.ts`, `translation-preference.ts`, `verse-passage.ts`, `bible-api.ts` (NLT fetch and parse), `nlt-quota.ts`, `storage*.ts`, `browser-storage.ts`, `streaks.ts`, `badges.ts`, `dates.ts`, `daily-verse.ts`, `share-card.ts`, `social-image.tsx`, `operational-monitor.ts`, `site-url.ts`.
 
 ## Rendering
 
@@ -43,11 +43,13 @@ Next.js 16 App Router with Cache Components. Server Components by default.
 | --- | --- |
 | `/`, `/about`, `/licenses` | Static, with client controls |
 | `/emotions/[emotion]` | Eight prebuilt routes |
-| `/emotions/[emotion]/[sub]`, `/compare` | Static shell; passages stream inside Suspense because they read the cookie |
+| `/emotions/[emotion]/[sub]`, `/compare` | Dynamic per request: they read the translation cookie, so passages are in the first HTML |
+| `/my-verses`, `/journal`, `/year` | Static shell; client reads storage after hydration with loading, empty and error states |
+| `/path/[emotion]/[sub]` | 16 prebuilt seven-day paths; start date from storage |
+| `/not-sure`, `/breathe`, `/craft`, `/accessibility`, `/offline` | Static; the finder, breathing guide and offline reader run on the device |
+| `/share` | WEB-only `ImageResponse`, strict inputs, cached by canonical reference |
 
 Daily rotation: each feeling has 8 curated references. `lib/rotation.ts` shows a window of 4 that shifts by one per server (UTC) day; `?more` shows the other 4. Only 4 passages render per view, so NLT use per view is unchanged. `VERSELIGHT_TODAY` pins the day for Playwright only.
-| `/my-verses`, `/journal` | Static shell; client reads storage after hydration with loading, empty and error states |
-| `/share` | WEB-only `ImageResponse`, strict inputs, cached by canonical reference |
 
 Results and Compare set `instant = false` and render without a Suspense boundary, so their passages arrive in the first HTML and read without JavaScript (NLT still comes only from the server provider, never cached).
 
@@ -96,6 +98,10 @@ Before version 2, anchor, letters, path and marks lived in their own keys (`vers
 ## Offline reading
 
 `public/sw.js` (registered by `components/service-worker.tsx` in production) caches the app shell pages, `/emotions/<feeling>` indexes, `/path/*` and `/_next/static` assets. `classify()` in the worker is the allowlist; Results (`/emotions/<feeling>/<sub>`), Compare, Share and everything else are never cached. Offline, a Results request redirects to `/offline?to=...`, which shows that feeling's WEB verses bundled in the app. Playwright blocks the worker by default; `e2e/offline.spec.ts` enables it.
+
+## On-device feeling finder
+
+`/not-sure` scores three questions (`lib/feeling-finder.ts`) or a few typed words (`lib/feeling-words.ts`: plain-phrase lexicon, stemming, negation) into one to three feelings and their closest specific. It runs in the browser, loads only on use, contains no Bible text or model, and sends and stores nothing. See ADR 0005.
 
 ## Streaks and badges
 

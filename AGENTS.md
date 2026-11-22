@@ -3,7 +3,7 @@
 Emotion-based Scripture, reflection, and prayer. Stack: Next.js App Router, strict TypeScript, Tailwind CSS, shadcn/ui, npm, Vercel. Production: https://verselight-app.vercel.app. Everyone uses the app as a guest. Personal data stays in the visitor's browser with JSON Export and Import backups. No server persistence for personal data.
 
 ## Status and partnership
-Steps 1 to 9 and the Constellation redesign are built. `docs/PROGRESS.md` holds the current state, roadmap, decisions and Windows gotchas. Do the requested task; do not build unrequested features. Act as a partner: when you see a better approach, a risk, or a worthwhile idea, say it in one or two lines and let the owner decide.
+Steps 1 to 9, the Constellation redesign and roadmap Phases A to E are built. `docs/PROGRESS.md` holds the current state, roadmap, decisions and Windows gotchas. Do the requested task; do not build unrequested features. Act as a partner: when you see a better approach, a risk, or a worthwhile idea, say it in one or two lines and let the owner decide.
 
 ## Read first
 Read `docs/PROGRESS.md` (short). Then read only what the task touches:
@@ -30,7 +30,7 @@ Keep token use low. Work directly; no skill workflows (superpowers), spec or pla
 4. Add or update a `node:test` (`scripts/test-*.mjs`) for logic changes and bug fixes when practical.
 5. Verify with `npm run check`. For UI changes also run `npm run e2e`. CI runs the visual and Lighthouse checks; do not run Lighthouse locally. Check a UI change by eye once, at phone and desktop size.
 6. Add a `docs/PROGRESS.md` log entry of at most 3 lines for features and notable fixes only.
-7. Commit, push, open a PR. Roadmap PRs in `docs/PROGRESS.md` merge with `gh pr merge --merge` once every CI check passes (owner decision 2026-11-21); never skip a failing check. Other PRs wait for the owner. Never deploy production any other way.
+7. Commit, push, open a PR. Every PR merges with `gh pr merge --merge` once every CI check passes (owner decision 2026-11-23); never merge past a failing check. Never deploy production any other way.
 8. Reply in under 10 lines, then stop.
 
 ## Impeccable (UI work)

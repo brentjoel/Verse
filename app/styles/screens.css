@@ -40,7 +40,6 @@
 @media (hover: hover) and (pointer: fine) {
   .emotion-link:hover .card-arrow { color: var(--ink); transform: translateX(4px); }
 }
-@media (min-width: 640px) { .emotion-grid.columns { grid-template-columns: 1fr 1fr; column-gap: var(--space-5); } }
 
 /* Wheel */
 .wheel-picker { display: grid; gap: var(--space-3); }
@@ -83,7 +82,6 @@
 .wheel-center .specific-link { display: grid; justify-items: center; gap: 4px; padding: var(--space-2); border-radius: 50%; font-size: clamp(20px, 5.4cqw, 34px); letter-spacing: -0.03em; line-height: 1.1; color: var(--ink); }
 .wheel-center .specific-link > span { font-size: 18px; color: var(--emotion); }
 .wheel-center .local-help { position: absolute; top: 100%; width: 240px; }
-.wheel-corner { position: absolute; top: 0; right: 0; z-index: 2; }
 .wheel-options { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-1); }
 .wheel-options li { position: relative; }
 .wheel-options .local-help { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); width: 240px; z-index: 2; }
@@ -95,7 +93,6 @@
 .morning-star svg { filter: drop-shadow(0 0 8px var(--spark)); }
 .morning-star:focus-visible { background: var(--veil); }
 @media (hover: hover) and (pointer: fine) { .morning-star:hover { background: var(--veil); } }
-.morning-star-wrap { display: flex; }
 
 /* ---------- Feeling list ---------- */
 .detail-heading { display: grid; gap: var(--space-2); margin: var(--space-4) 0 var(--space-6); }
@@ -113,7 +110,6 @@
 
 /* ---------- Results ---------- */
 .results-wrap { display: grid; gap: var(--space-2); }
-.results-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2); }
 .results-heading { display: grid; gap: var(--space-1); }
 .results-wrap .results-heading h1 { display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-heading-sm); letter-spacing: -0.02em; }
 .results-heading > p:last-child { font-size: 15px; font-weight: 300; color: var(--ink-3); }

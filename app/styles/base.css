@@ -24,7 +24,7 @@
   button { background: none; border: 0; padding: 0; cursor: pointer; }
   button:disabled { cursor: not-allowed; }
   img, svg { display: block; }
-  time, .tabular { font-variant-numeric: tabular-nums; }
+  time { font-variant-numeric: tabular-nums; }
 
   ::selection { background: color-mix(in srgb, var(--action) 45%, transparent); color: var(--ink); }
   :focus { outline: none; }
@@ -36,13 +36,13 @@
 
 /* Type roles. Hierarchy comes from scale and tracking, never weight. */
 .display { font-size: var(--text-display); line-height: 1; letter-spacing: -0.045em; font-weight: 400; }
-.heading-lg, .results-heading h1, .detail-heading h1 { font-size: var(--text-heading-lg); line-height: 1.05; letter-spacing: -0.04em; font-weight: 400; }
+.results-heading h1, .detail-heading h1 { font-size: var(--text-heading-lg); line-height: 1.05; letter-spacing: -0.04em; font-weight: 400; }
 .heading, .section-heading h2, .library-section > h2 { font-size: var(--text-heading); line-height: 1.1; letter-spacing: -0.035em; font-weight: 400; }
 .heading-sm { font-size: var(--text-heading-sm); line-height: 1.2; letter-spacing: -0.02em; font-weight: 400; }
 .lede { font-size: var(--text-body); font-weight: 300; line-height: 1.55; color: var(--ink-2); max-width: 46ch; }
 .caption, .local-help { font-size: var(--text-caption); line-height: 1.5; color: var(--ink-3); }
 .label { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
-.scripture, .verse-text {
+.verse-text {
   font-family: var(--font-scripture);
   font-size: calc(var(--text-scripture) * var(--scripture-scale));
   line-height: 1.6;
