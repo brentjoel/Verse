@@ -112,10 +112,18 @@
 input[type="checkbox"], input[type="radio"] { width: 18px; height: 18px; accent-color: var(--action); }
 
 /* Notices, loading and empty states. */
-.content-notice, .state-panel, .empty-state { display: grid; justify-items: start; gap: var(--space-2); max-width: 46ch; color: var(--ink-2); font-weight: var(--weight-regular); }
+/* Quiet states (empty, loading, notice, not found, error) share one shape: a constellation, one kind line, at most one action. */
+.content-notice, .state-panel, .empty-state { display: grid; justify-items: start; gap: var(--space-3); max-width: 46ch; padding-block: var(--space-4); color: var(--ink-2); font-weight: var(--weight-regular); }
+.empty-state > p { font-size: var(--text-body); }
 .content-notice a:not(.pill, .compare-link), .state-panel a:not(.pill, .compare-link), .empty-state a:not(.pill, .compare-link) { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
-.skeleton::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 10px; border-radius: 50%; background: var(--ink); vertical-align: middle; animation: shimmer 1.6s var(--ease-move) infinite; box-shadow: 14px 0 0 var(--ink), 28px 0 0 var(--ink); }
-.skeleton { padding-left: 0; }
+/* Loading twinkle: the same constellation, its stars breathing in turn. Reduced motion keeps it still. */
+.constellation[data-twinkle] :is(circle, path:last-child) { animation: star-breathe 2.4s var(--ease-move) infinite; }
+.constellation[data-twinkle] circle:nth-of-type(2) { animation-delay: .3s; }
+.constellation[data-twinkle] circle:nth-of-type(3) { animation-delay: .6s; }
+.constellation[data-twinkle] circle:nth-of-type(4) { animation-delay: .9s; }
+.constellation[data-twinkle] path:last-child { animation-delay: 1.2s; }
+@keyframes star-breathe { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .constellation[data-twinkle] :is(circle, path) { animation: none; } }
 .local-error, .storage-notice { color: var(--ink); }
 .storage-notice { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-2); align-items: center; margin: 0 0 var(--space-3); padding: var(--space-2) var(--space-3); border-radius: var(--radius-control); background: var(--veil); font-size: var(--text-callout); }
 .inline-confirm { display: grid; gap: var(--space-1); margin-top: var(--space-2); padding-top: var(--space-2); border-top: 1px solid var(--hairline); }

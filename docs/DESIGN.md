@@ -60,7 +60,7 @@ One accent per view. Violet is the only action color (pill, current dot, focus).
 - **Breathe:** a quiet page with a violet-ringed orb that grows and shrinks with the cue (Breathe in, Hold, Breathe out) and a seconds count. Calm and Steady chips, one Begin / Stop pill. Transient and never stored; reduced motion removes the orb animation and keeps the text cue.
 - **My Verses, Journal:** notebooks, not settings. Saved verses with feeling and date; reflections first with readable dates and notes behind Add a note; a borderless calendar whose days glow in the latest reflection's emotion; a gentle "Your rhythm" summary with the rules in a disclosure.
 - **About, Licenses:** reading pages with display headings and a 720px measure.
-- **404, error, empty states:** a still constellation, one heading, one sentence, one pill.
+- **404, error, empty and loading states:** one shape everywhere: the constellation mark, one kind line, at most one action (a pill for empty, none for loading). Loading uses `QuietLoading`, whose stars breathe in turn and stay still under reduced motion (Journal "Gathering your sky.", My Verses, Year in light, the wheel, the share card preview). One constellation per page: secondary empties (collections, prayers) are a single plain line.
 - **Share:** a cookie-less preview of the WEB card, then Share card (native share sheet with the PNG when supported), Download and Open. Cards and social images use the void canvas, an emotion-hued constellation ring, and public-domain text only.
 - **Ambient sky:** faint drifting stars behind secondary pages, masked away from the reading column, paused when hidden, absent for reduced motion.
 

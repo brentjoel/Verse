@@ -212,3 +212,6 @@ Home: Morning star and Not sure share one quiet row, a compact constellation row
 
 ### Rename to Selah Sky (2026-11-23)
 Every user-facing name (titles, metadata, manifest, wordmark, OG images, share and sky cards, print journal, README, docs) now says Selah Sky. Storage keys, the cookie, the backup format, repo and Vercel URL keep `verselight`.
+
+### Quiet states (2026-11-23)
+Loading and empty states share one shape: the constellation mark (softly twinkling while loading, still under reduced motion), one kind line, at most one action. Secondary empties are a plain line, ghost-button rows align to the text edge, and before/after shots live in `docs/screenshots/ui-pass/`.

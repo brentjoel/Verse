@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { RemovalButton } from "@/components/removal-button";
-import { Constellation } from "@/components/constellation";
+import { Constellation, QuietLoading } from "@/components/constellation";
 import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { getPersonalStore, reloadPersonalStorage, usePersonalStorage } from "@/lib/browser-storage";
@@ -81,7 +81,7 @@ export function MyVerses() {
     event.preventDefault();
     void run(async () => { const result = await getPersonalStore().createCollection(collectionName); if (result.ok) setCollectionName(""); return result; }, "Collection created.");
   }
-  if (!snapshot.ready) return <p className="content-notice skeleton" role="status">Opening your saved verses...</p>;
+  if (!snapshot.ready) return <QuietLoading>Gathering your saved verses.</QuietLoading>;
   return <>
     <div className="local-feedback" aria-live="polite"><p role="status">{busy ? "Taking care of that..." : status}</p></div>
     {error && <p className="content-notice local-error" role="alert">{error}</p>}
@@ -106,7 +106,7 @@ export function MyVerses() {
         <form className="local-form" onSubmit={createCollection}>
           <label htmlFor="new-collection">New collection name</label><div className="local-input-row"><input id="new-collection" value={collectionName} onChange={event => setCollectionName(event.target.value)} maxLength={80} required placeholder="For example, Hope" disabled={locked} /><button className="compare-link" disabled={locked || !collectionName.trim()}>Create collection</button></div>
         </form>
-        {collections.length === 0 ? <div className="empty-state"><Constellation /><p className="local-help">No collections yet. Gather a few references around what matters to you.</p></div> : <div className="collection-grid">{collections.map(collection => <CollectionEditor key={`${collection.id}:${collection.name}`} collection={collection} disabled={locked} run={run} />)}</div>}
+        {collections.length === 0 ? <p className="local-help">No collections yet. Gather a few references around what matters to you.</p> : <div className="collection-grid">{collections.map(collection => <CollectionEditor key={`${collection.id}:${collection.name}`} collection={collection} disabled={locked} run={run} />)}</div>}
       </section>
     </>}
     <section id="backups" aria-labelledby="backups-heading" className="library-section backup-panel">
