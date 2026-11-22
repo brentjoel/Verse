@@ -9,4 +9,3 @@ export function skyPhase(hour: number): SkyPhase {
   return "night";
 }
 
-export const PHASE_LABEL: Record<SkyPhase, string> = { dawn: "Morning light", day: "Daylight", dusk: "Evening glow", night: "Night" };
