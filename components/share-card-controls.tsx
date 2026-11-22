@@ -2,6 +2,7 @@
 
 import { Share2 } from "lucide-react";
 import { QuietDialog } from "@/components/quiet-dialog";
+import { Constellation } from "@/components/constellation";
 import { useEffect, useRef, useState } from "react";
 
 export function ShareCardControls({ reference }: { reference: string }) {
@@ -55,7 +56,7 @@ export function ShareCardControls({ reference }: { reference: string }) {
 
   return <QuietDialog label="Share" title="Share a little light" icon={<Share2 size={17} aria-hidden="true" />} onOpen={open}><div className="share-controls">
     {/* eslint-disable-next-line @next/next/no-img-element -- local blob preview; next/image cannot optimize object URLs */}
-    {preview ? <img className="share-preview" src={preview} alt={`Preview of the World English Bible card for ${reference}`} /> : <div className="share-preview share-preview-loading" role="status">Preparing your card...</div>}
+    {preview ? <img className="share-preview" src={preview} alt={`Preview of the World English Bible card for ${reference}`} /> : <div className="share-preview share-preview-loading" role="status"><Constellation twinkle /><span>Preparing your card.</span></div>}
     <p className="caption">Public-domain text only. Cards use WEB (World English Bible), even when you read another translation.</p>
     <div className="local-actions">
       <button className="pill" type="button" disabled={busy} onClick={() => void deliver("share")}>{busy ? "Preparing..." : "Share card"}</button>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Constellation } from "@/components/constellation";
+import { Constellation, QuietLoading } from "@/components/constellation";
 import { getEmotionById, getSpecificEmotionByIds } from "@/lib/emotions";
 import { getPersonalStore, usePersonalStorage } from "@/lib/browser-storage";
 import { localClock } from "@/lib/streaks";
@@ -15,7 +15,7 @@ const plural = (count: number, one: string, many: string) => `${count} ${count =
 export function YearRecap() {
   const snapshot = usePersonalStorage();
   const [chosen, setChosen] = useState("");
-  if (!snapshot.ready) return <p className="content-notice skeleton" role="status">Gathering your year...</p>;
+  if (!snapshot.ready) return <QuietLoading>Gathering your year in light.</QuietLoading>;
   if (snapshot.mode === "blocked") return <p className="content-notice">Your saved data needs care. <Link href="/my-verses#backups">Open backup and recovery</Link> first.</p>;
   const data = snapshot.envelope.data;
   const years = recapYears(data);
