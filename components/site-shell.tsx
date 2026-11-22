@@ -8,6 +8,7 @@ import { ThemeSync } from "@/components/theme-sync";
 import { DebugOverlay } from "@/components/debug-overlay";
 import { ShortcutsDialog } from "@/components/shortcuts-dialog";
 import { AmbientSky } from "@/components/ambient-sky";
+import { MagneticPills } from "@/components/magnetic-pills";
 
 export function SiteShell({ children, ambient = true }: Readonly<{ children: ReactNode; ambient?: boolean }>) {
   return (
@@ -24,6 +25,7 @@ export function SiteShell({ children, ambient = true }: Readonly<{ children: Rea
       </header>
       <ThemeSync />
       <DebugOverlay />
+      <MagneticPills />
       <Suspense><SiteNav /></Suspense>
       <StorageNotice />
       <main id="main-content" className="site-main" tabIndex={-1}>{children}</main>

@@ -26,6 +26,9 @@
 .site-nav a[aria-current="page"] { color: var(--ink); }
 .site-nav a[aria-current="page"]::after { opacity: 1; transform: none; view-transition-name: active-nav; }
 .site-nav a:focus-visible { color: var(--ink); }
+/* Tab press: the icon dips and springs back; the active dot travels on the same spring (view transition). */
+.site-nav a svg { transition: scale var(--motion-spring) var(--ease-spring); }
+.site-nav a:active svg { scale: .86; transition-duration: 90ms; transition-timing-function: var(--ease-out); }
 
 /* Desktop: the same links float in the header. */
 @media (min-width: 900px) {

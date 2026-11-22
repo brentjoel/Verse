@@ -27,7 +27,7 @@ function subscribe(onChange: () => void) {
 export function DailyVerse({ verses }: { verses: Readonly<Record<string, string>> }) {
   const { marks } = useMarks();
   const date = useSyncExternalStore(subscribe, localDateSnapshot, () => "");
-  if (!date) return <div><p role="status">Finding today&apos;s verse on your device...</p><noscript><p>Today&apos;s local verse needs JavaScript. <Link className="quiet-link" href="/emotions/hopeful" prefetch={false}>Find a hopeful passage</Link></p></noscript></div>;
+  if (!date) return <div><p role="status" className="morning-star morning-star-pending"><Sparkle size={20} strokeWidth={1.5} aria-hidden="true" /><span aria-hidden="true">Morning star</span><span className="sr-only">Finding today&apos;s verse on your device</span></p><noscript><p>Today&apos;s local verse needs JavaScript. <Link className="quiet-link" href="/emotions/hopeful" prefetch={false}>Find a hopeful passage</Link></p></noscript></div>;
   const [year, month, day] = date.split("-").map(Number);
   const today = new Date(year, month - 1, day);
   const reference = dailyWithMarks(localDayOfYear(today), dailyReference(today, Object.keys(verses).sort()), marks);

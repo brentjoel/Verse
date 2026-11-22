@@ -6,6 +6,8 @@ import { join } from "node:path";
 export const test = base.extend({
   context: async ({ context, baseURL }, provide) => {
     await context.addCookies([{ name: "translation", value: "web", url: baseURL! }]);
+    // The first-visit intro is pinned as seen; its own test opts back in.
+    await context.addInitScript(() => { try { localStorage.setItem("verselight-intro", "seen"); } catch { /* storage may be blocked on purpose */ } });
     await provide(context);
   },
 });
