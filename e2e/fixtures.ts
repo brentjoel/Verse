@@ -33,3 +33,8 @@ export async function noHorizontalOverflow(page: Page) {
   const { scroll, width } = await page.evaluate(() => ({ scroll: document.documentElement.scrollWidth, width: innerWidth }));
   expect(scroll, "page must not scroll sideways").toBeLessThanOrEqual(width);
 }
+
+/** Waits for one-shot entrances (fades, staggers) to finish so contrast checks see the settled page, not a frame mid-fade. */
+export async function settleAnimations(page: Page) {
+  await page.evaluate(() => Promise.all(document.getAnimations().filter(animation => animation.effect?.getComputedTiming().iterations !== Infinity).map(animation => animation.finished.catch(() => undefined))));
+}

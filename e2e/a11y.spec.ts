@@ -1,5 +1,5 @@
 import AxeBuilder from "@axe-core/playwright";
-import { test, expect } from "./fixtures";
+import { test, expect, settleAnimations } from "./fixtures";
 
 const routes = ["/", "/emotions/anxious", "/emotions/anxious/overwhelmed", "/compare?ref=Psalm%2061%3A2", "/my-verses", "/journal", "/breathe", "/year", "/about", "/craft", "/accessibility", "/not-sure", "/path/sad/lonely", "/offline?to=/emotions/sad/lonely"];
 
@@ -29,6 +29,7 @@ for (const theme of ["dark", "light"]) {
       await page.getByRole("main").waitFor();
       await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
       await page.waitForTimeout(500);
+      await settleAnimations(page);
       const { violations } = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
       expect(violations.map((v) => `${route}: ${v.id} (${v.nodes.length}) ${v.nodes[0]?.target.join(" ")}`), route).toEqual([]);
     }
@@ -40,6 +41,7 @@ for (const theme of ["dark", "light"]) {
     await page.addInitScript((value) => { try { localStorage.setItem("verselight-theme", value); } catch { /* ignore */ } }, theme);
     const scan = async (label: string) => {
       await page.waitForTimeout(300);
+      await settleAnimations(page);
       const { violations } = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
       expect(violations.map((v) => `${label}: ${v.id} (${v.nodes.length}) ${v.nodes[0]?.target.join(" ")}`), label).toEqual([]);
     };
