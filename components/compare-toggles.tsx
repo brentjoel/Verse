@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { addTransitionType, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { translations, type TranslationId } from "@/lib/translations";
 
@@ -23,7 +23,7 @@ export function CompareToggles({ reference, from, selected }: { reference: strin
     const query = new URLSearchParams({ submitted: "1", ref: reference });
     if (from) query.set("from", from);
     next.forEach(item => query.append("translations", item));
-    startTransition(() => router.replace(`/compare?${query}`, { scroll: false }));
+    startTransition(() => { addTransitionType("same-page"); router.replace(`/compare?${query}`, { scroll: false }); });
   }
 
   return <div className="compare-toggles js-only" aria-busy={pending}>

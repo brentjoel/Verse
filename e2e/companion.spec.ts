@@ -5,7 +5,9 @@ test.describe("anchor verse", () => {
 
   test("pinning on Results shows the verse on Home and Unpin removes it", async ({ page }) => {
     await page.goto("/emotions/anxious/overwhelmed");
-    await page.locator(".verse-list > li:not([hidden])").getByRole("button", { name: /^Pin/ }).first().click();
+    const verse = page.locator(".verse-list > li:not([hidden])").first();
+    await verse.getByRole("button", { name: "More actions" }).click();
+    await verse.getByRole("button", { name: /^Pin/ }).first().click();
     await page.goto("/");
     const anchor = page.getByRole("region", { name: "Your anchor" });
     await expect(anchor).toContainText("Psalm 61:2");
@@ -235,5 +237,24 @@ test.describe("not sure what I feel", () => {
     await page.getByRole("button", { name: "In my chest, a heaviness" }).click();
     await page.getByRole("button", { name: "Back" }).click();
     await expect(page.getByRole("heading", { name: "Where do you notice it most?" })).toBeVisible();
+  });
+});
+
+test.describe("verse actions", () => {
+  test.use({ reducedMotion: "reduce" });
+
+  test("Save and This spoke to me lead; More reveals Pin, Compare and Share", async ({ page }) => {
+    await page.goto("/emotions/anxious/overwhelmed");
+    const more = page.getByRole("button", { name: "More actions" }).first();
+    await expect(more).toBeVisible();
+    const verse = page.locator(".verse-list > li:not([hidden])").first();
+    await expect(verse.getByRole("button", { name: /^Save/ })).toBeVisible();
+    await expect(verse.getByRole("button", { name: /This spoke to me/ })).toBeVisible();
+    await expect(verse.getByRole("link", { name: /Compare translations/ })).toBeHidden();
+    await more.click();
+    await expect(more).toHaveAttribute("aria-expanded", "true");
+    await expect(verse.getByRole("button", { name: /^Pin/ })).toBeVisible();
+    await expect(verse.getByRole("link", { name: /Compare translations/ })).toBeVisible();
+    await expect(verse.getByRole("button", { name: "Share" })).toBeVisible();
   });
 });

@@ -215,3 +215,7 @@ Every user-facing name (titles, metadata, manifest, wordmark, OG images, share a
 
 ### Quiet states (2026-11-23)
 Loading and empty states share one shape: the constellation mark (softly twinkling while loading, still under reduced motion), one kind line, at most one action. Secondary empties are a plain line, ghost-button rows align to the text edge, and before/after shots live in `docs/screenshots/ui-pass/`.
+
+### UI pass 2a: Night-sky motion system (2026-11-23)
+Shared tokens (fast, base, slow, scene, stagger, a damped spring); `<main>` is its own view-transition snapshot that rises on forward routes and settles on back links, and a feeling's title travels from its row or the wheel to Results. The wheel gathers toward the chosen light, Results settles in around a readable verse, the Journal sky twinkles in and draws its lines, sheets spring, themes crossfade.
+Results: Save and This spoke to me lead with Pin, Compare and Share behind More; the ending aligns to the text edge; the dawn glow has no visible edge. Reduced motion drops every stagger and transition.
