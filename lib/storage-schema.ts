@@ -19,9 +19,9 @@ export interface SavedVerse {
   emotionId?: string; specificEmotionId?: string; createdAt: string;
 }
 export interface Collection { id: string; name: string; savedVerseIds: string[]; createdAt: string; updatedAt: string }
-export const INTENSITIES = ["low", "medium", "high"] as const;
+const INTENSITIES = ["low", "medium", "high"] as const;
 export type Intensity = typeof INTENSITIES[number];
-export const CHECK_IN_ANSWERS = ["lighter", "same", "heavier"] as const;
+const CHECK_IN_ANSWERS = ["lighter", "same", "heavier"] as const;
 export type CheckInAnswer = typeof CHECK_IN_ANSWERS[number];
 /** Version 2 adds the optional wheel intensity and the later "How is your heart now?" answer. */
 export interface MoodEntry { id: string; emotionId: string; specificEmotionId: string; note?: string; localDate: string; createdAt: string; intensity?: Intensity; checkIn?: { answer: CheckInAnswer; on: string } }

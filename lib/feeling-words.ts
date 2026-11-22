@@ -65,7 +65,7 @@ const INTENSIFIERS = new Set(["so", "very", "really", "extremely", "completely",
 const NEGATED_SHIFT: Readonly<Record<string, string>> = { hopeful: "doubtful", grateful: "sad" };
 
 /** A light, consistent stemmer: the same rules apply to the lexicon and the input, so only consistency matters. */
-export function stem(word: string): string {
+function stem(word: string): string {
   let w = word;
   if (w.length > 4 && w.endsWith("ies")) w = `${w.slice(0, -3)}y`;
   else if (w.length > 3 && w.endsWith("s") && !/(ss|us|is)$/.test(w)) w = w.slice(0, -1);
