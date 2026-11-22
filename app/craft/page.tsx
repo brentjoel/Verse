@@ -22,7 +22,7 @@ const numbers = [
 export default function CraftPage() {
   return <SiteShell>
     <div className="results-wrap license-copy">
-      <Link href="/" className="back-link">&#8592; Home</Link>
+      <Link href="/" className="back-link" transitionTypes={["nav-back"]}>&#8592; Home</Link>
       <h1>How it&apos;s built</h1>
       <p>Selah Sky is a small app with a few hard rules: your notes never leave your browser, licensed Scripture is never stored, and the page stays fast on a modest phone. This is how those rules shaped the code.</p>
 

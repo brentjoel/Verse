@@ -81,7 +81,7 @@
 .wheel-lock span { font-size: clamp(var(--text-caption), 2.4cqw, var(--text-footnote)); font-weight: var(--weight-strong); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
 .wheel-lock:focus-visible { outline-offset: -6px; border-radius: 50%; }
 .wheel-center .specific-link { display: grid; justify-items: center; gap: 4px; padding: var(--space-2); border-radius: 50%; font-size: clamp(var(--text-title-3), 5.4cqw, var(--text-title-1)); letter-spacing: -0.03em; line-height: 1.1; color: var(--ink); }
-.wheel-center .specific-link > span { font-size: var(--text-body); color: var(--emotion); }
+.wheel-center .specific-link > span:last-child { font-size: var(--text-body); color: var(--emotion); }
 .wheel-center .local-help { position: absolute; top: 100%; width: 240px; }
 .wheel-options { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-1); }
 /* Eight chips sit as two even rows of four instead of seven and an orphan. */
@@ -107,10 +107,10 @@
 .specific-grid { border-top: 1px solid var(--hairline); }
 .specific-grid > li { border-bottom: 1px solid var(--hairline); }
 .specific-link { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); min-height: 72px; padding: var(--space-2) 2px; font-size: var(--text-title-2); letter-spacing: -0.02em; line-height: 1.15; }
-.specific-link > span { color: var(--ink-3); transition: transform var(--motion-base) var(--ease-out), color var(--motion-fast); }
-.specific-link:focus-visible > span { color: var(--emotion); transform: translateX(4px); }
+.specific-link > span:last-child { color: var(--ink-3); transition: transform var(--motion-base) var(--ease-out), color var(--motion-fast); }
+.specific-link:focus-visible > span:last-child { color: var(--emotion); transform: translateX(4px); }
 .specific-link[aria-disabled="true"] { color: var(--ink-3); }
-@media (hover: hover) and (pointer: fine) { .detail-wrap .specific-link:hover > span { color: var(--emotion); transform: translateX(4px); } }
+@media (hover: hover) and (pointer: fine) { .detail-wrap .specific-link:hover > span:last-child { color: var(--emotion); transform: translateX(4px); } }
 
 /* ---------- Results ---------- */
 .results-wrap { display: grid; gap: var(--space-2); }
@@ -142,8 +142,35 @@
 .prayer-block { margin-top: var(--space-4); padding-top: var(--space-3); border-top: 1px solid var(--hairline); }
 .prayer-block .prayer-copy { font-size: var(--text-title-3); line-height: 1.55; font-weight: var(--weight-regular); color: var(--ink); }
 .carousel-mode { display: flex; margin-top: var(--space-2); }
-.results-ending { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); margin-top: var(--space-6); padding-top: var(--space-5); border-top: 1px solid var(--hairline); }
-.results-ending p { flex-basis: 100%; font-size: var(--text-callout); font-weight: var(--weight-regular); color: var(--ink-3); }
+/* Ending: a quiet line, a row of ghost links whose text sits on the column edge, then the one pill. */
+.results-ending { display: grid; justify-items: start; gap: var(--space-2); margin-top: var(--space-6); padding-top: var(--space-5); border-top: 1px solid var(--hairline); }
+.results-ending p { font-size: var(--text-callout); font-weight: var(--weight-regular); color: var(--ink-3); }
+.results-ending-links { display: flex; flex-wrap: wrap; gap: 0 var(--space-1); margin-inline-start: calc(var(--space-3) * -1); }
+
+/* Two actions lead (Save, This spoke to me); Pin, Compare and Share wait behind More. */
+.verse-more { display: flex; flex-wrap: wrap; align-items: center; gap: inherit; }
+:root[data-js="true"] .verse-more:not([data-open]) { display: none; }
+.verse-more .compare-link:not(:hover, :focus-visible) { color: var(--ink-3); }
+.verse-actions .more-toggle { width: 44px; padding: 0; }
+.more-toggle svg { transition: transform var(--motion-base) var(--ease-out); }
+.more-toggle[aria-expanded="true"] { background: var(--veil); }
+.more-toggle[aria-expanded="true"] svg { transform: rotate(90deg); }
+@keyframes more-in { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: no-preference) {
+  .verse-more[data-open] > * { animation: more-in var(--motion-slow) var(--ease-out) backwards; }
+  .verse-more[data-open] > :nth-child(2) { animation-delay: var(--stagger); }
+  .verse-more[data-open] > :nth-child(3) { animation-delay: calc(var(--stagger) * 2); }
+}
+
+/* Verse arrival: the passage is readable at once; what surrounds it settles in after, in reading order.
+   Only on arrival: once the reader moves between verses the carousel marks itself and this stops. */
+@media (prefers-reduced-motion: no-preference) {
+  .verse-list:not([data-moved]) .reading-verse > :is(.passage-credit, .passage-note, .verse-pagination, .verse-actions, .reflect-section) { animation: arrive var(--motion-slow) var(--ease-out) backwards; animation-delay: calc(160ms + var(--stagger) * var(--order, 0)); }
+  .verse-list:not([data-moved]) .reading-verse > .verse-pagination { --order: 1; }
+  .verse-list:not([data-moved]) .reading-verse > .verse-actions { --order: 2; }
+  .verse-list:not([data-moved]) .reading-verse > .reflect-section { --order: 3; }
+  .results-wrap > :is(.results-ending, .help-note) { animation: soft-fade var(--motion-slow) var(--ease-out) 440ms backwards; }
+}
 
 /* Dawn burst: a handful of stars rise behind the reference and settle. */
 .dawn-reveal { position: relative; isolation: isolate; }
@@ -152,7 +179,8 @@
 .dawn-skip:not(:focus-visible) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .dawn-burst { position: relative; height: 84px; max-width: 420px; margin-bottom: var(--space-1); pointer-events: none; }
 .dawn-burst i { position: absolute; left: calc(2% + var(--x) * 0.94%); top: calc(var(--y) * 1%); width: var(--s, 3px); height: var(--s, 3px); border-radius: 50%; background: var(--emotion); box-shadow: 0 0 8px var(--emotion); opacity: .7; }
-.dawn-reveal::before { content: ""; position: absolute; inset: -40px 0 auto; height: 360px; z-index: -1; pointer-events: none; background: radial-gradient(ellipse 50% 45% at 50% 18%, color-mix(in srgb, var(--emotion) 10%, transparent), transparent 70%); }
+/* The glow fades to nothing well inside its own box (closest-side), so no edge can show. */
+.dawn-reveal::before { content: ""; position: absolute; inset: -150px 0 auto; height: 480px; z-index: -1; pointer-events: none; background: radial-gradient(closest-side, color-mix(in srgb, var(--emotion) 10%, transparent), color-mix(in srgb, var(--emotion) 4%, transparent) 55%, transparent); }
 
 /* ---------- Compare ---------- */
 .compare-wrap .results-heading { margin: var(--space-4) 0 var(--space-5); }
@@ -465,3 +493,15 @@
 .local-actions:has(> .compare-link:first-child) { margin-inline-start: calc(var(--space-3) * -1); }
 .backup-panel > p + p { margin-top: var(--space-1); }
 .library-section .local-help + :is(.local-form, form) { margin-top: var(--space-3); }
+
+/* Choosing on the wheel: the sky gathers toward the chosen light, and the words around it step back. */
+.wheel-options, .wheel-intensity, .wheel-intensity-note { transition: opacity var(--motion-slow) var(--ease-out); }
+.wheel-picker[data-dawning] :is(.wheel-ring-labels span:not([data-selected="true"]), .wheel-options, .wheel-intensity, .wheel-intensity-note) { opacity: .25; }
+
+/* Journal sky: each visit twinkles in, then the lines between consecutive days draw themselves. */
+@keyframes star-in { 0% { opacity: 0; transform: scale(.2); } 55% { opacity: 1; transform: scale(1.4); } 100% { opacity: 1; transform: none; } }
+@keyframes line-draw { from { transform: scale(0); } to { transform: none; } }
+@media (prefers-reduced-motion: no-preference) {
+  .night-star > span { animation: star-in 700ms var(--ease-out) backwards; animation-delay: calc(120ms + var(--d, 0ms)); }
+  .night-lines line { transform-box: view-box; animation: line-draw 560ms var(--ease-move) backwards; animation-delay: calc(320ms + var(--d, 0ms)); }
+}

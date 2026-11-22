@@ -21,6 +21,8 @@ export function VerseCarousel({ children, memoryKey }: { children: ReactNode[]; 
   const region = useRef<HTMLDivElement>(null);
   const start = useRef<{ x: number; y: number } | null>(null);
   const [direction, setDirection] = useState(1);
+  // After the first move the arrival stagger stops; switching verses has its own slide.
+  const [moved, setMoved] = useState(false);
   const activeIndex = useRef(0);
   useEffect(() => { activeIndex.current = index; }, [index]);
   const select = (item: number, travel: number) => {
@@ -30,6 +32,7 @@ export function VerseCarousel({ children, memoryKey }: { children: ReactNode[]; 
     startTransition(() => {
       addTransitionType(travel > 0 ? "verse-next" : "verse-previous");
       setDirection(travel > 0 ? 1 : -1);
+      setMoved(true);
       setIndex(item);
     });
   };
@@ -45,7 +48,7 @@ export function VerseCarousel({ children, memoryKey }: { children: ReactNode[]; 
     if (event.key === "ArrowLeft" || event.key === "ArrowRight") { event.preventDefault(); move(event.key === "ArrowLeft" ? -1 : 1); }
   }}>
     {enhanced && <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{list ? `${children.length} verses` : `Verse ${index + 1} of ${children.length}`}</p>}
-    <ViewTransition default="none" share={{ "verse-next": "verse-next", "verse-previous": "verse-previous", default: "none" }} update={{ "verse-next": "verse-next", "verse-previous": "verse-previous", default: "none" }}><ul data-direction={direction} className={`verse-list${enhanced && !list ? " carousel-single" : ""}`} onTouchStart={event => { const touch = event.touches[0]; start.current = { x: touch.clientX, y: touch.clientY }; }} onTouchEnd={event => {
+    <ViewTransition default="none" share={{ "verse-next": "verse-next", "verse-previous": "verse-previous", default: "none" }} update={{ "verse-next": "verse-next", "verse-previous": "verse-previous", default: "none" }}><ul data-direction={direction} data-moved={moved || list || undefined} className={`verse-list${enhanced && !list ? " carousel-single" : ""}`} onTouchStart={event => { const touch = event.touches[0]; start.current = { x: touch.clientX, y: touch.clientY }; }} onTouchEnd={event => {
       const touch = event.changedTouches[0];
       if (start.current && !list && !(event.target instanceof Element && event.target.closest("button, a, input, summary, dialog"))) {
         const dx = touch.clientX - start.current.x, dy = touch.clientY - start.current.y;

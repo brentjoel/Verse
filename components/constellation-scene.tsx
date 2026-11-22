@@ -10,6 +10,8 @@ type Props = {
   inner: boolean;
   innerCount: number;
   intensity: "low" | "medium" | "high";
+  /** A feeling was chosen: the sky gathers toward the center while Results loads. */
+  dawning?: boolean;
   rotation: number;
   lean?: readonly number[];
   tier: RenderTier;
@@ -24,7 +26,7 @@ const vertexShader = /* glsl */ `
   attribute float aSize;
   attribute float aPhase;
   attribute float aRing;
-  uniform float uTime, uOuterRot, uInnerRot, uInner, uIntensity, uPixel, uSelectedInner, uDaylight;
+  uniform float uTime, uOuterRot, uInnerRot, uInner, uIntensity, uPixel, uSelectedInner, uDaylight, uDawn;
   uniform float uSelect[${SECTORS}];
   uniform float uLean[${SECTORS}];
   uniform vec3 uColors[${SECTORS}];
@@ -52,20 +54,22 @@ const vertexShader = /* glsl */ `
       color = uColors[i];
       float select = s < 0.0 ? 0.0 : uSelect[i];
       float lean = s < 0.0 ? 0.0 : uLean[i];
-      float radial = 1.0 + breathe + select * 0.035 + lean * 0.05 + uInner * 0.18;
-      p.xy = turn(p.xy, uOuterRot) * radial;
+      float radial = (1.0 + breathe + select * 0.035 + lean * 0.05 + uInner * 0.18) * mix(1.0, 0.62, uDawn);
+      p.xy = turn(p.xy, uOuterRot + uDawn * 0.35) * radial;
       alpha = s < 0.0 ? 0.3 * twinkle : mix(0.55, 1.0, max(select, lean)) * twinkle;
       size *= 1.0 + select * 0.45 + lean * 0.35;
-      alpha *= mix(1.0, 0.2, uInner);
+      alpha *= mix(1.0, 0.2, uInner) * (1.0 - 0.85 * uDawn);
     } else {
       // Inner feeling ring blooms from the center when an emotion is chosen.
       float sub = s;
       float bloom = smoothstep(0.0, 1.0, uInner);
       float selected = 1.0 - min(abs(sub - uSelectedInner), 1.0);
-      p.xy = turn(p.xy, uInnerRot) * (0.9 * bloom) * (1.0 + breathe + selected * 0.04 * uIntensity);
-      color = mix(uInnerColor, vec3(1.0), 0.08 * sub);
-      alpha = bloom * mix(0.45, 1.0, selected) * twinkle;
-      size *= (0.8 + 0.3 * uIntensity) * (1.0 + selected * 0.4);
+      // On choosing, the chosen feeling's light draws in and brightens; the others fade back.
+      float gather = mix(1.0, mix(0.42, 0.1, selected), uDawn);
+      p.xy = turn(p.xy, uInnerRot + uDawn * 0.9) * (0.9 * bloom) * (1.0 + breathe + selected * 0.04 * uIntensity) * gather;
+      color = mix(uInnerColor, vec3(1.0), 0.08 * sub + 0.25 * uDawn * selected);
+      alpha = bloom * mix(0.45, 1.0, selected) * twinkle * mix(1.0, mix(0.25, 1.25, selected), uDawn);
+      size *= (0.8 + 0.3 * uIntensity) * (1.0 + selected * (0.4 + 0.5 * uDawn));
     }
 
     // Soft brightening near the pointer on fine pointers.
@@ -148,7 +152,7 @@ export default function ConstellationScene(props: Props) {
     const colors = Array.from({ length: SECTORS }, () => new THREE.Color());
     const uniforms = {
       uTime: { value: 0 }, uOuterRot: { value: 0 }, uInnerRot: { value: 0 }, uInner: { value: 0 },
-      uIntensity: { value: 1 }, uPixel: { value: 3 }, uSelectedInner: { value: 0 }, uDaylight: { value: 0 },
+      uIntensity: { value: 1 }, uPixel: { value: 3 }, uSelectedInner: { value: 0 }, uDaylight: { value: 0 }, uDawn: { value: 0 },
       uSelect: { value: new Array<number>(SECTORS).fill(0) }, uLean: { value: new Array<number>(SECTORS).fill(0) },
       uColors: { value: colors }, uInnerColor: { value: new THREE.Color() }, uPointer: { value: new THREE.Vector2(9, 9) },
     };
@@ -223,6 +227,7 @@ export default function ConstellationScene(props: Props) {
       uniforms.uOuterRot.value = outerRot;
       uniforms.uInnerRot.value = innerRot;
       uniforms.uInner.value += ((t.inner ? 1 : 0) - uniforms.uInner.value) * (1 - Math.exp(-delta * 4));
+      uniforms.uDawn.value += ((t.dawning ? 1 : 0) - uniforms.uDawn.value) * (1 - Math.exp(-delta * 2.6));
       uniforms.uIntensity.value += ((t.intensity === "low" ? 0.6 : t.intensity === "high" ? 1.4 : 1) - uniforms.uIntensity.value) * ease;
       const innerSpan = Math.PI * 2 / Math.max(1, t.innerCount);
       uniforms.uSelectedInner.value = ((Math.round(-t.rotation / innerSpan) % t.innerCount) + t.innerCount) % t.innerCount;
