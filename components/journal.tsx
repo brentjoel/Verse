@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { RemovalButton } from "@/components/removal-button";
-import { Constellation } from "@/components/constellation";
+import { Constellation, QuietLoading } from "@/components/constellation";
 import { NightSky, type GraceVerse } from "@/components/night-sky";
 import { PrintButton, PrintJournal } from "@/components/print-journal";
 import { FutureLetters } from "@/components/future-letters";
@@ -58,7 +58,7 @@ export function Journal({ graceVerse }: { graceVerse: GraceVerse }) {
     catch { setError("We could not save that change. Please try again."); }
     finally { setBusy(false); }
   }
-  if (!snapshot.ready) return <p className="content-notice skeleton" role="status">Opening your journal...</p>;
+  if (!snapshot.ready) return <QuietLoading>Gathering your sky.</QuietLoading>;
   if (snapshot.mode === "blocked") return <p className="content-notice">Your saved data needs care. <Link href="/my-verses#backups">Open backup and recovery</Link> to keep a copy and choose your next step.</p>;
   if (getPersonalStore().isLocked()) return <JournalLockGate />;
   const { moodEntries, activityDays, streakState, badges, lock } = snapshot.envelope.data;
