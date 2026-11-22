@@ -15,6 +15,9 @@ import { AnchorButton } from "@/components/anchor-verse";
 import { MarkedNote, SpokeButton } from "@/components/spoke-mark";
 import { ShareCardControls } from "@/components/share-card-controls";
 import { DawnReveal } from "@/components/dawn-reveal";
+import { MoreActions } from "@/components/more-actions";
+import { ViewTransition } from "react";
+import { feelingTitleName } from "@/lib/motion";
 import { HelpNote } from "@/components/help-note";
 import { showsHelpNote } from "@/lib/help";
 import { UndoToast } from "@/components/undo-toast";
@@ -57,9 +60,9 @@ async function ResultsContent({ emotion, specific, searchParams }: { emotion: Em
     <>
       <UndoToast path={returnTo} />
       <div data-emotion={emotion.id} className="results-wrap">
-        <Link href={`/emotions/${emotion.id}`} className="back-link">&#8592; {emotion.name} feelings</Link>
+        <Link href={`/emotions/${emotion.id}`} className="back-link" transitionTypes={["nav-back"]}>&#8592; {emotion.name} feelings</Link>
         <div className="results-heading">
-          <h1><span className="emotion-dot" aria-hidden="true" />{specific.name}</h1>
+          <h1><span className="emotion-dot" aria-hidden="true" /><ViewTransition name={feelingTitleName(emotion.id, specific.id)} share="feeling-title" default="none"><span className="feeling-title">{specific.name}</span></ViewTransition></h1>
           <p>Take your time. Let a question or a prayer be a place to begin.</p>
         </div>
         <FocusToggle />
@@ -77,9 +80,11 @@ async function ResultsContent({ emotion, specific, searchParams }: { emotion: Em
                     <div className="verse-actions">
                       <SaveVerseButton reference={reference} translationId={passage.translationId} emotionId={emotion.id} specificEmotionId={specific.id} />
                       <SpokeButton reference={reference} />
-                      <AnchorButton reference={reference} />
-                      <Link className="compare-link" data-tooltip="Compare translations" href={`/compare?${new URLSearchParams({ ref: reference, from: returnTo })}`} aria-label={`Compare translations of ${reference}`}><ArrowUpRight size={17} aria-hidden="true" />Compare</Link>
-                      <ShareCardControls reference={reference} />
+                      <MoreActions>
+                        <AnchorButton reference={reference} />
+                        <Link className="compare-link" data-tooltip="Compare translations" href={`/compare?${new URLSearchParams({ ref: reference, from: returnTo })}`} aria-label={`Compare translations of ${reference}`}><ArrowUpRight size={17} aria-hidden="true" />Compare</Link>
+                        <ShareCardControls reference={reference} />
+                      </MoreActions>
                     </div>
                     <details className="reflect-section"><summary>Reflect</summary>
                       {prompt ? <>
@@ -97,10 +102,12 @@ async function ResultsContent({ emotion, specific, searchParams }: { emotion: Em
         {showsHelpNote(emotion.id) && <HelpNote />}
         <nav className="results-ending" aria-label="What next">
           <p>Stay as long as you like. When you are ready:</p>
-          {references.length > 0 && <Link href={more ? returnTo : `${returnTo}?more`} className="compare-link">{more ? "Back to today's verses" : "Read 4 more verses"}</Link>}
-          <Link href={`/path/${emotion.id}/${specific.id}`} className="compare-link">Walk a seven-day path</Link>
-          <Link href={`/emotions/${emotion.id}`} className="compare-link">Try another feeling</Link>
-          <Link href="/" className="pill">Back to the wheel</Link>
+          <div className="results-ending-links">
+            {references.length > 0 && <Link href={more ? returnTo : `${returnTo}?more`} className="compare-link">{more ? "Back to today's verses" : "Read 4 more verses"}</Link>}
+            <Link href={`/path/${emotion.id}/${specific.id}`} className="compare-link">Walk a seven-day path</Link>
+            <Link href={`/emotions/${emotion.id}`} className="compare-link" transitionTypes={["nav-back"]}>Try another feeling</Link>
+          </div>
+          <Link href="/" className="pill" transitionTypes={["nav-back"]}>Back to the wheel</Link>
         </nav>
       </div>
     </>

@@ -79,15 +79,26 @@
   border: 1px solid var(--hairline); border-radius: var(--radius-panel);
   background: var(--canvas); color: var(--ink); overflow: auto;
 }
-.quiet-dialog[open], .sheet[open] { animation: arrive var(--motion-slow) var(--ease-out) both; }
-.quiet-dialog::backdrop, .sheet::backdrop { background: var(--scrim); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+/* Open on a damped spring, close faster with a plain ease-out. Browsers without @starting-style just open and close. */
+.quiet-dialog, .sheet {
+  opacity: 0; transform: translateY(12px) scale(.98);
+  transition: opacity var(--motion-base) var(--ease-out), transform var(--motion-base) var(--ease-out), overlay var(--motion-base) allow-discrete, display var(--motion-base) allow-discrete;
+}
+.quiet-dialog[open], .sheet[open] { opacity: 1; transform: none; transition-duration: var(--motion-slow), var(--motion-spring), var(--motion-spring), var(--motion-spring); transition-timing-function: var(--ease-out), var(--ease-spring); }
+@starting-style { .quiet-dialog[open], .sheet[open] { opacity: 0; transform: translateY(12px) scale(.98); } }
+.quiet-dialog::backdrop, .sheet::backdrop { background: var(--scrim); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); opacity: 0; transition: opacity var(--motion-base) var(--ease-out), overlay var(--motion-base) allow-discrete, display var(--motion-base) allow-discrete; }
+.quiet-dialog[open]::backdrop, .sheet[open]::backdrop { opacity: 1; }
+@starting-style { .quiet-dialog[open]::backdrop, .sheet[open]::backdrop { opacity: 0; } }
 .dialog-heading { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-4); }
 .dialog-heading h2 { font-size: var(--text-title-2); letter-spacing: -0.02em; }
+/* The settings sheet rises from the bottom edge on phones and slides in from the side on wider screens. */
 @media (max-width: 639px) {
-  .sheet { width: 100%; max-width: none; margin: auto 0 0; border-radius: var(--radius-panel) var(--radius-panel) 0 0; border-bottom: 0; padding-bottom: max(var(--space-5), env(safe-area-inset-bottom)); }
+  .sheet { width: 100%; max-width: none; margin: auto 0 0; border-radius: var(--radius-panel) var(--radius-panel) 0 0; border-bottom: 0; padding-bottom: max(var(--space-5), env(safe-area-inset-bottom)); opacity: 1; transform: translateY(100%); }
+  @starting-style { .sheet[open] { opacity: 1; transform: translateY(100%); } }
 }
 @media (min-width: 640px) {
-  .sheet { margin: 12px 12px 12px auto; height: calc(100svh - 24px); max-height: none; width: 420px; }
+  .sheet { margin: 12px 12px 12px auto; height: calc(100svh - 24px); max-height: none; width: 420px; transform: translateX(32px); }
+  @starting-style { .sheet[open] { opacity: 0; transform: translateX(32px); } }
 }
 .sheet-group + .sheet-group { margin-top: var(--space-5); }
 .sheet-group h3 { margin-bottom: var(--space-2); font-size: var(--text-footnote); font-weight: var(--weight-strong); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }

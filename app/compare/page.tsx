@@ -29,7 +29,7 @@ async function Comparison({ searchParams }: { searchParams: Promise<Query> }) {
   const { ids, error } = parseCompareTranslations(query.translations ?? (query.submitted ? [] : undefined), preferred);
   const passages = reference && !error ? await Promise.all(ids.map(id => getVersePassage(reference, id))) : [];
   return <div className="compare-wrap">
-    <Link className="back-link" href={from ?? "/"}>&#8592; {from ? "Back to your verses" : "Choose a feeling"}</Link>
+    <Link className="back-link" transitionTypes={["nav-back"]} href={from ?? "/"}>&#8592; {from ? "Back to your verses" : "Choose a feeling"}</Link>
     <div className="results-heading"><h1 className={reference ? "compare-reference" : undefined}>{reference ?? "Compare Scripture"}</h1><p>Take a little time with the words. Notice what speaks to you.</p></div>
     {!reference ? <ContentNotice>This reference is not in our collection yet. Choose a feeling to find a verse to compare.</ContentNotice> : <>
       {query.from !== undefined && !from && <p className="comparison-notice" role="status">We could not find the results page in this link. You can choose a feeling to begin again.</p>}

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Settings2, X } from "lucide-react";
 import { getPersonalStore, usePersonalStorage } from "@/lib/browser-storage";
 import { applyThemeChoice, resolveTextSize, resolveTheme, storedBaseTheme, type TextSize, type ThemeChoice } from "@/lib/theme";
-import { writeTextSize, writeTheme } from "@/lib/root-preferences";
+import { crossfadeTheme, writeTextSize, writeTheme } from "@/lib/root-preferences";
 import { readTranslationCookie, setTranslationCookie } from "@/lib/translation-client";
 import { translations, type TranslationId } from "@/lib/translations";
 
@@ -36,7 +36,8 @@ export function SettingsSheet() {
   function chooseTheme(choice: ThemeChoice) {
     const next = applyThemeChoice(choice, matchMedia("(prefers-color-scheme: light)").matches);
     setTheme(choice);
-    writeTheme(next.theme, next.source);
+    // Like the sky changing: one slow crossfade between themes. Reduced motion switches at once.
+    crossfadeTheme(next.theme, () => writeTheme(next.theme, next.source));
     if (storage.ready) void getPersonalStore().setPreferences({ theme: storedBaseTheme(next.theme) });
   }
   function chooseSize(next: TextSize) {

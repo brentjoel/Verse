@@ -32,6 +32,9 @@ export function WheelPicker({ emotions, children }: { emotions: readonly Emotion
   const [broad, setBroad] = useState<number | null>(null);
   const [intensity, setIntensity] = useState<Intensity>("medium");
   const [intensityChosen, setIntensityChosen] = useState(false);
+  // Choosing a feeling gathers the sky into one point of light while the verses load.
+  const [dawning, setDawning] = useState(false);
+  const gather = useCallback(() => setDawning(true), []);
   const kept = intensityChosen ? intensity : undefined;
   const drag = useRef<number | null>(null);
   const wheelDelta = useRef(0);
@@ -128,7 +131,7 @@ export function WheelPicker({ emotions, children }: { emotions: readonly Emotion
   const choice = options[selected];
   const choose = (index: number) => { setBroad(index); setTurn(0); };
 
-  return <div className="wheel-picker" data-emotion={emotion.id}>
+  return <div className="wheel-picker" data-emotion={emotion.id} data-dawning={dawning || undefined}>
     {/* Keys keep React from reusing the List's nodes as the stage, which would count as a layout shift. */}
     <div key="topbar" className="wheel-topbar">
       {broad === null ? <p id="wheel-help" className="wheel-help">Turn the dial, then press the center.</p>
@@ -144,7 +147,7 @@ export function WheelPicker({ emotions, children }: { emotions: readonly Emotion
         const steps = Math.trunc((drag.current - event.clientX) / 34);
         if (steps) { rotate(steps); drag.current -= steps * 34; }
       }} onPointerUp={event => { drag.current = null; event.currentTarget.dataset.dragging = "false"; }} onPointerCancel={event => { drag.current = null; event.currentTarget.dataset.dragging = "false"; }}>
-        {idle && <SceneRecovery onUnavailable={() => onTierChange("list")}><Scene order={emotions.map(item => item.id)} selected={broad ?? selected} inner={broad !== null} innerCount={emotion.specifics.length} intensity={intensity} rotation={-turn * Math.PI * 2 / options.length} tier={tier as RenderTier} onTierChange={onTierChange} /></SceneRecovery>}
+        {idle && <SceneRecovery onUnavailable={() => onTierChange("list")}><Scene order={emotions.map(item => item.id)} selected={broad ?? selected} inner={broad !== null} innerCount={emotion.specifics.length} intensity={intensity} dawning={dawning} rotation={-turn * Math.PI * 2 / options.length} tier={tier as RenderTier} onTierChange={onTierChange} /></SceneRecovery>}
         <div className="wheel-ring-labels" aria-hidden="true">{options.map((item, index) => {
           const angle = (index - selected) / options.length * Math.PI * 2;
           const radius = broad === null ? "var(--label-r-outer)" : "var(--label-r-inner)";
@@ -157,7 +160,7 @@ export function WheelPicker({ emotions, children }: { emotions: readonly Emotion
         }}>
           {broad === null
             ? <button type="button" className="wheel-lock" aria-describedby="wheel-help" onClick={() => choose(selected)}>{choice.name}<span>Press to choose</span></button>
-            : <FeelingLink dawn emotionId={emotion.id} specificId={choice.id} name={choice.name} intensity={kept} />}
+            : <FeelingLink dawn morph onChoose={gather} emotionId={emotion.id} specificId={choice.id} name={choice.name} intensity={kept} />}
         </div>
       </div>
     </div>
@@ -165,7 +168,7 @@ export function WheelPicker({ emotions, children }: { emotions: readonly Emotion
     <ul className="wheel-options" aria-label={broad === null ? "Feelings" : `Feelings within ${emotion.name}`}>
       {broad === null
         ? emotions.map((option, index) => <li key={option.id}><button type="button" className={index === selected ? "chip is-current" : "chip"} onClick={() => choose(index)}>{option.name}</button></li>)
-        : emotion.specifics.map(option => <li key={option.id}><FeelingLink dawn className={option.id === choice.id ? "chip is-current" : "chip"} emotionId={emotion.id} specificId={option.id} name={option.name} intensity={kept} /></li>)}
+        : emotion.specifics.map(option => <li key={option.id}><FeelingLink dawn onChoose={gather} className={option.id === choice.id ? "chip is-current" : "chip"} emotionId={emotion.id} specificId={option.id} name={option.name} intensity={kept} /></li>)}
     </ul>
     {broad !== null && <>
       <fieldset className="wheel-intensity"><legend>How strong does it feel?</legend>

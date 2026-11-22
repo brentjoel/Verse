@@ -15,7 +15,7 @@ export const metadata = {
 export default function AccessibilityPage() {
   return <SiteShell>
     <div className="results-wrap license-copy">
-      <Link href="/" className="back-link">&#8592; Home</Link>
+      <Link href="/" className="back-link" transitionTypes={["nav-back"]}>&#8592; Home</Link>
       <h1>Accessibility</h1>
       <p>Selah Sky aims to meet WCAG 2.1 level AA. This page says what is supported, how it is checked, and what has not been verified yet.</p>
       <section aria-labelledby="supported">

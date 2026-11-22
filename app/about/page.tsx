@@ -13,7 +13,7 @@ export const metadata = {
 export default function AboutPage() {
   return <SiteShell>
     <div className="results-wrap license-copy">
-      <Link href="/" className="back-link">&#8592; Home</Link>
+      <Link href="/" className="back-link" transitionTypes={["nav-back"]}>&#8592; Home</Link>
       <h1>About Selah Sky</h1>
       <p>A quiet place to meet a feeling with Scripture, a reflection question, and a prayer starter. Everyone is welcome as a guest. This is a strictly noncommercial personal and portfolio project, with no ads, payments, subscriptions, donations, or paid features.</p>
       <section aria-labelledby="privacy">
