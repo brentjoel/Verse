@@ -50,7 +50,6 @@ export function WheelPicker({ emotions, children }: { emotions: readonly Emotion
 
   const rotate = useCallback((steps: number) => {
     setTurn(value => value + steps);
-    try { navigator.vibrate?.(6); } catch { /* Haptics are optional. */ }
   }, []);
 
   // Decide once after hydration; the server and no-JS view is always the List.
