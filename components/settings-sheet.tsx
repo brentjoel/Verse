@@ -54,21 +54,21 @@ export function SettingsSheet() {
           {translations.map(item => <button key={item.id} type="button" className="chip" aria-pressed={translation === item.id} title={item.fullName} onClick={() => chooseTranslation(item.id)}>{item.shortName}</button>)}
           <button type="button" className="chip" disabled aria-disabled="true">NIV · Coming soon</button>
         </div>
-        <p className="caption" style={{ marginTop: 10 }}>Verses use this translation where it is available. WEB is shown, with a note, when NLT cannot load.</p>
+        <p className="caption" style={{ marginTop: 12 }}>Verses use this translation where it is available. WEB is shown, with a note, when NLT cannot load.</p>
       </section>
       <section className="sheet-group" aria-labelledby="settings-theme">
         <h3 id="settings-theme">Theme</h3>
         <div className="segmented" role="group" aria-labelledby="settings-theme">
           {themes.map(item => <button key={item.id} type="button" className="chip" aria-pressed={theme === item.id} onClick={() => chooseTheme(item.id)}>{item.label}</button>)}
         </div>
-        <p className="caption" style={{ marginTop: 10 }}>Bedtime is dimmer and warmer, with less blue light, for reading in a dark room.</p>
+        <p className="caption" style={{ marginTop: 12 }}>Bedtime is dimmer and warmer, with less blue light, for reading in a dark room.</p>
       </section>
       <section className="sheet-group" aria-labelledby="settings-size">
         <h3 id="settings-size">Text size</h3>
         <div className="segmented" role="group" aria-labelledby="settings-size">
           {sizes.map(item => <button key={item.id} type="button" className="chip" aria-pressed={size === item.id} onClick={() => chooseSize(item.id)}>{item.label}</button>)}
         </div>
-        <p className="caption" style={{ marginTop: 10 }}>Changes Scripture and reading text on this device.</p>
+        <p className="caption" style={{ marginTop: 12 }}>Changes Scripture and reading text on this device.</p>
       </section>
     </dialog>
   </>;
