@@ -63,7 +63,6 @@
 @keyframes arrive { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 @keyframes soft-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes saved-toast { 0%, 100% { opacity: 0; transform: translateY(4px); } 12%, 85% { opacity: 1; transform: none; } }
-@keyframes shimmer { 0%, 100% { opacity: .25; } 50% { opacity: .9; } }
 @keyframes verse-out-next { to { opacity: 0; transform: translateX(-16px); } }
 @keyframes verse-in-next { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: none; } }
 @keyframes verse-out-previous { to { opacity: 0; transform: translateX(16px); } }

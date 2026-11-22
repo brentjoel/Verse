@@ -3,11 +3,12 @@
 import dynamic from "next/dynamic";
 import { Component, useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { FeelingLink } from "@/components/feeling-link";
+import { Constellation } from "@/components/constellation";
 import type { Emotion } from "@/lib/emotions";
 import { wrapIndex } from "@/lib/wheel";
 import { initialTier, wheelStart, type QualityTier, type RenderTier } from "@/lib/constellation";
 
-const Scene = dynamic(() => import("@/components/constellation-scene"), { ssr: false, loading: () => <span className="wheel-loading">Gathering the stars...</span> });
+const Scene = dynamic(() => import("@/components/constellation-scene"), { ssr: false, loading: () => <span className="wheel-loading" role="status"><Constellation twinkle /><span>Gathering the stars.</span></span> });
 
 class SceneRecovery extends Component<{ children: ReactNode; onUnavailable: () => void }, { failed: boolean }> {
   state = { failed: false };

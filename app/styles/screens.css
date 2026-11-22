@@ -50,7 +50,7 @@
 .wheel-dial { position: relative; width: 100%; aspect-ratio: 1; touch-action: pan-y; cursor: grab; container-type: inline-size; user-select: none; -webkit-user-select: none; }
 .wheel-dial[data-dragging="true"] { cursor: grabbing; }
 .wheel-canvas, .wheel-canvas canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-.wheel-loading { position: absolute; inset: 0; display: grid; place-items: center; font-size: var(--text-footnote); color: var(--ink-3); }
+.wheel-loading { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: var(--space-2); font-size: var(--text-callout); color: var(--ink-3); }
 .wheel-ring-labels { position: absolute; inset: 0; pointer-events: none; }
 .wheel-peek { display: none; flex-direction: row; align-items: center; gap: var(--space-3); width: 100%; margin-bottom: var(--space-1); padding: var(--space-1) 0; border-radius: var(--radius-panel); color: var(--ink-2); font-size: var(--text-body); font-weight: var(--weight-regular); text-align: start; transition: color var(--motion-fast); }
 /* data-wheel comes from the pre-paint script, so the peek's room exists at first paint (no layout shift). */
@@ -210,7 +210,7 @@
 .journal-calendar td:nth-child(-n+3) [data-tooltip]::after { left: 0; right: auto; transform: none; }
 .journal-calendar td:nth-child(n+5) [data-tooltip]::after { left: auto; right: 0; transform: none; }
 @media (hover: hover) and (pointer: fine) { .calendar-day:hover { background: var(--veil); } }
-.rhythm > p:first-of-type { font-size: var(--text-title-2); letter-spacing: -0.02em; }
+.rhythm > p:first-of-type { font-size: var(--text-title-3); letter-spacing: -0.01em; color: var(--ink-2); }
 .badge-list { display: flex; flex-wrap: wrap; gap: var(--space-1); margin-top: var(--space-3); }
 .badge-list li { display: grid; gap: 2px; padding: var(--space-2) var(--space-3); border-radius: var(--radius-control); background: var(--veil); font-size: var(--text-callout); }
 
@@ -226,7 +226,7 @@
 .state-panel { min-height: 50svh; align-content: center; gap: var(--space-3); }
 .state-panel h1 { font-size: var(--text-display-2); letter-spacing: -0.04em; line-height: 1.05; color: var(--ink); }
 .constellation { color: var(--ink-3); }
-.state-panel .constellation, .content-notice .constellation, .empty-state .constellation { width: 112px; height: 56px; }
+.constellation { width: 112px; height: 56px; flex: none; }
 
 /* ---------- Daily verse dialog ---------- */
 .daily-verse { display: grid; gap: var(--space-3); }
@@ -369,7 +369,7 @@
 @media (prefers-reduced-motion: reduce) { .ambient-sky { display: none; } }
 .license-copy section { display: grid; gap: var(--space-3); }
 .license-copy .back-link { color: var(--ink-3); text-decoration: none; }
-.share-preview-loading { display: grid; place-items: center; aspect-ratio: 1200 / 630; color: var(--ink-3); font-size: var(--text-footnote); }
+.share-preview-loading { display: grid; place-content: center; justify-items: center; gap: var(--space-2); aspect-ratio: 1200 / 630; color: var(--ink-3); font-size: var(--text-callout); }
 .wheel-context { display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--space-3); }
 .wheel-context .heading-sm { display: inline-flex; align-items: center; gap: var(--space-2); }
 
@@ -461,4 +461,7 @@
 .home-tools > div > [role="status"] { padding-inline: var(--space-2); font-size: var(--text-callout); color: var(--ink-3); }
 /* The passage leads; its actions stay one step quieter until hovered or focused. */
 .verse-actions .compare-link:not(:hover, :focus-visible) { color: var(--ink-2); }
-.finder-words .local-actions > .compare-link:first-child { margin-inline-start: calc(var(--space-3) * -1); }
+/* Rows that start with a ghost button line its text up with the column edge, not its hover veil. */
+.local-actions:has(> .compare-link:first-child) { margin-inline-start: calc(var(--space-3) * -1); }
+.backup-panel > p + p { margin-top: var(--space-1); }
+.library-section .local-help + :is(.local-form, form) { margin-top: var(--space-3); }
