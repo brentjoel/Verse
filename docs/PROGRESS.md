@@ -4,7 +4,7 @@ Name: Selah Sky (formerly Verselight; internal keys keep `verselight-*`). Live: 
 
 ## Now
 
-- The roadmap (Phases A to E) is complete and merged. Nothing is queued; open items below are the owner's.
+- v1.0 is complete (2026-11-23): Steps 1 to 9, Phases A to E and both UI passes are merged and live. Nothing is queued; open items below are the owner's.
 
 ## Roadmap (complete; owner decision 2026-11-21)
 
@@ -226,3 +226,6 @@ Motion review fixes: route pages no longer overlap or go blank, reduced-motion t
 
 ### UI pass 2c: Final audit and motion docs (2026-11-23)
 Impeccable audit 19/20: the phone toast floats over the header instead of the back link, wheel turns no longer vibrate (haptics are out of scope), Journal star hover is fine-pointer only. `docs/DESIGN.md` documents the motion system; after-pass-2 shots are in `docs/screenshots/ui-pass/after2-*`.
+
+### Wheel gather fixes and v1.0 (2026-11-23)
+On choosing, the center name and ring labels fade so the gathered light stands alone, and going back restores the wheel. README media re-recorded as Selah Sky; Actions on checkout and setup-node v7. Tagged v1.0.0.
