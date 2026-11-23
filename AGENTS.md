@@ -1,8 +1,8 @@
 # Selah Sky
 
-Renamed from Verselight (2026-11-23). Keep the internal `verselight-*` storage keys, cookie names and backup format: renaming them would wipe visitors' data. The repo and Vercel URL keep the old name.
+Renamed from Verselight (2026-11-23). Keep the internal `verselight-*` storage keys, cookie names and backup format: renaming them would wipe visitors' data. The repo keeps the old name. Production moved to https://selah-sky.vercel.app (2026-11-23); the old URL redirects there, and since browser storage is per origin, earlier visitors move their data with Export and Import.
 
-Emotion-based Scripture, reflection, and prayer. Stack: Next.js App Router, strict TypeScript, Tailwind CSS, shadcn/ui, npm, Vercel. Production: https://verselight-app.vercel.app. Everyone uses the app as a guest. Personal data stays in the visitor's browser with JSON Export and Import backups. No server persistence for personal data.
+Emotion-based Scripture, reflection, and prayer. Stack: Next.js App Router, strict TypeScript, Tailwind CSS, shadcn/ui, npm, Vercel. Production: https://selah-sky.vercel.app. Everyone uses the app as a guest. Personal data stays in the visitor's browser with JSON Export and Import backups. No server persistence for personal data.
 
 ## Status and partnership
 Steps 1 to 9, the Constellation redesign and roadmap Phases A to E are built. `docs/PROGRESS.md` holds the current state, roadmap, decisions and Windows gotchas. Do the requested task; do not build unrequested features. Act as a partner: when you see a better approach, a risk, or a worthwhile idea, say it in one or two lines and let the owner decide.
