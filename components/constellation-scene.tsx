@@ -58,7 +58,7 @@ const vertexShader = /* glsl */ `
       p.xy = turn(p.xy, uOuterRot + uDawn * 0.35) * radial;
       alpha = s < 0.0 ? 0.3 * twinkle : mix(0.55, 1.0, max(select, lean)) * twinkle;
       size *= 1.0 + select * 0.45 + lean * 0.35;
-      alpha *= mix(1.0, 0.2, uInner) * (1.0 - 0.85 * uDawn);
+      alpha *= mix(1.0, 0.2, uInner) * (1.0 - uDawn);
     } else {
       // Inner feeling ring blooms from the center when an emotion is chosen.
       float sub = s;
