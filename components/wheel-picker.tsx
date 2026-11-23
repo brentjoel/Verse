@@ -35,6 +35,13 @@ export function WheelPicker({ emotions, children }: { emotions: readonly Emotion
   // Choosing a feeling gathers the sky into one point of light while the verses load.
   const [dawning, setDawning] = useState(false);
   const gather = useCallback(() => setDawning(true), []);
+  // Coming back (router state is kept while hidden, or the browser's back-forward cache) shows the wheel as it was, not mid-gather.
+  useEffect(() => {
+    const shown = (event: PageTransitionEvent) => { if (event.persisted) setDawning(false); };
+    addEventListener("pageshow", shown);
+    // Cleanup runs when the router hides this page, so it is reset before it shows again.
+    return () => { removeEventListener("pageshow", shown); setDawning(false); };
+  }, []);
   const kept = intensityChosen ? intensity : undefined;
   const drag = useRef<number | null>(null);
   const wheelDelta = useRef(0);
