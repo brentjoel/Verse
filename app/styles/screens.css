@@ -497,7 +497,11 @@
 
 /* Choosing on the wheel: the sky gathers toward the chosen light, and the words around it step back. */
 .wheel-options, .wheel-intensity, .wheel-intensity-note { transition: opacity var(--motion-slow) var(--ease-out); }
-.wheel-picker[data-dawning] :is(.wheel-ring-labels span:not([data-selected="true"]), .wheel-options, .wheel-intensity, .wheel-intensity-note) { opacity: .25; }
+.wheel-picker[data-dawning] :is(.wheel-options, .wheel-intensity, .wheel-intensity-note) { opacity: .25; }
+/* The chosen name gives its place to the gathered light, so words and stars never overlap. */
+.wheel-center .specific-link { transition: opacity var(--motion-slow) var(--ease-out), transform var(--motion-slow) var(--ease-out); }
+.wheel-picker[data-dawning] .wheel-ring-labels span { opacity: 0; }
+.wheel-picker[data-dawning] .wheel-center .specific-link { opacity: 0; transform: scale(.94); }
 
 /* Journal sky: each visit twinkles in, then the lines between consecutive days draw themselves. */
 @keyframes star-in { 0% { opacity: 0; transform: scale(.2); } 55% { opacity: 1; transform: scale(1.4); } 100% { opacity: 1; transform: none; } }
