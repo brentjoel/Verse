@@ -6,7 +6,7 @@ Emotion-based Scripture, reflection, and prayer for the feeling you bring today.
 
 ![Turning the constellation wheel to a verse](docs/media/demo.gif)
 
-**Live site:** https://verselight-app.vercel.app/
+**Live site:** https://verselight-app.vercel.app/ · **Status:** v1.0, complete
 
 Built with Next.js 16, React 19, strict TypeScript, Tailwind CSS 4, Three.js and Playwright, deployed on Vercel. Lighthouse 90+ in every category is a CI gate.
 
