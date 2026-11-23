@@ -6,7 +6,7 @@ Emotion-based Scripture, reflection, and prayer for the feeling you bring today.
 
 ![Turning the constellation wheel to a verse](docs/media/demo.gif)
 
-**Live site:** https://verselight-app.vercel.app/ · **Status:** v1.0, complete
+**Live site:** https://selah-sky.vercel.app/ · **Status:** v1.0, complete
 
 Built with Next.js 16, React 19, strict TypeScript, Tailwind CSS 4, Three.js and Playwright, deployed on Vercel. Lighthouse 90+ in every category is a CI gate.
 
@@ -56,7 +56,7 @@ npm run check
 npm run e2e
 ```
 
-Open http://localhost:3000. On PowerShell, use `npm.cmd` and `npx.cmd` if script launchers are blocked. Keep `NLT_API_KEY` server-only. Set `NEXT_PUBLIC_SITE_URL` to `https://verselight-app.vercel.app` as a stable HTTPS origin, then rebuild; do not hardcode the domain in application code. Never commit `.env.local`.
+Open http://localhost:3000. On PowerShell, use `npm.cmd` and `npx.cmd` if script launchers are blocked. Keep `NLT_API_KEY` server-only. Set `NEXT_PUBLIC_SITE_URL` to `https://selah-sky.vercel.app` as a stable HTTPS origin, then rebuild; do not hardcode the domain in application code. Never commit `.env.local`.
 
 ## Project documentation
 

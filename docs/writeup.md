@@ -44,6 +44,6 @@ I would measure on real mid-range phones sooner. Everything above was checked in
 
 ## Links
 
-- Live app: https://verselight-app.vercel.app
+- Live app: https://selah-sky.vercel.app
 - Case study: /craft in the app
 - Code: https://github.com/brentjoel/Verse

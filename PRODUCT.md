@@ -16,7 +16,7 @@ Help someone meet what they feel with real Scripture: choose a broad emotion, th
 Emotion-first Scripture with a curated mapping (8 emotions, 32 feelings, 8 passages each, four shown a day on a rolling window), a wheel-within-a-wheel picker and a dawn verse reveal, built with strict privacy: personal records never leave the browser. Real and portfolio at once: it must genuinely help users while showing the owner's engineering and design craft.
 
 ## Operating Context
-Mobile-first web app on Vercel (https://verselight-app.vercel.app). Visits are short and often emotional. Reviewers may skim several screens quickly. Data lives in browser storage with local JSON Export and Import backups.
+Mobile-first web app on Vercel (https://selah-sky.vercel.app). Visits are short and often emotional. Reviewers may skim several screens quickly. Data lives in browser storage with local JSON Export and Import backups.
 
 ## Capabilities and Constraints
 - Routes: Home (wheel and simple picker, daily WEB verse), feeling lists, results (carousel, dawn reveal, Save, Compare, Share, Reflect), Compare, My Verses, Journal, About and privacy, Licenses, 404.
